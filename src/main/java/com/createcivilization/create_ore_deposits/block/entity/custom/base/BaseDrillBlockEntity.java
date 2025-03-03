@@ -5,16 +5,18 @@ import com.createcivilization.create_ore_deposits.block.custom.gen.BaseGenerated
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.ItemStackHandler;
+
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -23,13 +25,22 @@ import java.util.*;
 public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     //TODO:: make kinetic block entity vertical-only cause this is going to be a sort of pulley
 
+    //variable - declaration
     protected int resourcePullSpeed;
     protected int efficiency;
     protected boolean target = false;
-    protected BlockPos targetPos = new BlockPos(0, 0, 0);
+    protected BlockPos targetPos = BlockPos.ZERO;
     private int startTick = 1;
 
-    protected final ItemStackHandler inventory = new ItemStackHandler(1);
+    protected final ItemStackHandler inventory = new ItemStackHandler(1) {
+        @Override
+        protected void onContentsChanged(int slot) {
+            setChanged();
+            if(!level.isClientSide()) {
+                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+            }
+        }
+    };
     // If for whatever reason the size should be unique, just remove the "1" and make them do .setSize for each instance
 
     protected double breakingProgressMilestone = -1;
@@ -118,13 +129,13 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         super(pType, pPos, pBlockState);
     }
 
-    public BlockPos findFurthestTarget(Level level, BlockPos InitialPos) {
+    public BlockPos findFurthestTarget(Level level, BlockPos initialPos) {
         Queue<BlockPos> queue = new LinkedList<>();
         Set<BlockPos> visited = new HashSet<>();
-        BlockPos farthestBlock = InitialPos;
+        BlockPos farthestBlock = initialPos;
 
-        queue.add(InitialPos);
-        visited.add(InitialPos);
+        queue.add(initialPos);
+        visited.add(initialPos);
 
         while (!queue.isEmpty()) {
             int size = queue.size();
@@ -211,26 +222,34 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         return this.efficiency;
     }
 
-    public void read(CompoundTag compound, boolean clientPacket) {
-        super.read(compound, clientPacket);
+    public void read(CompoundTag compound, HolderLookup.Provider provider, boolean clientPacket) {
+        super.read(compound, provider,clientPacket);
         this.setHasTarget(compound.getBoolean("HasTarget"));
         this.setTargetPos(compound.getIntArray("TargetPos"));
-        inventory.deserializeNBT(compound.getCompound("inventory"));
+        inventory.deserializeNBT(provider,compound.getCompound("inventory"));
     }
 
-    public void write(CompoundTag compound, boolean clientPacket) {
-        super.write(compound, clientPacket);
+    public void write(CompoundTag compound, HolderLookup.Provider provider, boolean clientPacket) {
+        super.write(compound,provider, clientPacket);
         compound.putBoolean("HasTarget", this.hasTarget());
         compound.putIntArray("TargetPos", new int[]{this.getTargetPos().getX(), this.getTargetPos().getY(), this.getTargetPos().getZ()});
-        compound.put("inventory", inventory.serializeNBT());
+        compound.put("inventory", inventory.serializeNBT(provider));
     }
 
     @Override
-    public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side) {
-        if (capability == ForgeCapabilities.ITEM_HANDLER) {
-            return LazyOptional.of(() -> inventory).cast();
-        }
-        //You can use this to add more capabilities like fluids and etc, add a direction check for side specific stuff
-        return super.getCapability(capability, side);
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag = new CompoundTag();
+        saveAdditional(tag, registries);
+        return tag;
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
+        super.handleUpdateTag(tag, registries);
     }
 }

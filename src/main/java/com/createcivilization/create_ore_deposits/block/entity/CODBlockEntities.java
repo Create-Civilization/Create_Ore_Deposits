@@ -4,16 +4,18 @@ import com.createcivilization.create_ore_deposits.CreateOreDeposits;
 import com.createcivilization.create_ore_deposits.block.CODBlocks;
 import com.createcivilization.create_ore_deposits.block.entity.custom.*;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.*;
 
 public class CODBlockEntities {
 
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, CreateOreDeposits.MOD_ID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, CreateOreDeposits.MOD_ID);
 
-    public static final RegistryObject<BlockEntityType<DrillBlockEntity>> DEPOSIT_TESTER_BLOCK_ENTITY =
+    public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<DrillBlockEntity>> DEPOSIT_TESTER_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("deposit_tester_block_entity", () ->
                     BlockEntityType.Builder.of(
                             DrillBlockEntity::new,
@@ -21,7 +23,7 @@ public class CODBlockEntities {
                     ).build(null)
             );
 
-    public static final RegistryObject<BlockEntityType<TestBlockEntity>> TEST_BLOCK_ENTITY =
+    public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<TestBlockEntity>> TEST_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("test_block_entity", () ->
                     BlockEntityType.Builder.of(
                             TestBlockEntity::new,

@@ -5,15 +5,15 @@ import com.createcivilization.create_ore_deposits.CreateOreDeposits;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+
 
 import java.util.concurrent.CompletableFuture;
 
-@Mod.EventBusSubscriber(modid = CreateOreDeposits.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = CreateOreDeposits.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class DataGenerators {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
@@ -24,7 +24,7 @@ public class DataGenerators {
 
         generator.addProvider(event.includeServer(), new CODBlockTagGenerator(packOutput, lookupProvider, existingFileHelper));
         generator.addProvider(event.includeClient(), new CODBlockStateProvider(packOutput, existingFileHelper));
-        generator.addProvider(event.includeServer(), new CODWorldGenProvider(packOutput, lookupProvider));
+        //generator.addProvider(event.includeServer(), new CODWorldGenProvider(packOutput, lookupProvider));
 
 
     }

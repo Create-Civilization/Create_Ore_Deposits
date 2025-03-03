@@ -1,4 +1,3 @@
-// 1.20.1	2025-02-10T12:23:32.4298787	Registries
-7f6dddb20d8fbb41306f148fe1e3bb7f47082dc7 data/create_ore_deposits/forge/biome_modifier/add_iron_ore_deposits.json
-8d72f1f374abfaa43d5a350e63696c9f8748f674 data/create_ore_deposits/worldgen/configured_feature/iron_ore_deposit_block.json
+// 1.21.1	2025-03-03T10:44:39.9533007	Registries
+7824696fb2341c02cea1d916a1db4e8f945bfdef data/create_ore_deposits/neoforge/biome_modifier/add_iron_ore_deposits.json
 23bf3dc7743c7a0af31416d8a179d7d0fc3051c1 data/create_ore_deposits/worldgen/placed_feature/iron_ore_deposit_block.json

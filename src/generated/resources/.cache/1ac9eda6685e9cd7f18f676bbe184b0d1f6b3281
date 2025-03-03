@@ -1,7 +1,4 @@
-// 1.20.1	2025-02-09T01:39:07.6305082	Block States: create_ore_deposits
+// 1.21.1	2025-03-03T10:44:40.1343817	Block States: create_ore_deposits
 32deb407d231189eabd188c86e4bfee8e6426cfe assets/create_ore_deposits/blockstates/deposit_tester_block.json
-9b1879f8dd879bd84ef1ee64cd2d209d4f90eb0b assets/create_ore_deposits/blockstates/iron_ore_deposit_block.json
 35218f08705f2ba194d7e32e8b34952dc0108b38 assets/create_ore_deposits/models/block/deposit_tester_block.json
-bfa98675091d4a5e3d0ca7a3b971b47c8f2ec549 assets/create_ore_deposits/models/block/iron_ore_deposit_block.json
 19730297b6b896a928e29730a04d61d5158283d8 assets/create_ore_deposits/models/item/deposit_tester_block.json
-8a4299e1da2eac5e45778c01275131e356424041 assets/create_ore_deposits/models/item/iron_ore_deposit_block.json

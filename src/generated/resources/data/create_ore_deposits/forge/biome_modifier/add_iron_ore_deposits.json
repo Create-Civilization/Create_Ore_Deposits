@@ -1,6 +1,0 @@
-{
-  "type": "forge:add_features",
-  "biomes": "#minecraft:is_overworld",
-  "features": "create_ore_deposits:iron_ore_deposit_block",
-  "step": "underground_ores"
-}

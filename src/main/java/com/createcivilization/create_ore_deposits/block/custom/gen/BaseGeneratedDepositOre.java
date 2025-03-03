@@ -29,7 +29,7 @@ public class BaseGeneratedDepositOre extends Block {
     }
 
     public BaseGeneratedDepositOre(Block ore) {
-        super(BlockBehaviour.Properties.copy(Blocks.IRON_ORE));
+        super(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_ORE));
         this.ORE = ore;
         anyState = this.stateDefinition.any();
         this.registerDefaultState(setResourceLevel(random.nextInt(150,301)));
@@ -46,7 +46,7 @@ public class BaseGeneratedDepositOre extends Block {
                 .withParameter(LootContextParams.TOOL, new ItemStack(Items.DIAMOND_PICKAXE))
                 .withParameter(LootContextParams.BLOCK_STATE, anyState);
 
-        List<ItemStack> oreDrops = ORE.getDrops(anyState, lootParamsBuilder);
+        List<ItemStack> oreDrops = ORE.defaultBlockState().getDrops(lootParamsBuilder);
 
         return oreDrops.isEmpty() ? new ItemStack(Items.AIR) : new ItemStack(oreDrops.get(0).getItem(), amount);
     }
