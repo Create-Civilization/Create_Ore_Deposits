@@ -1,8 +1,10 @@
 package com.createcivilization.create_ore_deposits.block.entity.custom.base;
 
+import com.createcivilization.create_ore_deposits.CreateOreDeposits;
 import com.createcivilization.create_ore_deposits.block.custom.gen.BaseGeneratedDepositOre;
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.content.kinetics.clock.CuckooClockBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -31,6 +33,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     protected boolean target = false;
     protected BlockPos targetPos = BlockPos.ZERO;
     private int startTick = 1;
+    private float rotationSpeed = 16.0f;
 
     protected final ItemStackHandler inventory = new ItemStackHandler(1) {
         @Override
@@ -41,6 +44,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
             }
         }
     };
+
     // If for whatever reason the size should be unique, just remove the "1" and make them do .setSize for each instance
 
     protected double breakingProgressMilestone = -1;
@@ -102,6 +106,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
                 );
 
                 inventory.setStackInSlot(0, extractedItem);
+                System.out.println(targetBlockState);
                 BlockState newState = targetBlockState.setValue(BaseGeneratedDepositOre.RESOURCE_VALUE, Math.max(0, resourceValue - efficiency));
                 serverLevel.setBlock(this.getTargetPos(), newState, 3);
             }
@@ -220,6 +225,15 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
 
     public int getEfficiency() {
         return this.efficiency;
+    }
+
+    public float getRotationSpeed() {
+        return rotationSpeed;
+    }
+
+    // Setter for rotation speed if you want to change it
+    public void setRotationSpeed(float speed) {
+        this.rotationSpeed = speed;
     }
 
     public void read(CompoundTag compound, HolderLookup.Provider provider, boolean clientPacket) {

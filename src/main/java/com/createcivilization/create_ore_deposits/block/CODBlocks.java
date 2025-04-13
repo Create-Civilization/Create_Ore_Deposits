@@ -22,12 +22,8 @@ public class CODBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(CreateOreDeposits.MOD_ID);
 
     public static DeferredBlock<Block> DRILL_BLOCK = registerBlock(
-            "deposit_tester_block", () -> new DrillBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK))
+            "deposit_tester_block", () -> new DrillBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion())
     ); //TODO: Figure out a name for the drill
-
-    public static DeferredBlock<Block> TEST_BLOCK = registerBlock(
-            "test_block", () -> new TestBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK))
-    );
 
     public static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);

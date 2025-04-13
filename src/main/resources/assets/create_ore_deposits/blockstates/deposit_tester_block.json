@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "create_ore_deposits:block/deposit_tester_block" }
+  }
+}

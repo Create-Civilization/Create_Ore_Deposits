@@ -1,7 +1,9 @@
 package com.createcivilization.create_ore_deposits.block.custom.gen;
 
+import com.createcivilization.create_ore_deposits.CreateOreDeposits;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -48,7 +50,7 @@ public class BaseGeneratedDepositOre extends Block {
 
         List<ItemStack> oreDrops = ORE.defaultBlockState().getDrops(lootParamsBuilder);
 
-        return oreDrops.isEmpty() ? new ItemStack(Items.AIR) : new ItemStack(oreDrops.get(0).getItem(), amount);
+        return oreDrops.isEmpty() ? new ItemStack(Items.AIR) : new ItemStack(oreDrops.getFirst().getItem(), amount);
     }
 
     @Override

@@ -1,10 +1,12 @@
 package com.createcivilization.create_ore_deposits;
 
 import com.createcivilization.create_ore_deposits.block.CODBlocks;
-import com.createcivilization.create_ore_deposits.block.entity.CODBlockEntities;
+import com.createcivilization.create_ore_deposits.block.entity.CODBlockEntityTypes;
 import com.createcivilization.create_ore_deposits.item.CODItems;
 
 import com.mojang.logging.LogUtils;
+import com.simibubi.create.foundation.data.CreateRegistrate;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -20,18 +22,23 @@ public class CreateOreDeposits {
     public static final String MOD_ID = "create_ore_deposits";
     public static final Logger LOGGER = LogUtils.getLogger();
 
+    public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
+
+    public static CreateRegistrate registrate() {
+        return REGISTRATE;
+    }
+
     public CreateOreDeposits(IEventBus modEventBus, ModContainer modContainer) {
-        // Register the commonSetup method for modloading
-        modEventBus.addListener(this::commonSetup);
 
-        // Register ourselves for server and other game events we are interested in.
-        // Note that this is necessary if and only if we want *this* class (Untitled1) to respond directly to events.
-        // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
-        NeoForge.EVENT_BUS.register(this);
+        REGISTRATE.registerEventListeners(modEventBus);
 
-        CODItems.register(modEventBus);
         CODBlocks.register(modEventBus);
-        CODBlockEntities.register(modEventBus);
+        CODItems.register(modEventBus);
+        CODBlockEntityTypes.register();
+
+
+        modEventBus.addListener(this::commonSetup);
+        NeoForge.EVENT_BUS.register(this);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -43,5 +50,6 @@ public class CreateOreDeposits {
         // Do something when the server starts
         LOGGER.info("CREATE ORE DEPOSIT GO BRRRRR");
     }
+
 
 }

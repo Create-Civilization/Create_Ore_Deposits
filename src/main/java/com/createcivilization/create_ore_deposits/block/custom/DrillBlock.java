@@ -1,6 +1,6 @@
 package com.createcivilization.create_ore_deposits.block.custom;
 
-import com.createcivilization.create_ore_deposits.block.entity.CODBlockEntities;
+import com.createcivilization.create_ore_deposits.block.entity.CODBlockEntityTypes;
 import com.createcivilization.create_ore_deposits.block.entity.custom.DrillBlockEntity;
 
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
@@ -9,7 +9,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.*;
@@ -32,7 +31,7 @@ public class DrillBlock extends DirectionalKineticBlock implements IBE<DrillBloc
 
     @Override
     public BlockEntityType<? extends DrillBlockEntity> getBlockEntityType() {
-        return CODBlockEntities.DEPOSIT_TESTER_BLOCK_ENTITY.get();
+      return CODBlockEntityTypes.DRPOSIT_TESTER_BLOCK.get();
     }
 
     @Override
@@ -40,6 +39,7 @@ public class DrillBlock extends DirectionalKineticBlock implements IBE<DrillBloc
         return RenderShape.MODEL;
     }
 
+    @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
         return face == (state.getValue(FACING)).getOpposite();
     }
