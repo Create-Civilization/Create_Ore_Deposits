@@ -31,7 +31,7 @@ public class DrillBlock extends DirectionalKineticBlock implements IBE<DrillBloc
 
     @Override
     public BlockEntityType<? extends DrillBlockEntity> getBlockEntityType() {
-      return CODBlockEntityTypes.DRPOSIT_TESTER_BLOCK.get();
+      return CODBlockEntityTypes.DEPOSIT_TESTER_BLOCK.get();
     }
 
     @Override

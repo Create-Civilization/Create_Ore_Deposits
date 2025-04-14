@@ -1,7 +1,6 @@
 package com.createcivilization.create_ore_deposits.block.entity.custom;
 
-import com.createcivilization.create_ore_deposits.block.entity.custom.base.*;
-
+import com.createcivilization.create_ore_deposits.block.entity.custom.base.BaseDrillBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;

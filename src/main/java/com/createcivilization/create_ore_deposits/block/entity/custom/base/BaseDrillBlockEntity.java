@@ -1,15 +1,12 @@
 package com.createcivilization.create_ore_deposits.block.entity.custom.base;
 
-import com.createcivilization.create_ore_deposits.CreateOreDeposits;
 import com.createcivilization.create_ore_deposits.block.custom.gen.BaseGeneratedDepositOre;
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import com.simibubi.create.content.kinetics.clock.CuckooClockBlockEntity;
+import com.simibubi.create.foundation.utility.ServerSpeedProvider;
+import net.createmod.catnip.animation.LerpedFloat;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -18,16 +15,20 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     //TODO:: make kinetic block entity vertical-only cause this is going to be a sort of pulley
 
-    //variable - declaration
+
+    protected LerpedFloat drillOffset;
+    protected boolean isExtending;
+    protected float maxDrillExtension = 10.0f;
+    protected float minDrillRetraction = 1.0f;
+
     protected int resourcePullSpeed;
     protected int efficiency;
     protected boolean target = false;
@@ -45,6 +46,59 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         }
     };
 
+    public float getMovementSpeed() {
+        float movementSpeed = convertToLinear(getSpeed());
+        if (level.isClientSide)
+            movementSpeed *= ServerSpeedProvider.get();
+        return movementSpeed;
+    }
+
+
+    protected void updateDrillExtension() {
+        if (getSpeed() == 0) {
+            return;
+        }
+
+        float currentOffset = drillOffset.getValue();
+        float movementSpeed = getMovementSpeed();
+        float newOffset;
+
+        if (isExtending) {
+            newOffset = currentOffset + movementSpeed;
+            if (newOffset > maxDrillExtension || !canExtendTo(newOffset)) {
+                newOffset = currentOffset;
+                isExtending = false;
+            }
+        } else {
+            newOffset = currentOffset - movementSpeed;
+            if (newOffset < minDrillRetraction) {
+                newOffset = minDrillRetraction;
+                isExtending = true;
+            }
+        }
+        drillOffset.setValue(newOffset);
+        invalidateRenderBoundingBox();
+    }
+
+    protected boolean canExtendTo(float offset) {
+        if (level == null) return false;
+
+        int depth = (int) Math.ceil(offset);
+        BlockPos checkPos = worldPosition.below(depth);
+
+        // Only allow extending into replaceable blocks or ore deposits
+        return level.getBlockState(checkPos).canBeReplaced() || isBlockDeposit(level, checkPos);
+    }
+
+    public float getInterpolatedOffset(float partialTicks) {
+        return Math.max(drillOffset.getValue(partialTicks), minDrillRetraction);
+    }
+
+    @Override
+    protected AABB createRenderBoundingBox() {
+        return super.createRenderBoundingBox().expandTowards(0, -drillOffset.getValue(), 0);
+    }
+
     // If for whatever reason the size should be unique, just remove the "1" and make them do .setSize for each instance
 
     protected double breakingProgressMilestone = -1;
@@ -53,6 +107,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     public void tick() {
         super.tick();
         assert this.level != null;
+        updateDrillExtension();
         if (this.level.isClientSide()) return;
         if (this.getSpeed() == 0.0F) return;
         ServerLevel serverLevel = (ServerLevel) this.level;
@@ -132,6 +187,8 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
 
     public BaseDrillBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
+        drillOffset = LerpedFloat.linear().startWithValue(minDrillRetraction);
+        isExtending = false;
     }
 
     public BlockPos findFurthestTarget(Level level, BlockPos initialPos) {
@@ -238,6 +295,9 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
 
     public void read(CompoundTag compound, HolderLookup.Provider provider, boolean clientPacket) {
         super.read(compound, provider,clientPacket);
+        if (clientPacket)
+            drillOffset.readNBT(compound.getCompound("DrillOffset"), clientPacket);
+        this.isExtending = compound.getBoolean("IsExtending");
         this.setHasTarget(compound.getBoolean("HasTarget"));
         this.setTargetPos(compound.getIntArray("TargetPos"));
         inventory.deserializeNBT(provider,compound.getCompound("inventory"));
@@ -245,6 +305,9 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
 
     public void write(CompoundTag compound, HolderLookup.Provider provider, boolean clientPacket) {
         super.write(compound,provider, clientPacket);
+        if (clientPacket)
+            compound.put("DrillOffset", drillOffset.writeNBT());
+        compound.putBoolean("IsExtending", isExtending);
         compound.putBoolean("HasTarget", this.hasTarget());
         compound.putIntArray("TargetPos", new int[]{this.getTargetPos().getX(), this.getTargetPos().getY(), this.getTargetPos().getZ()});
         compound.put("inventory", inventory.serializeNBT(provider));
