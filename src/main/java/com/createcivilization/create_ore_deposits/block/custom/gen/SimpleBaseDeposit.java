@@ -4,7 +4,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
@@ -16,12 +20,21 @@ public class SimpleBaseDeposit extends Block {
     private int maxCount;
     private int minCount;
     private float hardness;
+    public static final BooleanProperty DRILLED = BooleanProperty.create("drilled");
+
+    private static BlockState anyState;
+
+    private BlockState setDrilled(boolean drilled) {
+        return anyState.setValue(DRILLED, drilled);
+    }
+
     public SimpleBaseDeposit(Properties properties, List<ItemStack> drops, int minCount, int maxCount, float hardness) {
         super(properties);
         this.drops = drops;
         this.minCount = minCount;
         this.maxCount = maxCount;
         this.hardness = hardness;
+        this.registerDefaultState(setDrilled(false));
     }
 
     public List<ItemStack> getDrops() {
@@ -31,15 +44,18 @@ public class SimpleBaseDeposit extends Block {
     public void setDrops(List<ItemStack> drops) {
         this.drops = drops;
     }
-
     public float getHardness(){
         return hardness;
     }
-
     public int getMaxCount() {
         return maxCount;
     }
     public int getMinCount() {
         return minCount;
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(DRILLED);
     }
 }

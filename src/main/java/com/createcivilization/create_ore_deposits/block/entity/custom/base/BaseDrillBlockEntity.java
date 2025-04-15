@@ -1,6 +1,6 @@
 package com.createcivilization.create_ore_deposits.block.entity.custom.base;
 
-import com.createcivilization.create_ore_deposits.block.custom.gen.BaseGeneratedDepositOre;
+import com.createcivilization.create_ore_deposits.block.custom.gen.SimpleBaseDeposit;
 import com.createcivilization.create_ore_deposits.tag.CODTags;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
@@ -114,7 +114,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
             boolean unbreakable = hardness == -1
                     || target.equals(this.getBlockPos())
                     || AllTags.AllBlockTags.NON_BREAKABLE.matches(targetState)
-                    || targetState.is(CODTags.Blocks.ORE_DEPOSITS);
+                    || isBlockDeposit(level, targetPos);
 
             if (!unbreakable) {
 
@@ -163,8 +163,6 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     }
 
 
-
-
     public float getMovementSpeed() {
         float movementSpeed = convertToLinear(getSpeed());
         if (level.isClientSide)
@@ -188,7 +186,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
 
     public boolean isBlockDeposit(Level level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
-        return state.getOptionalValue(BaseGeneratedDepositOre.RESOURCE_VALUE).isPresent();
+        return state.getBlock() instanceof SimpleBaseDeposit;
     }
 
     public int getBreakingProgress(double breakingProgressMilestone, int resourceLevel) {
