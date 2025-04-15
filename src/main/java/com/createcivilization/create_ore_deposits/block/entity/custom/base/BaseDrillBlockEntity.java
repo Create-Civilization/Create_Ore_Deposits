@@ -1,6 +1,9 @@
 package com.createcivilization.create_ore_deposits.block.entity.custom.base;
 
+import com.createcivilization.create_ore_deposits.block.CODBlocks;
 import com.createcivilization.create_ore_deposits.block.custom.gen.BaseGeneratedDepositOre;
+import com.createcivilization.create_ore_deposits.tag.CODTags;
+import com.simibubi.create.AllTags;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.utility.ServerSpeedProvider;
 import net.createmod.catnip.animation.LerpedFloat;
@@ -11,6 +14,8 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.AirBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -64,6 +69,67 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         if (level.isClientSide() || getSpeed() == 0.0F) return;
 
         processResourceExtraction();
+    }
+
+    @Override
+    public void onSpeedChanged(float previousSpeed) {
+        isMoving = true;
+        if (getSpeed() == 0) {
+            drillOffset.forceNextSync();
+            drillOffset.setValue(Math.round(drillOffset.getValue()));
+            isMoving = false;
+        }
+
+        if (isMoving) {
+            float newOffset = drillOffset.getValue() + getMovementSpeed();
+            if (newOffset < 0)
+                isMoving = false;
+            if (!level.getBlockState(worldPosition.below((int) Math.ceil(newOffset)))
+                    .canBeReplaced()) {
+                isMoving = false;
+            }
+            if (isMoving) {
+                //They had drainer and filler resets here.
+            }
+        }
+
+        super.onSpeedChanged(previousSpeed);
+    }
+
+    public void updateDrillExtension() {
+        float newOffset = drillOffset.getValue() + getMovementSpeed();
+        if (newOffset < 0) {
+            newOffset = 0;
+            isMoving = false;
+        }
+        if (!level.getBlockState(worldPosition.below((int) Math.ceil(newOffset))).canBeReplaced()) {
+
+            BlockPos targetPos = worldPosition.below((int) Math.ceil(newOffset));
+            BlockState targetState = level.getBlockState(targetPos);
+            float blockHardness = targetState.getDestroySpeed(level, targetPos);
+
+            if (!targetState.isAir() && !targetState.is(CODTags.Blocks.ORE_DEPOSITS) && canBreak(targetState, blockHardness) && targetState.getDestroySpeed(level, targetPos) >= 0 && targetPos != this.getBlockPos()) {
+                level.destroyBlock(targetPos, true);
+            }
+
+            if (!level.getBlockState(worldPosition.below((int) Math.ceil(newOffset))).canBeReplaced()) {
+                newOffset = (int) newOffset;
+                isMoving = false;
+            }
+        }
+        if (getSpeed() == 0)
+            isMoving = false;
+
+        drillOffset.setValue(newOffset);
+        invalidateRenderBoundingBox();
+    }
+
+    public boolean canBreak(BlockState stateToBreak, float blockHardness) {
+        return isBreakable(stateToBreak, blockHardness);
+    }
+
+    public static boolean isBreakable(BlockState stateToBreak, float blockHardness) {
+        return !(stateToBreak.liquid() || stateToBreak.getBlock() instanceof AirBlock || blockHardness == -1 || AllTags.AllBlockTags.NON_BREAKABLE.matches(stateToBreak));
     }
 
     private void processResourceExtraction() {
@@ -155,61 +221,6 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         setChanged();
     }
 
-    @Override
-    public void onSpeedChanged(float previousSpeed) {
-        isMoving = true;
-        if (getSpeed() == 0) {
-            drillOffset.forceNextSync();
-            drillOffset.setValue(Math.round(drillOffset.getValue()));
-            isMoving = false;
-        }
-
-        if (isMoving) {
-            float newOffset = drillOffset.getValue() + getMovementSpeed();
-            if (newOffset < 0) isMoving = false;
-
-            BlockPos projectedPos = worldPosition.below((int) Math.ceil(newOffset));
-            if (!level.getBlockState(projectedPos).canBeReplaced()) {
-                isMoving = false;
-            }
-        }
-
-        super.onSpeedChanged(previousSpeed);
-    }
-
-    protected void updateDrillExtension() {
-        float newOffset = drillOffset.getValue() + getMovementSpeed();
-
-        if (newOffset < 0) {
-            newOffset = 0;
-            isMoving = false;
-        }
-
-        BlockPos drillHeadPos = worldPosition.below((int) Math.ceil(newOffset));
-        BlockState stateAtDrill = level.getBlockState(drillHeadPos);
-
-        tryBreakBlockAtDrillHead(drillHeadPos, stateAtDrill);
-
-        if (!stateAtDrill.canBeReplaced()) {
-            newOffset = (int) newOffset;
-            isMoving = false;
-        }
-
-        if (getSpeed() == 0)
-            isMoving = false;
-
-        drillOffset.setValue(newOffset);
-        invalidateRenderBoundingBox();
-    }
-
-    private void tryBreakBlockAtDrillHead(BlockPos pos, BlockState state) {
-        if (!level.isClientSide() && !isBlockDeposit(level, pos) && isMoving) {
-            float destroySpeed = state.getDestroySpeed(level, pos);
-            if (destroySpeed >= 0 && destroySpeed < 50F) {
-                level.destroyBlock(pos, true);
-            }
-        }
-    }
 
     public float getMovementSpeed() {
         float movementSpeed = convertToLinear(getSpeed());

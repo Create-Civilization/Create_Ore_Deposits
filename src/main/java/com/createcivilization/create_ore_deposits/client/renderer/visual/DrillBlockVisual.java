@@ -50,7 +50,7 @@ public class DrillBlockVisual extends AbstractPulleyVisual<DrillBlockEntity> {
 
     @Override
     protected boolean isRunning() {
-        return blockEntity.getSpeed() != 0;
+        return true;
     }
 
     @Override
