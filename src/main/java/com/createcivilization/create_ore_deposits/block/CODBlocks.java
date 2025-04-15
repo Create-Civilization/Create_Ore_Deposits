@@ -21,7 +21,6 @@ public class CODBlocks {
                     List.of(new ItemStack(Items.RAW_IRON)),
                     1,400, 1.0f
             ))
-            .tag(CODTags.Blocks.ORE_DEPOSITS)
             .simpleItem()
             .register();
 

@@ -153,6 +153,11 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
                     level.destroyBlockProgress(breakerId, target, -1);
                 }
             }
+
+            if(isBlockDeposit(level, targetPos)) {
+                //Process deposit
+
+            }
         }
 
         if (getSpeed() == 0)
@@ -160,6 +165,20 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
 
         drillOffset.setValue(newOffset);
         invalidateRenderBoundingBox();
+    }
+
+    protected void processDeposit(){
+        //First Checks if it has a target
+        //If it has a target already it should already have deposit ore value.
+        //Do work on deposit and make sure block breaking anim is scalled
+        //If out of materials break block set has target to false
+
+
+        //If does not have target
+        //find furthest deposit, set to target
+        //Check if blockstate of target is drilled
+        //If its drilled just break it and find a new target.
+        //Generate ore count then set has target
     }
 
 

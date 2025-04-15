@@ -20,13 +20,13 @@ public class SimpleBaseDeposit extends Block {
     private int maxCount;
     private int minCount;
     private float hardness;
-    public static final BooleanProperty DRILLED = BooleanProperty.create("drilled");
+    //public static final BooleanProperty DRILLED = BooleanProperty.create("drilled");
 
     private static BlockState anyState;
 
-    private BlockState setDrilled(boolean drilled) {
-        return anyState.setValue(DRILLED, drilled);
-    }
+//    private BlockState setDrilled(boolean drilled) {
+//        return anyState.setValue(DRILLED, drilled);
+//    }
 
     public SimpleBaseDeposit(Properties properties, List<ItemStack> drops, int minCount, int maxCount, float hardness) {
         super(properties);
@@ -34,7 +34,7 @@ public class SimpleBaseDeposit extends Block {
         this.minCount = minCount;
         this.maxCount = maxCount;
         this.hardness = hardness;
-        this.registerDefaultState(setDrilled(false));
+       // this.registerDefaultState(setDrilled(false));
     }
 
     public List<ItemStack> getDrops() {
@@ -53,9 +53,9 @@ public class SimpleBaseDeposit extends Block {
     public int getMinCount() {
         return minCount;
     }
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(DRILLED);
-    }
+//
+//    @Override
+//    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+//        builder.add(DRILLED);
+//    }/
 }
