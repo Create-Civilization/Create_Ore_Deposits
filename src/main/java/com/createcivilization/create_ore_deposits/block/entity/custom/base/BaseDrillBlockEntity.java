@@ -1,42 +1,46 @@
 package com.createcivilization.create_ore_deposits.block.entity.custom.base;
 
-import com.createcivilization.create_ore_deposits.block.CODBlocks;
 import com.createcivilization.create_ore_deposits.block.custom.gen.BaseGeneratedDepositOre;
 import com.createcivilization.create_ore_deposits.tag.CODTags;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.foundation.utility.BlockHelper;
 import com.simibubi.create.foundation.utility.ServerSpeedProvider;
 import net.createmod.catnip.animation.LerpedFloat;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AirBlock;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
-    // Animation and movement
+
+    public static final AtomicInteger NEXT_BREAKER_ID = new AtomicInteger();
     protected LerpedFloat drillOffset;
     protected boolean isExtending;
     private boolean isMoving = false;
-
-    // Drilling properties
-    protected int resourcePullSpeed;
-    protected int efficiency;
-    private float rotationSpeed = 16.0f;
-
-    // Target tracking
     protected boolean target = false;
     protected BlockPos targetPos = BlockPos.ZERO;
+    protected int breakingProgress;
+    protected int ticksUntilNextProgress;
+    protected int breakerId = -NEXT_BREAKER_ID.incrementAndGet();
+
+
+    protected int resourcePullSpeed;
     protected double breakingProgressMilestone = -1;
 
     // Timing
@@ -63,12 +67,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     public void tick() {
         super.tick();
         if (level == null) return;
-
         updateDrillExtension();
-
-        if (level.isClientSide() || getSpeed() == 0.0F) return;
-
-        processResourceExtraction();
     }
 
     @Override
@@ -102,21 +101,60 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
             newOffset = 0;
             isMoving = false;
         }
-        if (!level.getBlockState(worldPosition.below((int) Math.ceil(newOffset))).canBeReplaced()) {
 
-            BlockPos targetPos = worldPosition.below((int) Math.ceil(newOffset));
-            BlockState targetState = level.getBlockState(targetPos);
-            float blockHardness = targetState.getDestroySpeed(level, targetPos);
+        BlockPos target = worldPosition.below((int) Math.ceil(newOffset));
+        BlockState targetState = level.getBlockState(target);
 
-            if (!targetState.isAir() && !targetState.is(CODTags.Blocks.ORE_DEPOSITS) && canBreak(targetState, blockHardness) && targetState.getDestroySpeed(level, targetPos) >= 0 && targetPos != this.getBlockPos()) {
-                level.destroyBlock(targetPos, true);
-            }
+        if (!targetState.canBeReplaced()) {
+            newOffset = (int) drillOffset.getValue();
+            isMoving = false;
 
-            if (!level.getBlockState(worldPosition.below((int) Math.ceil(newOffset))).canBeReplaced()) {
-                newOffset = (int) newOffset;
-                isMoving = false;
+            float hardness = targetState.getDestroySpeed(level, target);
+
+            boolean unbreakable = hardness == -1
+                    || target.equals(this.getBlockPos())
+                    || AllTags.AllBlockTags.NON_BREAKABLE.matches(targetState)
+                    || targetState.is(CODTags.Blocks.ORE_DEPOSITS);
+
+            if (!unbreakable) {
+
+                float breakSpeed = getSpeed() / 100f;
+
+                if (ticksUntilNextProgress > 0) {
+                    ticksUntilNextProgress--;
+                    drillOffset.setValue(newOffset);
+                    invalidateRenderBoundingBox();
+                    return;
+                }
+
+                int progressStep = Mth.clamp((int) (breakSpeed / hardness), 1, 10 - breakingProgress);
+                breakingProgress += progressStep;
+
+                level.playSound(null, worldPosition, targetState.getSoundType().getHitSound(),
+                        SoundSource.BLOCKS, 0.25f, 1f);
+                level.destroyBlockProgress(breakerId, target, breakingProgress);
+
+                if (breakingProgress >= 10) {
+                    BlockHelper.destroyBlock(level, target, 1f);
+                    breakingProgress = 0;
+                    ticksUntilNextProgress = -1;
+                    level.destroyBlockProgress(breakerId, target, -1);
+                } else {
+                    ticksUntilNextProgress = (int) (hardness / breakSpeed);
+                }
+
+                drillOffset.setValue(newOffset);
+                invalidateRenderBoundingBox();
+                return;
+            } else {
+                if (breakingProgress != 0) {
+                    breakingProgress = 0;
+                    ticksUntilNextProgress = -1;
+                    level.destroyBlockProgress(breakerId, target, -1);
+                }
             }
         }
+
         if (getSpeed() == 0)
             isMoving = false;
 
@@ -124,102 +162,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         invalidateRenderBoundingBox();
     }
 
-    public boolean canBreak(BlockState stateToBreak, float blockHardness) {
-        return isBreakable(stateToBreak, blockHardness);
-    }
 
-    public static boolean isBreakable(BlockState stateToBreak, float blockHardness) {
-        return !(stateToBreak.liquid() || stateToBreak.getBlock() instanceof AirBlock || blockHardness == -1 || AllTags.AllBlockTags.NON_BREAKABLE.matches(stateToBreak));
-    }
-
-    private void processResourceExtraction() {
-        ServerLevel serverLevel = (ServerLevel) level;
-        BlockPos pos = getBlockPos();
-
-        if (this.startTick % this.resourcePullSpeed != 0) {
-            this.startTick++;
-            return;
-        }
-        this.startTick++;
-
-        ItemStack slot = inventory.getStackInSlot(0);
-        int maxStackSize = slot.getMaxStackSize();
-        int count = slot.getCount();
-        if (count >= maxStackSize) return;
-
-        BlockPos below = pos.below();
-
-        updateTargetIfNeeded(serverLevel, below);
-        processTarget(serverLevel, slot, maxStackSize, count);
-    }
-
-    private void updateTargetIfNeeded(ServerLevel serverLevel, BlockPos below) {
-        if (!hasTarget() && isBlockDeposit(serverLevel, below)) {
-            BlockPos furthestBlock = findFurthestTarget(serverLevel, below);
-            setHasTarget(true);
-            setTargetPos(furthestBlock);
-            setChanged();
-        }
-    }
-
-    private void processTarget(ServerLevel serverLevel, ItemStack slot, int maxStackSize, int count) {
-        if (!hasTarget()) return;
-
-        if (!isBlockDeposit(serverLevel, targetPos)) {
-            setHasTarget(false);
-            setBreakingProgressMilestone(-1);
-            setChanged();
-            return;
-        }
-
-        extractResourceFromTarget(serverLevel, slot, maxStackSize, count);
-    }
-
-    private void extractResourceFromTarget(ServerLevel serverLevel, ItemStack slot, int maxStackSize, int count) {
-        BlockState targetBlockState = level.getBlockState(targetPos);
-        BaseGeneratedDepositOre ore = (BaseGeneratedDepositOre) targetBlockState.getBlock();
-
-        int efficiency = getEfficiency();
-        int realEfficiency = Math.min(count + efficiency, maxStackSize);
-        ItemStack extractedItem = ore.extractItemStack(serverLevel, realEfficiency);
-        int resourceValue = targetBlockState.getValue(BaseGeneratedDepositOre.RESOURCE_VALUE);
-
-        if (!slot.isEmpty() && !slot.getItem().equals(extractedItem.getItem())) return;
-
-        if (breakingProgressMilestone == -1)
-            setBreakingProgressMilestone((double) resourceValue / 9);
-
-        if (resourceValue > 0) {
-            updateBlockBreakingProgress(serverLevel, resourceValue);
-            inventory.setStackInSlot(0, extractedItem);
-
-            BlockState newState = targetBlockState.setValue(
-                    BaseGeneratedDepositOre.RESOURCE_VALUE,
-                    Math.max(0, resourceValue - efficiency)
-            );
-            serverLevel.setBlock(targetPos, newState, 3);
-        }
-
-        if (resourceValue == 0) {
-            cleanupEmptyDeposit(serverLevel);
-        }
-    }
-
-    private void updateBlockBreakingProgress(ServerLevel serverLevel, int resourceValue) {
-        serverLevel.destroyBlockProgress(
-                1,
-                targetPos,
-                getBreakingProgress(breakingProgressMilestone, resourceValue)
-        );
-    }
-
-    private void cleanupEmptyDeposit(ServerLevel serverLevel) {
-        serverLevel.destroyBlock(targetPos, false);
-        serverLevel.destroyBlockProgress(1, targetPos, 0);
-        setBreakingProgressMilestone(-1);
-        setHasTarget(false);
-        setChanged();
-    }
 
 
     public float getMovementSpeed() {
@@ -227,34 +170,6 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         if (level.isClientSide)
             movementSpeed *= ServerSpeedProvider.get();
         return movementSpeed;
-    }
-
-    public BlockPos findFurthestTarget(Level level, BlockPos initialPos) {
-        Queue<BlockPos> queue = new LinkedList<>();
-        Set<BlockPos> visited = new HashSet<>();
-        BlockPos farthestBlock = initialPos;
-
-        queue.add(initialPos);
-        visited.add(initialPos);
-
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            BlockPos lastInLevel = null;
-            for (int i = 0; i < size; i++) {
-                BlockPos current = queue.poll();
-                lastInLevel = current;
-
-                for (BlockPos neighbor : getPositions(current)) {
-                    if (!visited.contains(neighbor) && isBlockDeposit(level, neighbor)) {
-                        queue.add(neighbor);
-                        visited.add(neighbor);
-                    }
-                }
-            }
-
-            farthestBlock = lastInLevel;
-        }
-        return farthestBlock;
     }
 
     public static List<BlockPos> getPositions(BlockPos pos) {
@@ -280,6 +195,34 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         double progressRatio = (double) resourceLevel / breakingProgressMilestone;
         int progress = 9 - (int) Math.ceil(progressRatio);
         return Math.min(9, Math.max(1, progress));
+    }
+
+    public BlockPos findFurthestDeposit(Level level, BlockPos initialPos) {
+        Queue<BlockPos> queue = new LinkedList<>();
+        Set<BlockPos> visited = new HashSet<>();
+        BlockPos farthestBlock = initialPos;
+
+        queue.add(initialPos);
+        visited.add(initialPos);
+
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            BlockPos lastInLevel = null;
+            for (int i = 0; i < size; i++) {
+                BlockPos current = queue.poll();
+                lastInLevel = current;
+
+                for (BlockPos neighbor : getPositions(current)) {
+                    if (!visited.contains(neighbor) && isBlockDeposit(level, neighbor)) {
+                        queue.add(neighbor);
+                        visited.add(neighbor);
+                    }
+                }
+            }
+
+            farthestBlock = lastInLevel;
+        }
+        return farthestBlock;
     }
 
     public float getInterpolatedOffset(float partialTicks) {
@@ -322,22 +265,6 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
 
     public void setResourcePullSpeed(int speed) {
         resourcePullSpeed = speed;
-    }
-
-    public int getResourcePullSpeed() {
-        return resourcePullSpeed;
-    }
-
-    public void setEfficiency(int value) {
-        efficiency = value;
-    }
-
-    public int getEfficiency() {
-        return efficiency;
-    }
-
-    public float getRotationSpeed() {
-        return rotationSpeed;
     }
 
     // NBT handling

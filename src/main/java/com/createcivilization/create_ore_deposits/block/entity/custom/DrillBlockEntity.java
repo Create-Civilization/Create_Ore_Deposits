@@ -9,7 +9,6 @@ public class DrillBlockEntity extends BaseDrillBlockEntity {
 
     public DrillBlockEntity(BlockEntityType<?> type, BlockPos pPos, BlockState pBlockState) {
         super(type, pPos, pBlockState);
-        setEfficiency(10);
         setResourcePullSpeed(20);
     }
 

@@ -18,12 +18,6 @@ public class CODBlockEntityTypes {
             .validBlock(CODBlocks.DRILL_BLOCK::get)
             .renderer(() -> DrillBlockRenderer::new)
             .register();
-//            .blockEntity("deposit_tester_block_entity", DrillBlockEntity::new)
-//            .visual(() -> OrientedRotatingVisual.of(AllPartialModels.DRILL_HEAD), false)
-//            .validBlocks(CODBlocks.DRILL_BLOCK)
-//            .renderer(() -> DrillRenderer::new)
-//            .register();
-
 
     public static void register() {
     }

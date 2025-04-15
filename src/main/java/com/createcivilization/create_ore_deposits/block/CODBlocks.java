@@ -21,8 +21,8 @@ public class CODBlocks {
                     List.of(new ItemStack(Items.RAW_IRON)),
                     1,400, 1.0f
             ))
-            .simpleItem()
             .tag(CODTags.Blocks.ORE_DEPOSITS)
+            .simpleItem()
             .register();
 
     public static final BlockEntry<DrillBlock> DRILL_BLOCK = REGISTRATE
