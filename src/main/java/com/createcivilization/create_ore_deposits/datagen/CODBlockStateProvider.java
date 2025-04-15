@@ -2,7 +2,6 @@ package com.createcivilization.create_ore_deposits.datagen;
 
 
 import com.createcivilization.create_ore_deposits.CreateOreDeposits;
-import com.createcivilization.create_ore_deposits.block.CODBlocks;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;

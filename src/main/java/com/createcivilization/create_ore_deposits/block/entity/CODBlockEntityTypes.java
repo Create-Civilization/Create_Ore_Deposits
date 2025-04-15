@@ -15,7 +15,7 @@ public class CODBlockEntityTypes {
     public static final BlockEntityEntry<DrillBlockEntity> DEPOSIT_TESTER_BLOCK = REGISTRATE
             .blockEntity("deposit_tester_block_entity", DrillBlockEntity::new)
             .visual(() -> DrillBlockVisual::new)
-            .validBlock(() -> CODBlocks.DRILL_BLOCK.get())
+            .validBlock(CODBlocks.DRILL_BLOCK::get)
             .renderer(() -> DrillBlockRenderer::new)
             .register();
 //            .blockEntity("deposit_tester_block_entity", DrillBlockEntity::new)

@@ -1,23 +1,13 @@
 package com.createcivilization.create_ore_deposits.worldgen;
 
-import com.createcivilization.create_ore_deposits.CreateOreDeposits;
-import com.createcivilization.create_ore_deposits.block.CODBlocks;
-import com.createcivilization.create_ore_deposits.tag.CODTags;
 import com.createcivilization.create_ore_deposits.util.Utils;
 import net.minecraft.core.registries.Registries;
 
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
-import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
-import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
-
-import java.util.List;
 
 public class CODConfiguredFeatures {
 

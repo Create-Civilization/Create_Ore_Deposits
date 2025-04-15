@@ -119,3 +119,4 @@ runs/
 !gradle-wrapper.jar
 /run-data/
 src/generated/resources/.cache/103d9f3f36b01595f1aa5172191e60eff02e6924
+/src/generated/

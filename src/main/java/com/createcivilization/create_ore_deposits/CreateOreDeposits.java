@@ -1,12 +1,10 @@
 package com.createcivilization.create_ore_deposits;
 
-import com.createcivilization.create_ore_deposits.block.CODBlocks;
 import com.createcivilization.create_ore_deposits.block.entity.CODBlockEntityTypes;
 import com.createcivilization.create_ore_deposits.item.CODItems;
 
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.foundation.data.CreateRegistrate;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -32,7 +30,6 @@ public class CreateOreDeposits {
 
         REGISTRATE.registerEventListeners(modEventBus);
 
-        CODBlocks.register(modEventBus);
         CODItems.register(modEventBus);
         CODBlockEntityTypes.register();
 

@@ -4,6 +4,7 @@ import com.createcivilization.create_ore_deposits.block.entity.CODBlockEntityTyp
 import com.createcivilization.create_ore_deposits.block.entity.custom.DrillBlockEntity;
 
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
+import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,7 +19,7 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import java.util.function.Function;
 
 @SuppressWarnings("NullableProblems")
-public class DrillBlock extends DirectionalKineticBlock implements IBE<DrillBlockEntity> {
+public class DrillBlock extends HorizontalKineticBlock implements IBE<DrillBlockEntity> {
 
     public DrillBlock(Properties pProperties) {
         super(pProperties);
@@ -41,7 +42,7 @@ public class DrillBlock extends DirectionalKineticBlock implements IBE<DrillBloc
 
     @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
-        return face == (state.getValue(FACING)).getOpposite();
+        return face == (state.getValue(HORIZONTAL_FACING)).getClockWise();
     }
 
     public boolean isPathfindable(BlockState state, BlockGetter reader, BlockPos pos, PathComputationType type) {
@@ -59,6 +60,6 @@ public class DrillBlock extends DirectionalKineticBlock implements IBE<DrillBloc
 
     @Override
     public Direction.Axis getRotationAxis(BlockState blockState) {
-        return (blockState.getValue(FACING)).getAxis();
+        return (blockState.getValue(HORIZONTAL_FACING)).getClockWise().getAxis();
     }
 }
