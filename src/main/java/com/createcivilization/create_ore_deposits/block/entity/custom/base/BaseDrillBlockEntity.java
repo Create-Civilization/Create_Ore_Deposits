@@ -1,7 +1,7 @@
 package com.createcivilization.create_ore_deposits.block.entity.custom.base;
 
+import com.createcivilization.create_ore_deposits.CreateOreDeposits;
 import com.createcivilization.create_ore_deposits.block.custom.gen.SimpleBaseDeposit;
-import com.createcivilization.create_ore_deposits.tag.CODTags;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.utility.BlockHelper;
@@ -10,15 +10,10 @@ import net.createmod.catnip.animation.LerpedFloat;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -102,11 +97,12 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
             isMoving = false;
         }
 
-        BlockPos target = worldPosition.below((int) Math.ceil(newOffset));
+        int ceil = (int) Math.ceil(newOffset);
+        BlockPos target = worldPosition.below(ceil);
         BlockState targetState = level.getBlockState(target);
 
-        if (!targetState.canBeReplaced()) {
-            newOffset = (int) drillOffset.getValue();
+        if (!targetState.canBeReplaced() && !target.equals(getBlockPos())) {
+            newOffset = ceil - 1;
             isMoving = false;
 
             float hardness = targetState.getDestroySpeed(level, target);
@@ -139,32 +135,14 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
                     breakingProgress = 0;
                     ticksUntilNextProgress = -1;
                     level.destroyBlockProgress(breakerId, target, -1);
+                    isMoving = true;
                 } else {
                     ticksUntilNextProgress = (int) (hardness / breakSpeed);
                 }
-
-                drillOffset.setValue(newOffset);
-                invalidateRenderBoundingBox();
-                return;
-            } else {
-                if (breakingProgress != 0) {
-                    breakingProgress = 0;
-                    ticksUntilNextProgress = -1;
-                    level.destroyBlockProgress(breakerId, target, -1);
-                }
-            }
-
-            if(isBlockDeposit(level, targetPos)) {
-                //Process deposit
-
             }
         }
 
-        if (getSpeed() == 0)
-            isMoving = false;
-
         drillOffset.setValue(newOffset);
-        invalidateRenderBoundingBox();
     }
 
     protected void processDeposit(){
