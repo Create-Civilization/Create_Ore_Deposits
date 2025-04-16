@@ -16,46 +16,23 @@ import java.util.List;
 
 public class SimpleBaseDeposit extends Block {
 
-    private List<ItemStack> drops;
-    private int maxCount;
-    private int minCount;
-    private float hardness;
-    //public static final BooleanProperty DRILLED = BooleanProperty.create("drilled");
+    public static final BooleanProperty DRILLED = BooleanProperty.create("drilled");
 
     private static BlockState anyState;
 
-//    private BlockState setDrilled(boolean drilled) {
-//        return anyState.setValue(DRILLED, drilled);
-//    }
+    private BlockState setDrilled(boolean drilled) {
+        return anyState.setValue(DRILLED, drilled);
+    }
 
-    public SimpleBaseDeposit(Properties properties, List<ItemStack> drops, int minCount, int maxCount, float hardness) {
+    public SimpleBaseDeposit(Properties properties) {
         super(properties);
-        this.drops = drops;
-        this.minCount = minCount;
-        this.maxCount = maxCount;
-        this.hardness = hardness;
-       // this.registerDefaultState(setDrilled(false));
+        this.registerDefaultState(getStateDefinition().any()
+               .setValue(DRILLED, false));
     }
 
-    public List<ItemStack> getDrops() {
-        return drops;
-    }
 
-    public void setDrops(List<ItemStack> drops) {
-        this.drops = drops;
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(DRILLED);
     }
-    public float getHardness(){
-        return hardness;
-    }
-    public int getMaxCount() {
-        return maxCount;
-    }
-    public int getMinCount() {
-        return minCount;
-    }
-//
-//    @Override
-//    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-//        builder.add(DRILLED);
-//    }/
 }
