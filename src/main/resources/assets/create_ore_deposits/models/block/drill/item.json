@@ -5,8 +5,8 @@
 		"3": "create:block/pump",
 		"4": "create:block/axis",
 		"5": "create:block/axis_top",
-		"6": "drill/drill_pulley",
-		"7": "drill/drill_pulley_coil",
+		"6": "create_ore_deposits:drill/drill_pulley",
+		"7": "create_ore_deposits:drill/drill_pulley_coil",
 		"particle": "create:block/fluid_tank_inner"
 	},
 	"elements": [

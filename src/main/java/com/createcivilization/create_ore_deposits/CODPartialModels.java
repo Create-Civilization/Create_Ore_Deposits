@@ -14,6 +14,6 @@ public class CODPartialModels {
             DRILL_HOSE_DRILL = block("drill/rope_half_drill");
 
     private static PartialModel block(String path) {
-        return PartialModel.of(Create.asResource("block/" + path));
+        return PartialModel.of(CreateOreDeposits.asResource("models/block/" + path));
     }
 }

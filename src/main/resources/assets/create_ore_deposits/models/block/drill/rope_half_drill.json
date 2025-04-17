@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"textures": {
 		"0": "create:block/hose",
-		"2": "drill/drill_head_texture",
+		"2": "create_ore_deposits:drill/drill_head_texture",
 		"particle": "create:block/fluid_tank_inner"
 	},
 	"elements": [

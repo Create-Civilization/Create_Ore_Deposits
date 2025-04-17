@@ -1,5 +1,6 @@
 package com.createcivilization.create_ore_deposits.block.entity.custom.base;
 
+import com.createcivilization.create_ore_deposits.CODPartialModels;
 import com.createcivilization.create_ore_deposits.CreateOreDeposits;
 import com.createcivilization.create_ore_deposits.block.custom.gen.SimpleBaseDeposit;
 import com.simibubi.create.AllTags;
@@ -57,7 +58,6 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     @Override
     public void tick() {
         super.tick();
-        if (level == null) return;
         updateDrillExtension();
     }
 
