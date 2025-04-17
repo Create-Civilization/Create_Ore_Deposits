@@ -12,7 +12,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,26 +19,23 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
 
-    public static final AtomicInteger NEXT_BREAKER_ID = new AtomicInteger();
     protected LerpedFloat drillOffset;
     protected boolean isExtending;
     private boolean isMoving = false;
     protected boolean target = false;
     protected BlockPos targetPos = BlockPos.ZERO;
     protected int breakingProgress;
-    protected int ticksUntilNextProgress;
-    protected int breakerId = -NEXT_BREAKER_ID.incrementAndGet();
+    protected int tickMilestone;
+    protected int breakerId = getBlockPos().hashCode();
+    protected float breakingSpeed = getSpeed() / 100f;
+    protected int currentTick;
 
 
     protected int resourcePullSpeed;
     protected double breakingProgressMilestone = -1;
-
-    // Timing
-    private int startTick = 1;
 
     // Inventory
     protected final ItemStackHandler inventory = new ItemStackHandler(1) {
@@ -68,6 +64,8 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     @Override
     public void onSpeedChanged(float previousSpeed) {
         isMoving = true;
+
+        breakingSpeed = getSpeed() / 100f;
         if (getSpeed() == 0) {
             drillOffset.forceNextSync();
             drillOffset.setValue(Math.round(drillOffset.getValue()));
@@ -100,49 +98,49 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         int ceil = (int) Math.ceil(newOffset);
         BlockPos target = worldPosition.below(ceil);
         BlockState targetState = level.getBlockState(target);
+        if (level.isEmptyBlock(target) && breakingProgress != 0) finishExtraction(target);
 
         if (!targetState.canBeReplaced() && !target.equals(getBlockPos())) {
             newOffset = ceil - 1;
             isMoving = false;
 
             float hardness = targetState.getDestroySpeed(level, target);
-
             boolean unbreakable = hardness == -1
                     || target.equals(this.getBlockPos())
                     || AllTags.AllBlockTags.NON_BREAKABLE.matches(targetState)
                     || isBlockDeposit(level, targetPos);
 
             if (!unbreakable) {
+                if (currentTick >= tickMilestone) {
+                    breakingProgress++;
+                    currentTick = 0;
+                }
+                else currentTick++;
 
                 float breakSpeed = getSpeed() / 100f;
 
-                if (ticksUntilNextProgress > 0) {
-                    ticksUntilNextProgress--;
-                    drillOffset.setValue(newOffset);
-                    invalidateRenderBoundingBox();
-                    return;
-                }
-
-                int progressStep = Mth.clamp((int) (breakSpeed / hardness), 1, 10 - breakingProgress);
-                breakingProgress += progressStep;
+                tickMilestone = (int) (hardness / breakSpeed);
 
                 level.playSound(null, worldPosition, targetState.getSoundType().getHitSound(),
                         SoundSource.BLOCKS, 0.25f, 1f);
                 level.destroyBlockProgress(breakerId, target, breakingProgress);
 
-                if (breakingProgress >= 10) {
-                    BlockHelper.destroyBlock(level, target, 1f);
-                    breakingProgress = 0;
-                    ticksUntilNextProgress = -1;
-                    level.destroyBlockProgress(breakerId, target, -1);
-                    isMoving = true;
-                } else {
-                    ticksUntilNextProgress = (int) (hardness / breakSpeed);
-                }
+                if ((tickMilestone > 0 && breakingProgress >= 10))
+                    finishExtraction(target);
             }
         }
 
         drillOffset.setValue(newOffset);
+    }
+
+    private void finishExtraction(BlockPos target) {
+        assert level != null;
+        BlockHelper.destroyBlock(level, target, 1f);
+        breakingProgress = 0;
+        tickMilestone = 0;
+        currentTick = 0;
+        level.destroyBlockProgress(breakerId, target, -1);
+        isMoving = true;
     }
 
     protected void processDeposit(){
