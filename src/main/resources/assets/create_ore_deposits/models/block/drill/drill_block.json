@@ -1,7 +1,7 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"2": "create_ore_deposits:drill/drill_pulley",
+		"2": "create_ore_deposits:block/drill/drill_pulley",
 		"3": "create:block/pump",
 		"particle": "create:block/fluid_tank_inner"
 	},

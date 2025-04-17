@@ -29,7 +29,7 @@ public class DrillBlockRenderer extends AbstractPulleyRenderer<DrillBlockEntity>
 
     @Override
     protected PartialModel getCoil() {
-        return CODPartialModels.DRILL_COIL;
+        return AllPartialModels.HOSE_COIL;
     }
 
     @Override

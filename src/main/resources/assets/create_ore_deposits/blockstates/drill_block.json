@@ -1,5 +1,8 @@
 {
   "variants": {
-    "": { "model": "create_ore_deposits:block/deposit_tester_block" }
+    "facing=east": { "model": "create_ore_deposits:block/drill/drill_block" },
+    "facing=west": { "model": "create_ore_deposits:block/drill/drill_block" },
+    "facing=north": { "model": "create_ore_deposits:block/drill/drill_block" },
+    "facing=south": { "model": "create_ore_deposits:block/drill/drill_block" }
   }
 }

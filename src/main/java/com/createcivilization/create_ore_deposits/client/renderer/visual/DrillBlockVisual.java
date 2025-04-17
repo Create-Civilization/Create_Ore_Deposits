@@ -36,7 +36,7 @@ public class DrillBlockVisual extends AbstractPulleyVisual<DrillBlockEntity> {
 
     @Override
     protected Instancer<ScrollInstance> getCoilModel() {
-        return instancerProvider().instancer(AllInstanceTypes.SCROLLING, Models.partial(CODPartialModels.DRILL_COIL));
+        return instancerProvider().instancer(AllInstanceTypes.SCROLLING, Models.partial(AllPartialModels.HOSE_COIL));
     }
 
     @Override
