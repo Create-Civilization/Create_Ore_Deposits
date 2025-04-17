@@ -17,10 +17,9 @@ public class CODBlocks {
 
     public static final BlockEntry<SimpleBaseDeposit> IRON_ORE_DEPOSIT = REGISTRATE
             .block("iron_ore_deposit", properties -> new SimpleBaseDeposit(
-                    BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_ORE),
-                    List.of(new ItemStack(Items.RAW_IRON)),
-                    1,400, 1.0f
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_ORE)
             ))
+            .tag(CODTags.Blocks.ORE_DEPOSITS)
             .simpleItem()
             .register();
 

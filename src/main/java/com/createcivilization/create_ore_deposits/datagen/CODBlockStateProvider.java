@@ -22,4 +22,5 @@ public class CODBlockStateProvider extends BlockStateProvider {
     private void blockWithItem(DeferredBlock<Block> blockRegistryObject) {
         simpleBlockWithItem(blockRegistryObject.get(), cubeAll(blockRegistryObject.get()));
     }
+
 }
