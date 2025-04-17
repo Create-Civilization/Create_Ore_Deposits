@@ -16,12 +16,12 @@ import net.minecraft.core.Direction;
 public class DrillBlockRenderer extends AbstractPulleyRenderer<DrillBlockEntity> {
 
     public DrillBlockRenderer(BlockEntityRendererProvider.Context context) {
-        super(context, CODPartialModels.DRILL_HOSE_HALF, CODPartialModels.DRILL_HOSE_DRILL);
+        super(context, AllPartialModels.ROPE_HALF, AllPartialModels.ROPE_HALF_MAGNET);
     }
 
     @Override
     protected Direction.Axis getShaftAxis(DrillBlockEntity be) {
-        		return be.getBlockState()
+        return be.getBlockState()
                 .getValue(HosePulleyBlock.HORIZONTAL_FACING)
                 .getClockWise()
                 .getAxis();
@@ -29,7 +29,7 @@ public class DrillBlockRenderer extends AbstractPulleyRenderer<DrillBlockEntity>
 
     @Override
     protected PartialModel getCoil() {
-        return AllPartialModels.HOSE_COIL;
+        return CODPartialModels.HOSE_COIL;
     }
 
     @Override
@@ -39,12 +39,12 @@ public class DrillBlockRenderer extends AbstractPulleyRenderer<DrillBlockEntity>
 
     @Override
     protected SuperByteBuffer renderRope(DrillBlockEntity be) {
-        return CachedBuffers.partial(CODPartialModels.DRILL_HOSE, be.getBlockState());
+        return CachedBuffers.partial(CODPartialModels.HOSE, be.getBlockState());
     }
 
     @Override
     protected SuperByteBuffer renderMagnet(DrillBlockEntity be) {
-        return CachedBuffers.partial(CODPartialModels.DRILL_HEAD, be.getBlockState());
+        return CachedBuffers.partial(CODPartialModels.HOSE_MAGNET, be.getBlockState());
     }
 
     @Override

@@ -13,7 +13,7 @@ import static com.createcivilization.create_ore_deposits.CreateOreDeposits.REGIS
 public class CODBlockEntityTypes {
 
     public static final BlockEntityEntry<DrillBlockEntity> DEPOSIT_TESTER_BLOCK = REGISTRATE
-            .blockEntity("deposit_tester_block_entity", DrillBlockEntity::new)
+            .blockEntity("drill_block_entity", DrillBlockEntity::new)
             .visual(() -> DrillBlockVisual::new)
             .validBlock(CODBlocks.DRILL_BLOCK::get)
             .renderer(() -> DrillBlockRenderer::new)

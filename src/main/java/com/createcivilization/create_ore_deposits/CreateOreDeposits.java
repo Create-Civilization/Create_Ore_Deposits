@@ -4,6 +4,7 @@ import com.createcivilization.create_ore_deposits.block.entity.CODBlockEntityTyp
 import com.createcivilization.create_ore_deposits.item.CODItems;
 
 import com.mojang.logging.LogUtils;
+import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;

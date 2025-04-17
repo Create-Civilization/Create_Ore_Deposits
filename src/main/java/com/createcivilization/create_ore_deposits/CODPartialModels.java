@@ -7,10 +7,11 @@ public class CODPartialModels {
 
     public static final PartialModel
 
-            DRILL_HOSE = block("drill/rope"),
-            DRILL_HEAD = block("drill/pulley_drill"),
-            DRILL_HOSE_HALF = block("drill/rope_half"),
-            DRILL_HOSE_DRILL = block("drill/rope_half_drill");
+            HOSE_COIL = block("hose_pulley/hose_coil"),
+            HOSE = block("hose_pulley/rope"),
+            HOSE_MAGNET = block("hose_pulley/pulley_magnet"),
+            HOSE_HALF = block("hose_pulley/rope_half"),
+            HOSE_HALF_MAGNET = block("hose_pulley/rope_half_magnet");
 
     private static PartialModel block(String path) {
         return PartialModel.of(CreateOreDeposits.asResource("block/" + path));

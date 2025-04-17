@@ -21,27 +21,27 @@ public class DrillBlockVisual extends AbstractPulleyVisual<DrillBlockEntity> {
 
     @Override
     protected Instancer<TransformedInstance> getRopeModel() {
-        return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(CODPartialModels.DRILL_HOSE));
+        return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(CODPartialModels.HOSE));
     }
 
     @Override
     protected Instancer<TransformedInstance> getMagnetModel() {
-        return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(CODPartialModels.DRILL_HOSE_DRILL));
+        return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(CODPartialModels.HOSE_MAGNET));
     }
 
     @Override
     protected Instancer<TransformedInstance> getHalfMagnetModel() {
-        return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(CODPartialModels.DRILL_HOSE_HALF));
+        return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(CODPartialModels.HOSE_HALF_MAGNET));
     }
 
     @Override
     protected Instancer<ScrollInstance> getCoilModel() {
-        return instancerProvider().instancer(AllInstanceTypes.SCROLLING, Models.partial(AllPartialModels.HOSE_COIL));
+        return instancerProvider().instancer(AllInstanceTypes.SCROLLING, Models.partial(CODPartialModels.HOSE_COIL));
     }
 
     @Override
     protected Instancer<TransformedInstance> getHalfRopeModel() {
-        return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(CODPartialModels.DRILL_HOSE_HALF));
+        return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(CODPartialModels.HOSE_HALF));
     }
 
     @Override
