@@ -1,5 +1,6 @@
 package com.createcivilization.create_ore_deposits.client.renderer.block;
 
+import com.createcivilization.create_ore_deposits.CODPartialModels;
 import com.createcivilization.create_ore_deposits.block.entity.custom.DrillBlockEntity;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.AllSpriteShifts;
@@ -15,7 +16,7 @@ import net.minecraft.core.Direction;
 public class DrillBlockRenderer extends AbstractPulleyRenderer<DrillBlockEntity> {
 
     public DrillBlockRenderer(BlockEntityRendererProvider.Context context) {
-        super(context, AllPartialModels.ROPE_HALF, AllPartialModels.ROPE_HALF_MAGNET);
+        super(context, CODPartialModels.DRILL_HOSE_HALF, CODPartialModels.DRILL_HOSE_DRILL);
     }
 
     @Override
@@ -28,7 +29,7 @@ public class DrillBlockRenderer extends AbstractPulleyRenderer<DrillBlockEntity>
 
     @Override
     protected PartialModel getCoil() {
-        return AllPartialModels.HOSE_COIL;
+        return CODPartialModels.DRILL_COIL;
     }
 
     @Override
@@ -38,12 +39,12 @@ public class DrillBlockRenderer extends AbstractPulleyRenderer<DrillBlockEntity>
 
     @Override
     protected SuperByteBuffer renderRope(DrillBlockEntity be) {
-        return CachedBuffers.partial(AllPartialModels.HOSE, be.getBlockState());
+        return CachedBuffers.partial(CODPartialModels.DRILL_HOSE, be.getBlockState());
     }
 
     @Override
     protected SuperByteBuffer renderMagnet(DrillBlockEntity be) {
-        return CachedBuffers.partial(AllPartialModels.HOSE_MAGNET, be.getBlockState());
+        return CachedBuffers.partial(CODPartialModels.DRILL_HEAD, be.getBlockState());
     }
 
     @Override

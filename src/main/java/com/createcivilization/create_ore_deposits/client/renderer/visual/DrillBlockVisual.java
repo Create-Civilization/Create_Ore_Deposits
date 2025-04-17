@@ -1,5 +1,6 @@
 package com.createcivilization.create_ore_deposits.client.renderer.visual;
 
+import com.createcivilization.create_ore_deposits.CODPartialModels;
 import com.createcivilization.create_ore_deposits.block.entity.custom.DrillBlockEntity;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.AllSpriteShifts;
@@ -20,27 +21,27 @@ public class DrillBlockVisual extends AbstractPulleyVisual<DrillBlockEntity> {
 
     @Override
     protected Instancer<TransformedInstance> getRopeModel() {
-        return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(AllPartialModels.HOSE));
+        return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(CODPartialModels.DRILL_HOSE));
     }
 
     @Override
     protected Instancer<TransformedInstance> getMagnetModel() {
-        return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(AllPartialModels.HOSE_MAGNET));
+        return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(CODPartialModels.DRILL_HOSE_DRILL));
     }
 
     @Override
     protected Instancer<TransformedInstance> getHalfMagnetModel() {
-        return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(AllPartialModels.HOSE_HALF_MAGNET));
+        return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(CODPartialModels.DRILL_HOSE_HALF));
     }
 
     @Override
     protected Instancer<ScrollInstance> getCoilModel() {
-        return instancerProvider().instancer(AllInstanceTypes.SCROLLING, Models.partial(AllPartialModels.HOSE_COIL));
+        return instancerProvider().instancer(AllInstanceTypes.SCROLLING, Models.partial(CODPartialModels.DRILL_COIL));
     }
 
     @Override
     protected Instancer<TransformedInstance> getHalfRopeModel() {
-        return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(AllPartialModels.HOSE_HALF));
+        return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(CODPartialModels.DRILL_HOSE_HALF));
     }
 
     @Override
