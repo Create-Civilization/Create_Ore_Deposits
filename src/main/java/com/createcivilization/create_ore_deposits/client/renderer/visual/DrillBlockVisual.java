@@ -26,7 +26,7 @@ public class DrillBlockVisual extends AbstractPulleyVisual<DrillBlockEntity> {
 
     @Override
     protected Instancer<TransformedInstance> getMagnetModel() {
-        return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(CODPartialModels.HOSE_MAGNET));
+        return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(CODPartialModels.DRILL_MAGNET));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class DrillBlockVisual extends AbstractPulleyVisual<DrillBlockEntity> {
 
     @Override
     protected Instancer<ScrollInstance> getCoilModel() {
-        return instancerProvider().instancer(AllInstanceTypes.SCROLLING, Models.partial(CODPartialModels.HOSE_COIL));
+        return instancerProvider().instancer(AllInstanceTypes.SCROLLING, Models.partial(AllPartialModels.HOSE_COIL));
     }
 
     @Override

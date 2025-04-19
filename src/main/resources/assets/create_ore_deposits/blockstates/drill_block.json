@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "model": "create_ore_deposits:block/hose_pulley/block",
+      "model": "create_ore_deposits:block/drill/block",
       "y": 90
     },
     "facing=north": {
-      "model": "create_ore_deposits:block/hose_pulley/block"
+      "model": "create_ore_deposits:block/drill/block"
     },
     "facing=south": {
-      "model": "create_ore_deposits:block/hose_pulley/block",
+      "model": "create_ore_deposits:block/drill/block",
       "y": 180
     },
     "facing=west": {
-      "model": "create_ore_deposits:block/hose_pulley/block",
+      "model": "create_ore_deposits:block/drill/block",
       "y": 270
     }
   }

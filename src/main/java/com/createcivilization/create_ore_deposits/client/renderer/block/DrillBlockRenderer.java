@@ -29,7 +29,7 @@ public class DrillBlockRenderer extends AbstractPulleyRenderer<DrillBlockEntity>
 
     @Override
     protected PartialModel getCoil() {
-        return CODPartialModels.HOSE_COIL;
+        return AllPartialModels.HOSE_COIL;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class DrillBlockRenderer extends AbstractPulleyRenderer<DrillBlockEntity>
 
     @Override
     protected SuperByteBuffer renderMagnet(DrillBlockEntity be) {
-        return CachedBuffers.partial(CODPartialModels.HOSE_MAGNET, be.getBlockState());
+        return CachedBuffers.partial(CODPartialModels.DRILL_MAGNET, be.getBlockState());
     }
 
     @Override

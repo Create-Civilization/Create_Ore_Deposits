@@ -4,13 +4,22 @@ import com.createcivilization.create_ore_deposits.block.entity.CODBlockEntityTyp
 import com.createcivilization.create_ore_deposits.item.CODItems;
 
 import com.mojang.logging.LogUtils;
+import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.Create;
+import com.simibubi.create.content.contraptions.render.ContraptionRenderInfo;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
+import com.simibubi.create.content.kinetics.waterwheel.WaterWheelRenderer;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import com.simibubi.create.foundation.ponder.CreatePonderPlugin;
+import net.createmod.catnip.render.CachedBuffers;
+import net.createmod.catnip.render.SuperByteBufferCache;
+import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -45,14 +54,16 @@ public class CreateOreDeposits {
     }
 
     public static ResourceLocation asResource(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+        return ResourceLocation.fromNamespaceAndPath(CreateOreDeposits.MOD_ID, path);
     }
+
 
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
         LOGGER.info("CREATE ORE DEPOSIT GO BRRRRR");
     }
+
 
 
 }

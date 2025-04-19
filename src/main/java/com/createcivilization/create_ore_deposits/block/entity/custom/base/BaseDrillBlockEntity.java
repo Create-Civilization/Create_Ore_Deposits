@@ -1,7 +1,13 @@
 package com.createcivilization.create_ore_deposits.block.entity.custom.base;
 
+import com.createcivilization.create_ore_deposits.block.custom.DrillBlock;
 import com.createcivilization.create_ore_deposits.block.custom.gen.SimpleBaseDeposit;
+import com.createcivilization.create_ore_deposits.block.entity.CODBlockEntityTypes;
+import com.createcivilization.create_ore_deposits.block.entity.custom.DrillBlockEntity;
+import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.AllTags;
+import com.simibubi.create.content.fluids.hosePulley.HosePulleyBlock;
+import com.simibubi.create.content.fluids.hosePulley.HosePulleyFluidHandler;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.utility.BlockHelper;
 import com.simibubi.create.foundation.utility.ServerSpeedProvider;
@@ -15,6 +21,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.*;
@@ -53,6 +61,19 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         super(pType, pPos, pBlockState);
         drillOffset = LerpedFloat.linear().startWithValue(0);
         isExtending = false;
+    }
+
+    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                CODBlockEntityTypes.DEPOSIT_TESTER_BLOCK.get(),
+                (be, context) -> {
+                    if (context == null || DrillBlock.hasPipeTowards(be.level, be.worldPosition, be.getBlockState(), context)) {
+                        return null; //Should return fluid handler
+                    }
+                    return null;
+                }
+        );
     }
 
     @Override

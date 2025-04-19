@@ -3,7 +3,6 @@ package com.createcivilization.create_ore_deposits.block.custom;
 import com.createcivilization.create_ore_deposits.block.entity.CODBlockEntityTypes;
 import com.createcivilization.create_ore_deposits.block.entity.custom.DrillBlockEntity;
 
-import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
@@ -43,6 +42,11 @@ public class DrillBlock extends HorizontalKineticBlock implements IBE<DrillBlock
     @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
         return face == (state.getValue(HORIZONTAL_FACING)).getClockWise();
+    }
+
+    public static boolean hasPipeTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
+        return state.getValue(HORIZONTAL_FACING)
+                .getCounterClockWise() == face;
     }
 
     public boolean isPathfindable(BlockState state, BlockGetter reader, BlockPos pos, PathComputationType type) {
