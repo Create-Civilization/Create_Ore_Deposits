@@ -1,7 +1,5 @@
 package com.createcivilization.create_ore_deposits.block.entity.custom.base;
 
-import com.createcivilization.create_ore_deposits.CODPartialModels;
-import com.createcivilization.create_ore_deposits.CreateOreDeposits;
 import com.createcivilization.create_ore_deposits.block.custom.gen.SimpleBaseDeposit;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
@@ -20,6 +18,7 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.*;
+import java.util.function.BiPredicate;
 
 public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
 
@@ -33,6 +32,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     protected int breakerId = getBlockPos().hashCode();
     protected float breakingSpeed = getSpeed() / 100f;
     protected int currentTick;
+    protected BlockPos drillBit;
 
 
     protected int resourcePullSpeed;
@@ -96,7 +96,8 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         }
 
         int ceil = (int) Math.ceil(newOffset);
-        BlockPos target = worldPosition.below(ceil);
+        drillBit = worldPosition.below(ceil);
+        BlockPos target = drillBit;
         BlockState targetState = level.getBlockState(target);
         if (level.isEmptyBlock(target) && breakingProgress != 0) finishExtraction(target);
 
@@ -107,8 +108,9 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
             float hardness = targetState.getDestroySpeed(level, target);
             boolean unbreakable = hardness == -1
                     || target.equals(this.getBlockPos())
-                    || AllTags.AllBlockTags.NON_BREAKABLE.matches(targetState)
-                    || isBlockDeposit(level, targetPos);
+                    || AllTags.AllBlockTags.NON_BREAKABLE.matches(targetState);
+
+            if (isDeposit(targetState)) target = findFurthestDeposit(level, drillBit);
 
             if (!unbreakable) {
                 if (currentTick >= tickMilestone) {
@@ -179,8 +181,12 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         return positions;
     }
 
-    public boolean isBlockDeposit(Level level, BlockPos pos) {
+    public boolean isDeposit(Level level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
+        return isDeposit(state);
+    }
+
+    public boolean isDeposit(BlockState state) {
         return state.getBlock() instanceof SimpleBaseDeposit;
     }
 
@@ -190,10 +196,9 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         return Math.min(9, Math.max(1, progress));
     }
 
-    public BlockPos findFurthestDeposit(Level level, BlockPos initialPos) {
+    public Set<BlockPos> getAllConnectedBlocks(Level level, BlockPos initialPos, BiPredicate<Level, BlockPos> predicate) {
         Queue<BlockPos> queue = new LinkedList<>();
         Set<BlockPos> visited = new HashSet<>();
-        BlockPos farthestBlock = initialPos;
 
         queue.add(initialPos);
         visited.add(initialPos);
@@ -206,16 +211,29 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
                 lastInLevel = current;
 
                 for (BlockPos neighbor : getPositions(current)) {
-                    if (!visited.contains(neighbor) && isBlockDeposit(level, neighbor)) {
+                    if (!visited.contains(neighbor) && predicate.test(level, neighbor)) {
                         queue.add(neighbor);
                         visited.add(neighbor);
                     }
                 }
             }
-
-            farthestBlock = lastInLevel;
         }
-        return farthestBlock;
+        return visited;
+    }
+
+    public BlockPos findFurthestDeposit(Level level, BlockPos initialPos) {
+        List<BlockPos> deposit = new ArrayList<>(getAllConnectedBlocks(level, initialPos, this::isDeposit));
+
+        deposit.sort((pos1, pos2) -> {
+            double distance1 = pos1.distSqr(drillBit);
+            double distance2 = pos2.distSqr(drillBit);
+
+            if (distance2 == distance1) return pos2.hashCode() > pos1.hashCode() ? -1 : 1;
+
+            return distance2 > distance1 ? -1 : 1;
+        });
+
+        return deposit.getLast();
     }
 
     public float getInterpolatedOffset(float partialTicks) {
