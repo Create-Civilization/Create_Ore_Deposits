@@ -5,15 +5,22 @@ import com.createcivilization.create_ore_deposits.block.entity.custom.DrillBlock
 
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
+import com.simibubi.create.infrastructure.config.CStress;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.function.Function;
 
@@ -27,6 +34,12 @@ public class DrillBlock extends HorizontalKineticBlock implements IBE<DrillBlock
     @Override
     public Class<DrillBlockEntity> getBlockEntityClass() {
         return DrillBlockEntity.class;
+    }
+
+    @Override
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        System.out.println("HELLO I BE CLICKED!!!" + player.getMainHandItem());
+        return ItemInteractionResult.CONSUME;
     }
 
     @Override

@@ -6,14 +6,19 @@ import com.createcivilization.create_ore_deposits.block.custom.gen.DepositBlock;
 import com.createcivilization.create_ore_deposits.block.custom.gen.SimpleBaseDeposit;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.utility.BlockHelper;
+import com.simibubi.create.foundation.utility.CreateLang;
 import com.simibubi.create.foundation.utility.ServerSpeedProvider;
 import net.createmod.catnip.animation.LerpedFloat;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -39,9 +44,10 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     protected int breakerId = getBlockPos().hashCode();
     protected float breakingSpeed = getSpeed() / 100f;
     protected int currentTick;
-    protected BlockPos drillBit;
+    protected BlockPos drillPos;
     private final Lazy<ItemStackHandler> itemHandler = Lazy.of(this::createItemHandler);
     Random random = new Random();
+
 
 
     protected int resourcePullSpeed;
@@ -50,6 +56,27 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         super(pType, pPos, pBlockState);
         drillOffset = LerpedFloat.linear().startWithValue(0);
         isExtending = false;
+    }
+
+
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+
+        if(drillPos == null){
+            CreateLang.text("NULL MOMENT").style(ChatFormatting.AQUA).forGoggles(tooltip);
+            return true;
+        }
+
+
+        int drillX = drillPos.getX();
+        int drillY = drillPos.getY();
+        int drillZ = drillPos.getZ();
+        CreateLang.text("Drill is at " + drillX + "," + drillY + "," + drillZ)
+                .style(ChatFormatting.AQUA)
+                .forGoggles(tooltip);
+
+
+        return true;
     }
 
     @Override
@@ -93,8 +120,8 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         }
 
         int ceil = (int) Math.ceil(newOffset);
-        drillBit = worldPosition.below(ceil);
-        BlockPos target = drillBit;
+        drillPos = worldPosition.below(ceil);
+        BlockPos target = drillPos;
         BlockState targetState = level.getBlockState(target);
         if (level.isEmptyBlock(target) && breakingProgress != 0) finishExtraction(target, targetState);
 
@@ -107,7 +134,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
                     || target.equals(this.getBlockPos())
                     || AllTags.AllBlockTags.NON_BREAKABLE.matches(targetState);
 
-            if (isDeposit(targetState)) target = findFurthestDeposit(level, drillBit);
+            if (isDeposit(targetState)) target = findFurthestDeposit(level, drillPos);
 
             if (!unbreakable) {
                 if (currentTick >= tickMilestone) {
@@ -209,8 +236,8 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         List<BlockPos> deposit = new ArrayList<>(getAllConnectedBlocks(level, initialPos, this::isDeposit));
 
         deposit.sort((pos1, pos2) -> {
-            double distance1 = pos1.distSqr(drillBit);
-            double distance2 = pos2.distSqr(drillBit);
+            double distance1 = pos1.distSqr(drillPos);
+            double distance2 = pos2.distSqr(drillPos);
 
             if (distance2 == distance1) return pos2.hashCode() > pos1.hashCode() ? -1 : 1;
 

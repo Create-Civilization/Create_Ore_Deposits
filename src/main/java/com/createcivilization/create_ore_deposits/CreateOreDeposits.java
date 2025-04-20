@@ -23,10 +23,6 @@ public class CreateOreDeposits {
 
     public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
 
-    public static CreateRegistrate registrate() {
-        return REGISTRATE;
-    }
-
     public CreateOreDeposits(IEventBus modEventBus, ModContainer modContainer) {
         REGISTRATE.registerEventListeners(modEventBus);
 
