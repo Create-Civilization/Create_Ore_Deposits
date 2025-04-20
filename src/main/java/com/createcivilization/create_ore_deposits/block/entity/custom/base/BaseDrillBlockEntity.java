@@ -1,8 +1,9 @@
 package com.createcivilization.create_ore_deposits.block.entity.custom.base;
 
-import com.createcivilization.create_ore_deposits.block.custom.DrillBlock;
+import com.createcivilization.create_ore_deposits.CODConfig;
+import com.createcivilization.create_ore_deposits.CreateOreDeposits;
+import com.createcivilization.create_ore_deposits.block.custom.gen.DepositBlock;
 import com.createcivilization.create_ore_deposits.block.custom.gen.SimpleBaseDeposit;
-import com.createcivilization.create_ore_deposits.block.entity.CODBlockEntityTypes;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.utility.BlockHelper;
@@ -10,16 +11,18 @@ import com.simibubi.create.foundation.utility.ServerSpeedProvider;
 import net.createmod.catnip.animation.LerpedFloat;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.jarjar.nio.util.Lazy;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.BiPredicate;
@@ -37,39 +40,16 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     protected float breakingSpeed = getSpeed() / 100f;
     protected int currentTick;
     protected BlockPos drillBit;
+    private final Lazy<ItemStackHandler> itemHandler = Lazy.of(this::createItemHandler);
+    Random random = new Random();
 
 
     protected int resourcePullSpeed;
-    protected double breakingProgressMilestone = -1;
-
-    // Inventory
-    protected final ItemStackHandler inventory = new ItemStackHandler(1) {
-        @Override
-        protected void onContentsChanged(int slot) {
-            setChanged();
-            if(!level.isClientSide()) {
-                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
-            }
-        }
-    };
 
     public BaseDrillBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
         drillOffset = LerpedFloat.linear().startWithValue(0);
         isExtending = false;
-    }
-
-    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(
-                Capabilities.FluidHandler.BLOCK,
-                CODBlockEntityTypes.DEPOSIT_TESTER_BLOCK.get(),
-                (be, context) -> {
-                    if (context == null || DrillBlock.hasPipeTowards(be.level, be.worldPosition, be.getBlockState(), context)) {
-                        return null; //Should return fluid handler
-                    }
-                    return null;
-                }
-        );
     }
 
     @Override
@@ -116,7 +96,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         drillBit = worldPosition.below(ceil);
         BlockPos target = drillBit;
         BlockState targetState = level.getBlockState(target);
-        if (level.isEmptyBlock(target) && breakingProgress != 0) finishExtraction(target);
+        if (level.isEmptyBlock(target) && breakingProgress != 0) finishExtraction(target, targetState);
 
         if (!targetState.canBeReplaced() && !target.equals(getBlockPos())) {
             newOffset = ceil - 1;
@@ -133,6 +113,12 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
                 if (currentTick >= tickMilestone) {
                     breakingProgress++;
                     currentTick = 0;
+                    if (isDeposit(targetState)) {
+                        DepositBlock depositBlock = CODConfig.REGISTERED_DEPOSITS.get(BuiltInRegistries.BLOCK.getKey(targetState.getBlock()));
+                        int min = depositBlock.min();
+                        CreateOreDeposits.LOGGER.info("Would've extracted {}", random.nextInt(depositBlock.max() - min + 1) + min);
+                        // store
+                    }
                 }
                 else currentTick++;
 
@@ -145,36 +131,24 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
                 level.destroyBlockProgress(breakerId, target, breakingProgress);
 
                 if (breakingProgress >= 10)
-                    finishExtraction(target);
+                    finishExtraction(target, targetState);
             }
         }
 
         drillOffset.setValue(newOffset);
     }
 
-    private void finishExtraction(BlockPos target) {
+    private void finishExtraction(BlockPos target, BlockState state) {
         assert level != null;
         BlockHelper.destroyBlock(level, target, 1f);
+        if (!isDeposit(state)) {
+            // drop
+        }
         breakingProgress = 0;
         tickMilestone = 0;
         currentTick = 0;
         level.destroyBlockProgress(breakerId, target, -1);
     }
-
-    protected void processDeposit(){
-        //First Checks if it has a target
-        //If it has a target already it should already have deposit ore value.
-        //Do work on deposit and make sure block breaking anim is scalled
-        //If out of materials break block set has target to false
-
-
-        //If does not have target
-        //find furthest deposit, set to target
-        //Check if blockstate of target is drilled
-        //If its drilled just break it and find a new target.
-        //Generate ore count then set has target
-    }
-
 
     public float getMovementSpeed() {
         float movementSpeed = convertToLinear(getSpeed());
@@ -204,12 +178,6 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
 
     public boolean isDeposit(BlockState state) {
         return state.getBlock() instanceof SimpleBaseDeposit;
-    }
-
-    public int getBreakingProgress(double breakingProgressMilestone, int resourceLevel) {
-        double progressRatio = (double) resourceLevel / breakingProgressMilestone;
-        int progress = 9 - (int) Math.ceil(progressRatio);
-        return Math.min(9, Math.max(1, progress));
     }
 
     public Set<BlockPos> getAllConnectedBlocks(Level level, BlockPos initialPos, BiPredicate<Level, BlockPos> predicate) {
@@ -261,15 +229,6 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         return super.createRenderBoundingBox().expandTowards(0, -drillOffset.getValue(), 0);
     }
 
-    // Getters and setters
-    public double getBreakingProgressMilestone() {
-        return breakingProgressMilestone;
-    }
-
-    public void setBreakingProgressMilestone(double value) {
-        breakingProgressMilestone = value;
-    }
-
     public void setTargetPos(int[] targetPosArray) {
         setTargetPos(new BlockPos(targetPosArray[0], targetPosArray[1], targetPosArray[2]));
     }
@@ -302,7 +261,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         isExtending = compound.getBoolean("IsExtending");
         setHasTarget(compound.getBoolean("HasTarget"));
         setTargetPos(compound.getIntArray("TargetPos"));
-        inventory.deserializeNBT(provider, compound.getCompound("inventory"));
+        itemHandler.get().deserializeNBT(provider, compound.getCompound("inventory"));
     }
 
     public void write(CompoundTag compound, HolderLookup.Provider provider, boolean clientPacket) {
@@ -316,23 +275,34 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
                 targetPos.getY(),
                 targetPos.getZ()
         });
-        compound.put("inventory", inventory.serializeNBT(provider));
+        compound.put("inventory", itemHandler.get().serializeNBT(provider));
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider registries) {
         CompoundTag tag = new CompoundTag();
         saveAdditional(tag, registries);
         return tag;
     }
 
     @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
+    public void handleUpdateTag(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+        super.handleUpdateTag(tag, registries);
     }
 
-    @Override
-    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
-        super.handleUpdateTag(tag, registries);
+    private ItemStackHandler createItemHandler() {
+        return new ItemStackHandler(1) {
+            @Override
+            protected void onContentsChanged(int slot) {
+                setChanged();
+                if (level != null) {
+                    level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+                }
+            }
+        };
+    }
+
+    public IItemHandler getItemHandler() {
+        return itemHandler.get();
     }
 }

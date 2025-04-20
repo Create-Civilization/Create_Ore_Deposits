@@ -1,12 +1,8 @@
 package com.createcivilization.create_ore_deposits.datagen;
 
 import com.createcivilization.create_ore_deposits.CreateOreDeposits;
-import com.createcivilization.create_ore_deposits.block.CODBlocks;
-import com.createcivilization.create_ore_deposits.tag.CODTags;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
@@ -20,11 +16,7 @@ public class CODBlockTagGenerator extends BlockTagsProvider {
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider pProvider) {
-
-        this.tag(CODTags.Blocks.ORE_DEPOSITS).add(CODBlocks.IRON_ORE_DEPOSIT.get());
-
-    }
+    protected void addTags(HolderLookup.Provider pProvider) {}
 
     @Override
     public String getName() {
