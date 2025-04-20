@@ -3,11 +3,7 @@ package com.createcivilization.create_ore_deposits.block.entity.custom.base;
 import com.createcivilization.create_ore_deposits.block.custom.DrillBlock;
 import com.createcivilization.create_ore_deposits.block.custom.gen.SimpleBaseDeposit;
 import com.createcivilization.create_ore_deposits.block.entity.CODBlockEntityTypes;
-import com.createcivilization.create_ore_deposits.block.entity.custom.DrillBlockEntity;
-import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.AllTags;
-import com.simibubi.create.content.fluids.hosePulley.HosePulleyBlock;
-import com.simibubi.create.content.fluids.hosePulley.HosePulleyFluidHandler;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.utility.BlockHelper;
 import com.simibubi.create.foundation.utility.ServerSpeedProvider;
@@ -148,7 +144,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
                         SoundSource.BLOCKS, 0.25f, 1f);
                 level.destroyBlockProgress(breakerId, target, breakingProgress);
 
-                if ((tickMilestone > 0 && breakingProgress >= 10))
+                if (breakingProgress >= 10)
                     finishExtraction(target);
             }
         }
@@ -163,7 +159,6 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         tickMilestone = 0;
         currentTick = 0;
         level.destroyBlockProgress(breakerId, target, -1);
-        isMoving = true;
     }
 
     protected void processDeposit(){
