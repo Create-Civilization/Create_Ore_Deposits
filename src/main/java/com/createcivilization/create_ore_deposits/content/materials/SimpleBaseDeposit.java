@@ -34,8 +34,13 @@ public class SimpleBaseDeposit extends Block {
         return depositBlock;
     }
 
-    public List<ItemStack> getDepositDrops(ServerLevel level, BlockPos pos, @Nullable BlockEntity blockEntity) {
-        return Block.getDrops(depositBlock.getBlock().defaultBlockState(), level, pos, blockEntity);
+    public ItemStack getDepositDrops(ServerLevel level, BlockPos pos, @Nullable BlockEntity blockEntity) {
+        int min = depositBlock.min();
+        List<ItemStack> drops = Block.getDrops(depositBlock.getBlock().defaultBlockState(), level, pos, blockEntity);
+        if (drops.isEmpty()) return null;
+        ItemStack drop = drops.getFirst();
+        drop.setCount(level.random.nextInt(depositBlock.max() - min + 1) + min);
+        return drop;
     }
 
     @Override
