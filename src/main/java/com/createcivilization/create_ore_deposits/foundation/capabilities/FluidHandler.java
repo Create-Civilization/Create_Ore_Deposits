@@ -1,5 +1,7 @@
 package com.createcivilization.create_ore_deposits.foundation.capabilities;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -7,14 +9,12 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 public class FluidHandler implements IFluidHandler {
 
     private final FluidTank tank;
-    private final Set<Fluid> allowedFluids;
+    private Set<Fluid> allowedFluids;
 
     public FluidHandler(int capacity, @Nullable Set<Fluid> allowedFluids) {
         this.tank = new FluidTank(capacity, fluidStack -> isAllowed(fluidStack.getFluid()));
@@ -59,5 +59,26 @@ public class FluidHandler implements IFluidHandler {
     @Override
     public FluidStack drain(int i, FluidAction fluidAction) {
         return tank.drain(i, fluidAction);
+    }
+
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        CompoundTag nbt = new CompoundTag();
+        this.tank.writeToNBT(provider, nbt);
+        if (allowedFluids != null) {
+            nbt.putInt("size", allowedFluids.size());
+            for (Fluid fluid : allowedFluids) {
+                new FluidStack(fluid, 1).save(provider);
+            }
+        }
+        return nbt;
+    }
+
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        this.tank.readFromNBT(provider, nbt);
+        int size = nbt.getInt("size");
+        this.allowedFluids = Set.of();
+        for (int i = 1; i < size; i++) {
+            allowedFluids.add(FluidStack.parseOptional(provider, nbt).getFluid());
+        }
     }
 }

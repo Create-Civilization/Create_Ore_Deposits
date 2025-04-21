@@ -3,7 +3,6 @@ package com.createcivilization.create_ore_deposits.content.kinetics.drill;
 import com.createcivilization.create_ore_deposits.content.materials.SimpleBaseDeposit;
 import com.createcivilization.create_ore_deposits.foundation.capabilities.FluidHandler;
 import com.simibubi.create.AllTags;
-import com.simibubi.create.content.fluids.FlowSource;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.utility.BlockHelper;
 import com.simibubi.create.foundation.utility.CreateLang;
@@ -13,6 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -24,10 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -52,6 +49,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     private final FluidHandler fluidHandler = new FluidHandler(1, null);
     private final Direction facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
     private final Direction left = facing.getCounterClockWise();
+    private String lastDeposit = "";
 
 
     protected int resourcePullSpeed;
@@ -134,14 +132,12 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
 
             float hardness = targetState.getDestroySpeed(level, targetPos);
             ItemStack slot = itemHandler.getStackInSlot(0);
-            boolean unbreakable = hardness == -1
-                    || targetPos.equals(this.getBlockPos())
-                    || AllTags.AllBlockTags.NON_BREAKABLE.matches(targetState)
-                    || !slot.isEmpty();
+            boolean unbreakable = isUnbreakable(hardness, targetState, slot);
 
             if (isDeposit(targetState)) {
                 targetPos = findFurthestDeposit(level, drillPos);
                 targetState = level.getBlockState(targetPos);
+                unbreakable = isUnbreakable(hardness, targetState, slot);
             }
 
             if (!unbreakable) {
@@ -168,6 +164,13 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         drillOffset.setValue(newOffset);
     }
 
+    private boolean isUnbreakable(float hardness, BlockState targetState, ItemStack slot) {
+        return hardness == -1
+                || targetPos.equals(this.getBlockPos())
+                || AllTags.AllBlockTags.NON_BREAKABLE.matches(targetState)
+                || (!slot.isEmpty() && !Objects.equals(lastDeposit, BuiltInRegistries.BLOCK.getKey(targetState.getBlock()).toString()));
+    }
+
     private void finishExtraction(BlockPos target, BlockState state) {
         assert level != null;
         BlockHelper.destroyBlock(level, target, 1f, (drop) -> {
@@ -181,8 +184,9 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
 
     private void extractDeposit(BlockPos pos, BlockState state) {
         assert level != null;
-        if (level.isClientSide) return;
         SimpleBaseDeposit block = (SimpleBaseDeposit) state.getBlock();
+        lastDeposit = BuiltInRegistries.BLOCK.getKey(block).toString();
+        if (level.isClientSide) return;
         itemHandler.insertItem(
                 0,
                 block.getDepositDrops((ServerLevel) level, pos, this),
@@ -312,6 +316,8 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         setTargetPos(compound.getIntArray("TargetPos"));
         breakingProgress = compound.getInt("breakingProgress");
         itemHandler.deserializeNBT(provider, compound.getCompound("inventory"));
+        fluidHandler.deserializeNBT(provider, compound.getCompound("fluidTank"));
+        lastDeposit = compound.getString("lastDeposit");
     }
 
     public void write(CompoundTag compound, HolderLookup.Provider provider, boolean clientPacket) {
@@ -327,6 +333,8 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         });
         compound.putInt("breakingProgress", breakingProgress);
         compound.put("inventory", itemHandler.serializeNBT(provider));
+        compound.put("fluidTank", fluidHandler.serializeNBT(provider));
+        compound.putString("lastDeposit", lastDeposit);
     }
 
     @Override
