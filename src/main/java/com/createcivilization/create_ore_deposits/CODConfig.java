@@ -8,7 +8,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.fml.loading.FMLPaths;
 
 import java.io.IOException;
@@ -42,6 +41,7 @@ public class CODConfig {
                 toAdd.add(DepositBlock.fromBlock(Blocks.IRON_ORE, 20, 40));
                 toAdd.add(DepositBlock.fromBlock(Blocks.GOLD_ORE, 20, 40));
                 toAdd.add(DepositBlock.fromBlock(Blocks.DIAMOND_ORE, 20, 40));
+                toAdd.add(new DepositBlock("create:zinc_ore", 20, 40));
 
                 Files.writeString(CONFIG_FILE, new GsonBuilder().setPrettyPrinting().create().toJson(toAdd));
                 CreateOreDeposits.LOGGER.error("Created default config file.");
@@ -52,9 +52,7 @@ public class CODConfig {
         }
         for (DepositBlock depositBlock : toAdd) {
             String path = depositBlock.getPath() + "_deposit";
-            REGISTRATE.block( path, properties -> new SimpleBaseDeposit(
-                            BlockBehaviour.Properties.ofFullCopy(depositBlock.getBlock())
-                    ))
+            REGISTRATE.block( path, properties -> new SimpleBaseDeposit(depositBlock))
                     .tag(CODTags.Blocks.ORE_DEPOSITS)
                     .simpleItem()
                     .register();

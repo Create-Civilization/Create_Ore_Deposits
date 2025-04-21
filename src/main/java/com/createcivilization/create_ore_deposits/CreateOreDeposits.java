@@ -30,6 +30,7 @@ public class CreateOreDeposits {
         CODBlockEntityTypes.register();
 
 
+
         modEventBus.addListener(this::commonSetup);
         NeoForge.EVENT_BUS.register(this);
         CODConfig.loadConfig();

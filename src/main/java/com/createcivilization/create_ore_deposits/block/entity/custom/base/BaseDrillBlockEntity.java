@@ -1,12 +1,10 @@
 package com.createcivilization.create_ore_deposits.block.entity.custom.base;
 
-import com.createcivilization.create_ore_deposits.CODConfig;
 import com.createcivilization.create_ore_deposits.CreateOreDeposits;
 import com.createcivilization.create_ore_deposits.block.custom.gen.DepositBlock;
 import com.createcivilization.create_ore_deposits.block.custom.gen.SimpleBaseDeposit;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.utility.BlockHelper;
 import com.simibubi.create.foundation.utility.CreateLang;
 import com.simibubi.create.foundation.utility.ServerSpeedProvider;
@@ -14,17 +12,16 @@ import net.createmod.catnip.animation.LerpedFloat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.jarjar.nio.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -41,13 +38,12 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     protected BlockPos targetPos = BlockPos.ZERO;
     protected int breakingProgress;
     protected int tickMilestone;
-    protected int breakerId = getBlockPos().hashCode();
+    private final int BREAKER_ID = getBlockPos().hashCode();
     protected float breakingSpeed = getSpeed() / 100f;
     protected int currentTick;
     protected BlockPos drillPos;
-    private final Lazy<ItemStackHandler> itemHandler = Lazy.of(this::createItemHandler);
+    private final ItemStackHandler itemHandler = new ItemStackHandler(1);
     Random random = new Random();
-
 
 
     protected int resourcePullSpeed;
@@ -130,9 +126,12 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
             isMoving = false;
 
             float hardness = targetState.getDestroySpeed(level, target);
+            ItemStack slot = itemHandler.getStackInSlot(0);
             boolean unbreakable = hardness == -1
                     || target.equals(this.getBlockPos())
-                    || AllTags.AllBlockTags.NON_BREAKABLE.matches(targetState);
+                    || AllTags.AllBlockTags.NON_BREAKABLE.matches(targetState)
+                    || slot.getCount() == slot.getMaxStackSize();
+            CreateOreDeposits.LOGGER.info(String.valueOf(slot.getCount()));
 
             if (isDeposit(targetState)) target = findFurthestDeposit(level, drillPos);
 
@@ -140,12 +139,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
                 if (currentTick >= tickMilestone) {
                     breakingProgress++;
                     currentTick = 0;
-                    if (isDeposit(targetState)) {
-                        DepositBlock depositBlock = CODConfig.REGISTERED_DEPOSITS.get(BuiltInRegistries.BLOCK.getKey(targetState.getBlock()));
-                        int min = depositBlock.min();
-                        CreateOreDeposits.LOGGER.info("Would've extracted {}", random.nextInt(depositBlock.max() - min + 1) + min);
-                        // store
-                    }
+                    if (isDeposit(targetState)) extractDeposit(target, targetState);
                 }
                 else currentTick++;
 
@@ -155,7 +149,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
 
                 level.playSound(null, worldPosition, targetState.getSoundType().getHitSound(),
                         SoundSource.BLOCKS, 0.25f, 1f);
-                level.destroyBlockProgress(breakerId, target, breakingProgress);
+                level.destroyBlockProgress(BREAKER_ID, target, breakingProgress);
 
                 if (breakingProgress >= 10)
                     finishExtraction(target, targetState);
@@ -167,14 +161,40 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
 
     private void finishExtraction(BlockPos target, BlockState state) {
         assert level != null;
-        BlockHelper.destroyBlock(level, target, 1f);
-        if (!isDeposit(state)) {
-            // drop
-        }
+        BlockHelper.destroyBlock(level, target, 1f, (drop) -> {
+            if (isDeposit(state)) extractDeposit(target, state); else dropItem(target, drop);
+        });
         breakingProgress = 0;
         tickMilestone = 0;
         currentTick = 0;
-        level.destroyBlockProgress(breakerId, target, -1);
+        level.destroyBlockProgress(BREAKER_ID, target, -1);
+    }
+
+    private void extractDeposit(BlockPos pos, BlockState state) {
+        assert level != null;
+        if (level.isClientSide) return;
+        SimpleBaseDeposit baseDeposit = (SimpleBaseDeposit) state.getBlock();
+        DepositBlock depositBlock = baseDeposit.getDepositBlock();
+        int min = depositBlock.min();
+        List<ItemStack> drops = baseDeposit.getDepositDrops((ServerLevel) level, pos, this);
+        if (drops.isEmpty()) return;
+        ItemStack drop = drops.getFirst();
+        drop.setCount(random.nextInt(depositBlock.max() - min + 1) + min);
+        itemHandler.insertItem(
+                0,
+                drop,
+                false
+        );
+    }
+
+    private void dropItem(BlockPos pos, ItemStack drop) {
+        assert level != null;
+        ItemEntity item = new ItemEntity(
+                level,
+                pos.getX(), pos.getY(), pos.getZ(),
+                drop.copy()
+        );
+        level.addFreshEntity(item);
     }
 
     public float getMovementSpeed() {
@@ -216,10 +236,8 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
 
         while (!queue.isEmpty()) {
             int size = queue.size();
-            BlockPos lastInLevel = null;
             for (int i = 0; i < size; i++) {
                 BlockPos current = queue.poll();
-                lastInLevel = current;
 
                 for (BlockPos neighbor : getPositions(current)) {
                     if (!visited.contains(neighbor) && predicate.test(level, neighbor)) {
@@ -288,7 +306,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         isExtending = compound.getBoolean("IsExtending");
         setHasTarget(compound.getBoolean("HasTarget"));
         setTargetPos(compound.getIntArray("TargetPos"));
-        itemHandler.get().deserializeNBT(provider, compound.getCompound("inventory"));
+        itemHandler.deserializeNBT(provider, compound.getCompound("inventory"));
     }
 
     public void write(CompoundTag compound, HolderLookup.Provider provider, boolean clientPacket) {
@@ -302,7 +320,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
                 targetPos.getY(),
                 targetPos.getZ()
         });
-        compound.put("inventory", itemHandler.get().serializeNBT(provider));
+        compound.put("inventory", itemHandler.serializeNBT(provider));
     }
 
     @Override
@@ -317,19 +335,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         super.handleUpdateTag(tag, registries);
     }
 
-    private ItemStackHandler createItemHandler() {
-        return new ItemStackHandler(1) {
-            @Override
-            protected void onContentsChanged(int slot) {
-                setChanged();
-                if (level != null) {
-                    level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-                }
-            }
-        };
-    }
-
     public IItemHandler getItemHandler() {
-        return itemHandler.get();
+        return itemHandler;
     }
 }

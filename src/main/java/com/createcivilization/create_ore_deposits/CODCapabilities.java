@@ -1,11 +1,16 @@
 package com.createcivilization.create_ore_deposits;
 
 import com.createcivilization.create_ore_deposits.block.entity.CODBlockEntityTypes;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
+@EventBusSubscriber(modid = CreateOreDeposits.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class CODCapabilities {
-    private void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
+
+    @SubscribeEvent
+    private static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 CODBlockEntityTypes.DEPOSIT_TESTER_BLOCK.get(),
