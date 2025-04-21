@@ -1,5 +1,6 @@
 package com.createcivilization.create_ore_deposits;
 
+import com.createcivilization.create_ore_deposits.content.kinetics.drill.BaseDrillBlockEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -13,7 +14,12 @@ public class CODCapabilities {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 CODBlockEntityTypes.DEPOSIT_TESTER_BLOCK.get(),
-                (blockEntity, direction) -> blockEntity.getItemHandler()
+                BaseDrillBlockEntity::getItemHandler
+        );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                CODBlockEntityTypes.DEPOSIT_TESTER_BLOCK.get(),
+                BaseDrillBlockEntity::getFluidHandler
         );
     }
 }

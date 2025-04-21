@@ -1,9 +1,9 @@
 package com.createcivilization.create_ore_deposits.content.kinetics.drill;
 
-import com.createcivilization.create_ore_deposits.CODConfig;
-import com.createcivilization.create_ore_deposits.CreateOreDeposits;
 import com.createcivilization.create_ore_deposits.content.materials.SimpleBaseDeposit;
+import com.createcivilization.create_ore_deposits.foundation.capabilities.FluidHandler;
 import com.simibubi.create.AllTags;
+import com.simibubi.create.content.fluids.FlowSource;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.utility.BlockHelper;
 import com.simibubi.create.foundation.utility.CreateLang;
@@ -11,19 +11,23 @@ import com.simibubi.create.foundation.utility.ServerSpeedProvider;
 import net.createmod.catnip.animation.LerpedFloat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -45,6 +49,9 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     protected int currentTick;
     protected BlockPos drillPos;
     private final ItemStackHandler itemHandler = new ItemStackHandler();
+    private final FluidHandler fluidHandler = new FluidHandler(1, null);
+    private final Direction facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
+    private final Direction left = facing.getCounterClockWise();
 
 
     protected int resourcePullSpeed;
@@ -54,7 +61,6 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         drillOffset = LerpedFloat.linear().startWithValue(0);
         isExtending = false;
     }
-
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
@@ -335,7 +341,11 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         super.handleUpdateTag(tag, registries);
     }
 
-    public IItemHandler getItemHandler() {
-        return itemHandler;
+    public IItemHandler getItemHandler(Direction direction) {
+        return direction == left ? itemHandler : null;
+    }
+
+    public IFluidHandler getFluidHandler(Direction direction) {
+        return direction == Direction.UP ? fluidHandler : null;
     }
 }
