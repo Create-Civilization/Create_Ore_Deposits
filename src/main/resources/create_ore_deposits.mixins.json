@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.createcivilization.create_ore_deposits.mixin",
+  "package": "com.createcivilization.create_ore_deposits.foundation.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "create_ore_deposits.refmap.json",
   "mixins": [],

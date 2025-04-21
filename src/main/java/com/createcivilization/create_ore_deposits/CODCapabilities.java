@@ -1,6 +1,5 @@
 package com.createcivilization.create_ore_deposits;
 
-import com.createcivilization.create_ore_deposits.block.entity.CODBlockEntityTypes;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;

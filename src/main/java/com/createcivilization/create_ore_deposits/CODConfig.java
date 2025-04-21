@@ -1,8 +1,7 @@
 package com.createcivilization.create_ore_deposits;
 
-import com.createcivilization.create_ore_deposits.block.custom.gen.DepositBlock;
-import com.createcivilization.create_ore_deposits.block.custom.gen.SimpleBaseDeposit;
-import com.createcivilization.create_ore_deposits.tag.CODTags;
+import com.createcivilization.create_ore_deposits.content.kinetics.drill.DepositBlock;
+import com.createcivilization.create_ore_deposits.content.materials.SimpleBaseDeposit;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;

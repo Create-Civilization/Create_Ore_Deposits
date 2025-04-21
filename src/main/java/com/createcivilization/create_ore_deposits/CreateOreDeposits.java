@@ -1,7 +1,6 @@
 package com.createcivilization.create_ore_deposits;
 
-import com.createcivilization.create_ore_deposits.block.entity.CODBlockEntityTypes;
-import com.createcivilization.create_ore_deposits.item.CODItems;
+import com.createcivilization.create_ore_deposits.content.item.CODItems;
 
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.foundation.data.CreateRegistrate;
