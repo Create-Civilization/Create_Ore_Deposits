@@ -115,7 +115,6 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     }
 
     public void updateDrillExtension() {
-        float multiplier = 1f;
         float newOffset = drillOffset.getValue() + getMovementSpeed();
         if (newOffset < 0) {
             newOffset = 0;
@@ -123,7 +122,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         }
         if (fluidHandler.getFluidInTank(0).getAmount() > 20) {
             fluidHandler.drain(20, IFluidHandler.FluidAction.EXECUTE);
-            multiplier += 0.2f;
+            // Reduce SU or whatever
         }
 
         int ceil = (int) Math.ceil(newOffset);
@@ -154,7 +153,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
                 }
                 else currentTick++;
 
-                float breakSpeed = (getSpeed() / 100f) * multiplier;
+                float breakSpeed = (getSpeed() / 100f);
 
                 tickMilestone = (int) (hardness / breakSpeed);
 

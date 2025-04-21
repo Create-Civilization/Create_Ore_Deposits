@@ -30,7 +30,6 @@ public class FluidHandler implements IFluidHandler, INBTSerializable<CompoundTag
         return allowedFluids == null || allowedFluids.contains(fluid);
     }
 
-
     @Override
     public int getTanks() {
         return 1;
