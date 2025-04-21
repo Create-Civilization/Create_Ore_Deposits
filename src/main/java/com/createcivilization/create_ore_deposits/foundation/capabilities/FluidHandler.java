@@ -1,17 +1,22 @@
 package com.createcivilization.create_ore_deposits.foundation.capabilities;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
-public class FluidHandler implements IFluidHandler {
+public class FluidHandler implements IFluidHandler, INBTSerializable<CompoundTag> {
 
     private final FluidTank tank;
     private Set<Fluid> allowedFluids;
@@ -66,8 +71,9 @@ public class FluidHandler implements IFluidHandler {
         this.tank.writeToNBT(provider, nbt);
         if (allowedFluids != null) {
             nbt.putInt("size", allowedFluids.size());
+            int i = 0;
             for (Fluid fluid : allowedFluids) {
-                new FluidStack(fluid, 1).save(provider);
+                nbt.putString(String.valueOf(i++), BuiltInRegistries.FLUID.getKey(fluid).toString());
             }
         }
         return nbt;
@@ -75,10 +81,11 @@ public class FluidHandler implements IFluidHandler {
 
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         this.tank.readFromNBT(provider, nbt);
-        int size = nbt.getInt("size");
-        this.allowedFluids = Set.of();
-        for (int i = 1; i < size; i++) {
-            allowedFluids.add(FluidStack.parseOptional(provider, nbt).getFluid());
+        int size = nbt.getInt("size")-1;
+        List<Fluid> fluidList = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            fluidList.add(BuiltInRegistries.FLUID.get(ResourceLocation.parse(nbt.getString(String.valueOf(i)))));
         }
+        this.allowedFluids = Set.copyOf(fluidList);
     }
 }

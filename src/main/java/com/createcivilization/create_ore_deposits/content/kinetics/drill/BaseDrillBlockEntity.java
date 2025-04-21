@@ -23,6 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -46,7 +47,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     protected int currentTick;
     protected BlockPos drillPos;
     private final ItemStackHandler itemHandler = new ItemStackHandler();
-    private final FluidHandler fluidHandler = new FluidHandler(1, null);
+    private final FluidHandler fluidHandler = new FluidHandler(1000, Set.of(Fluids.WATER, Fluids.FLOWING_WATER));
     private final Direction facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
     private final Direction left = facing.getCounterClockWise();
     private String lastDeposit = "";
@@ -114,10 +115,15 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     }
 
     public void updateDrillExtension() {
+        float multiplier = 1f;
         float newOffset = drillOffset.getValue() + getMovementSpeed();
         if (newOffset < 0) {
             newOffset = 0;
             isMoving = false;
+        }
+        if (fluidHandler.getFluidInTank(0).getAmount() > 20) {
+            fluidHandler.drain(20, IFluidHandler.FluidAction.EXECUTE);
+            multiplier += 0.2f;
         }
 
         int ceil = (int) Math.ceil(newOffset);
@@ -148,7 +154,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
                 }
                 else currentTick++;
 
-                float breakSpeed = getSpeed() / 100f;
+                float breakSpeed = (getSpeed() / 100f) * multiplier;
 
                 tickMilestone = (int) (hardness / breakSpeed);
 
