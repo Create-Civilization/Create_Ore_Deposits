@@ -35,12 +35,6 @@ public class DrillBlock extends HorizontalKineticBlock implements IBE<DrillBlock
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        System.out.println("HELLO I BE CLICKED!!!" + player.getMainHandItem());
-        return ItemInteractionResult.CONSUME;
-    }
-
-    @Override
     public BlockEntityType<? extends DrillBlockEntity> getBlockEntityType() {
       return CODBlockEntityTypes.DEPOSIT_TESTER_BLOCK.get();
     }

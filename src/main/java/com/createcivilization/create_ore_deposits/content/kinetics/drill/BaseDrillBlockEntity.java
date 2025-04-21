@@ -1,8 +1,10 @@
 package com.createcivilization.create_ore_deposits.content.kinetics.drill;
 
+import com.createcivilization.create_ore_deposits.CODLang;
 import com.createcivilization.create_ore_deposits.content.materials.SimpleBaseDeposit;
 import com.createcivilization.create_ore_deposits.foundation.capabilities.FluidHandler;
 import com.simibubi.create.AllTags;
+import com.simibubi.create.content.kinetics.base.IRotate;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.utility.BlockHelper;
 import com.simibubi.create.foundation.utility.CreateLang;
@@ -14,9 +16,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -62,22 +66,28 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     }
 
     @Override
+    public float calculateStressApplied() {
+        //Stress is a multiple of RPM. We want CRAZY stress impact.
+        //Its 512 for now as the idea is 1 full powered windmill will be able to power 1 at 16 RPM
+        return 512.0f;
+    }
+
+    @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-
-        if(drillPos == null){
-            CreateLang.text("NULL MOMENT").style(ChatFormatting.AQUA).forGoggles(tooltip);
-            return true;
-        }
-
-
-        int drillX = drillPos.getX();
-        int drillY = drillPos.getY();
-        int drillZ = drillPos.getZ();
-        CreateLang.text("Drill is at " + drillX + "," + drillY + "," + drillZ)
-                .style(ChatFormatting.AQUA)
+        CODLang.translate("tooltip.drill.header")
                 .forGoggles(tooltip);
 
+        if(!itemHandler.getStackInSlot(0).isEmpty()) {
+            CODLang.translate("tooltip.drill.contains", Component.translatable(itemHandler.getStackInSlot(0).getDescriptionId()), itemHandler.getStackInSlot(0).getCount())
+                    .style(ChatFormatting.GREEN)
+                    .forGoggles(tooltip);
+        }
 
+        float stressAtBase = calculateStressApplied();
+        if (IRotate.StressImpact.isEnabled() && !Mth.equal(stressAtBase, 0)) {
+            tooltip.add(CommonComponents.EMPTY);
+            addStressImpactStats(tooltip, stressAtBase);
+        }
         return true;
     }
 

@@ -1,5 +1,10 @@
 {
   "block.create_ore_deposits.iron_ore_deposit_block": "Iron Ore Deposit",
   "block.create_ore_deposits.deposit_tester_block": "Deposit Tester",
-  "item.create_ore_deposits.test_item": "Test Item"
+  "item.create_ore_deposits.test_item": "Test Item",
+
+
+
+  "create_ore_deposits.tooltip.drill.header": "Drill Information",
+  "create_ore_deposits.tooltip.drill.contains": "Item: %1$s x%2$s"
 }
