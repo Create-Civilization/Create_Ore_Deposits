@@ -10,6 +10,11 @@ import net.minecraft.core.Direction;
 
 public class DrillScene {
     public static void basic(SceneBuilder builder, SceneBuildingUtil util){
+
+        //I had a feeling you would look here, what if when the drill mines and drops unrefined ore
+        //We make it so they have to like test the unrefined ore to see what mineral is in the deposit'
+        //Idk tho
+
         CreateSceneBuilder scene = new CreateSceneBuilder(builder);
         scene.title("drill.intro", "Setting Up And Using A Drill");
         scene.configureBasePlate(0,0, 5);
