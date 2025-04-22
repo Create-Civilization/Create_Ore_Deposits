@@ -10,5 +10,7 @@
 
 
 
-  "create_ore_deposits.ponder.drill.intro.text_1": "World Trade Center!"
+  "create_ore_deposits.ponder.drill.intro.text_1": "This is a Drill. It Drills.",
+  "create_ore_deposits.ponder.drill.intro.text_2": "This is the deposit. This is what the Drill Drills.",
+  "create_ore_deposits.ponder.drill.intro.text_3": "Apply power to the drill"
 }
