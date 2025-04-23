@@ -6,6 +6,7 @@ import net.createmod.ponder.api.element.WorldSectionElement;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.createmod.ponder.api.scene.Selection;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -27,7 +28,8 @@ public class DrillScene {
 
         Selection drill = util.select().position(2,5,2);
         Selection cogAndShaft = util.select().fromTo(0,2,5,1,5,2);
-        Selection deposit = util.select().position(2,0,2);
+        BlockPos depositPos = util.grid().at(2,0,2);
+        Selection funnel = util.select().position(3,5,2);
 
 
         ElementLink<WorldSectionElement> drillLink = scene.world().showIndependentSection(drill, Direction.UP);
@@ -44,7 +46,7 @@ public class DrillScene {
                 .text("This is the deposit. This is what the Drill Drills.")
                 .attachKeyFrame()
                 .placeNearTarget()
-                .pointAt(deposit.getCenter());
+                .pointAt(util.vector().topOf(depositPos));
         scene.idle(70);
         scene.overlay().showText(60)
                 .text("Apply power to the drill")
@@ -58,6 +60,29 @@ public class DrillScene {
         scene.world().setKineticSpeed(kinetics, 32);
         scene.idle(55);
 
+
+        for (int i = 0; i < 10; i++) {
+            scene.idle(10);
+            scene.world().incrementBlockBreakingProgress(depositPos);
+            if (i == 1) {
+                scene.overlay().showText(80)
+                        .attachKeyFrame()
+                        .placeNearTarget()
+                        .pointAt(util.vector().topOf(depositPos))
+                        .text("When a running drill hits a deposit it will break it.");
+            }
+        }
+        scene.idle(30);
+        scene.world().setKineticSpeed(kinetics, 0);
+        scene.idle(5);
+        scene.world().showSection(funnel, Direction.WEST);
+        scene.idle(10);
+        scene.overlay().showText(60)
+                .attachKeyFrame()
+                .placeNearTarget()
+                .pointAt(funnel.getCenter())
+                .text("A max of 64 items are stored in the drill. Get them out.");
+        scene.idle(10);
 
     }
 }
