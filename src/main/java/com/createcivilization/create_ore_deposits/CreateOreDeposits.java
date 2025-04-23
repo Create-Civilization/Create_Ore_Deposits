@@ -27,6 +27,7 @@ public class CreateOreDeposits {
 
         CODItems.register(modEventBus);
         CODBlockEntityTypes.register();
+        CODFluids.register();
 
 
 

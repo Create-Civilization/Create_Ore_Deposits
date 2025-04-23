@@ -7,6 +7,9 @@ import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.createmod.ponder.api.scene.Selection;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.function.UnaryOperator;
 
 public class DrillScene {
     public static void basic(SceneBuilder builder, SceneBuildingUtil util){

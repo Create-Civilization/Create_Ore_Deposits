@@ -1,9 +1,14 @@
 package com.createcivilization.create_ore_deposits.content.kinetics.drill;
 
+import com.createcivilization.create_ore_deposits.CODBlockEntityTypes;
+import com.createcivilization.create_ore_deposits.CODFluids;
 import com.createcivilization.create_ore_deposits.CODLang;
 import com.createcivilization.create_ore_deposits.content.materials.SimpleBaseDeposit;
 import com.createcivilization.create_ore_deposits.foundation.capabilities.FluidHandler;
+import com.simibubi.create.AllBlockEntityTypes;
+import com.simibubi.create.AllFluids;
 import com.simibubi.create.AllTags;
+import com.simibubi.create.content.fluids.hosePulley.HosePulleyBlock;
 import com.simibubi.create.content.kinetics.base.IRotate;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.utility.BlockHelper;
@@ -29,6 +34,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -51,7 +58,7 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     protected int currentTick;
     protected BlockPos drillPos;
     private final ItemStackHandler itemHandler = new ItemStackHandler();
-    private final FluidHandler fluidHandler = new FluidHandler(1000, Set.of(Fluids.WATER, Fluids.FLOWING_WATER));
+    private final FluidHandler fluidHandler = new FluidHandler(1000, Set.of(CODFluids.LUBRICANT.get().getFlowing(), CODFluids.LUBRICANT.get().getSource()));
     private final Direction facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
     private final Direction left = facing.getCounterClockWise();
     private String lastDeposit = "";
@@ -79,6 +86,12 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
 
         if(!itemHandler.getStackInSlot(0).isEmpty()) {
             CODLang.translate("tooltip.drill.contains", Component.translatable(itemHandler.getStackInSlot(0).getDescriptionId()), itemHandler.getStackInSlot(0).getCount())
+                    .style(ChatFormatting.GREEN)
+                    .forGoggles(tooltip);
+        }
+
+        if(!fluidHandler.getFluidInTank(0).isEmpty()){
+            CODLang.translate("tooltip.drill.contains.lube", Component.translatable(fluidHandler.getFluidInTank(0).getDescriptionId(), fluidHandler.getFluidInTank(0).getAmount()))
                     .style(ChatFormatting.GREEN)
                     .forGoggles(tooltip);
         }
