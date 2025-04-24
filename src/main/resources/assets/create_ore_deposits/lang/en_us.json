@@ -17,6 +17,7 @@
   "create_ore_deposits.ponder.drill.intro.text_1": "This is a Drill. It Drills.",
   "create_ore_deposits.ponder.drill.intro.text_2": "This is the deposit. This is what the Drill drills.",
   "create_ore_deposits.ponder.drill.intro.text_3": "Apply power to the drill",
-  "create_ore_deposits.ponder.drill.intro.text_4": "When a running drill hits a deposit it will break it.",
-  "create_ore_deposits.ponder.drill.intro.text_5": "A max of 64 items are stored in the drill. Get them out."
+  "create_ore_deposits.ponder.drill.intro.text_4": "When a running drill hits a deposit it will break the furthest deposit in the vein.",
+  "create_ore_deposits.ponder.drill.intro.text_5": "It will keep doing this until the entire deposit vein is depleted",
+  "create_ore_deposits.ponder.drill.intro.text_6": "A max of 64 items are stored in the drill. Get them out."
 }
