@@ -74,9 +74,15 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
 
     @Override
     public float calculateStressApplied() {
-        //Stress is a multiple of RPM. We want CRAZY stress impact.
-        //Its 512 for now as the idea is 1 full powered windmill will be able to power 1 at 16 RPM
+        if (fluidHandler.getFluidInTank(0).getAmount() > 20) {
+            return 512.0f / 2.0f;
+        }
         return 512.0f;
+    }
+
+    @Override
+    public void remove() {
+        super.remove();
     }
 
     @Override
@@ -142,10 +148,6 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
         if (newOffset < 0) {
             newOffset = 0;
             isMoving = false;
-        }
-        if (fluidHandler.getFluidInTank(0).getAmount() > 20) {
-            fluidHandler.drain(20, IFluidHandler.FluidAction.EXECUTE);
-            // Reduce SU or whatever
         }
 
         int ceil = (int) Math.ceil(newOffset);
