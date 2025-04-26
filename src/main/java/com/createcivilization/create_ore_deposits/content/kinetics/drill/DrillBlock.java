@@ -67,6 +67,7 @@ public class DrillBlock extends HorizontalKineticBlock implements IBE<DrillBlock
         return IBE.super.onBlockEntityUse(world, pos, action);
     }
 
+
     @Override
     public Direction.Axis getRotationAxis(BlockState blockState) {
         return (blockState.getValue(HORIZONTAL_FACING)).getClockWise().getAxis();

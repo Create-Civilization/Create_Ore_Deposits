@@ -81,11 +81,6 @@ public abstract class BaseDrillBlockEntity extends KineticBlockEntity {
     }
 
     @Override
-    public void remove() {
-        super.remove();
-    }
-
-    @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         CODLang.translate("tooltip.drill.header")
                 .forGoggles(tooltip);
