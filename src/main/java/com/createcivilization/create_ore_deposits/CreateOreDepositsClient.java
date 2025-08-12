@@ -21,8 +21,6 @@ public class CreateOreDepositsClient {
     }
 
     public static void clientInit(final FMLClientSetupEvent event) {
-
-        CODPartialModels.init();
         PonderIndex.addPlugin(new CODPonderPlugin());
     }
 

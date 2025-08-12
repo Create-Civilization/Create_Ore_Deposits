@@ -1,42 +1,33 @@
-package com.createcivilization.create_ore_deposits.content.kinetics.drill;
-
-import com.createcivilization.create_ore_deposits.CODBlockEntityTypes;
+package com.createcivilization.create_ore_deposits.content.blocks.custom;
 
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.entity.*;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathComputationType;
-import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.function.Function;
 
-@SuppressWarnings("NullableProblems")
-public class DrillBlock extends HorizontalKineticBlock implements IBE<DrillBlockEntity> {
+public class DepositDrillBlock extends HorizontalKineticBlock implements IBE<DepositDrillBlockEntity> {
 
-    public DrillBlock(Properties pProperties) {
+    public DepositDrillBlock(Properties pProperties) {
         super(pProperties);
     }
 
     @Override
-    public Class<DrillBlockEntity> getBlockEntityClass() {
-        return DrillBlockEntity.class;
+    public Class<DepositDrillBlockEntity> getBlockEntityClass() {
+        return DepositDrillBlockEntity.class;
     }
 
     @Override
-    public BlockEntityType<? extends DrillBlockEntity> getBlockEntityType() {
-      return CODBlockEntityTypes.DEPOSIT_TESTER_BLOCK.get();
+    public BlockEntityType<? extends DepositDrillBlockEntity> getBlockEntityType() {
+        return CODBlockEntityTypes.DEPOSIT_TESTER_BLOCK.get();
     }
 
     @Override
@@ -59,7 +50,7 @@ public class DrillBlock extends HorizontalKineticBlock implements IBE<DrillBlock
     }
 
     @Override
-    public InteractionResult onBlockEntityUse(BlockGetter world, BlockPos pos, Function<DrillBlockEntity, InteractionResult> action) {
+    public InteractionResult onBlockEntityUse(BlockGetter world, BlockPos pos, Function<DepositDrillBlockEntity, InteractionResult> action) {
         if(!world.getBlockEntity(pos).getLevel().isClientSide()){
 
             return InteractionResult.SUCCESS;

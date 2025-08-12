@@ -25,15 +25,11 @@ public class CreateOreDeposits {
     public CreateOreDeposits(IEventBus modEventBus, ModContainer modContainer) {
         REGISTRATE.registerEventListeners(modEventBus);
 
-        CODItems.register(modEventBus);
-        CODBlockEntityTypes.register();
-        CODFluids.register();
 
 
 
         modEventBus.addListener(this::commonSetup);
         NeoForge.EVENT_BUS.register(this);
-        CODConfig.loadConfig();
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
