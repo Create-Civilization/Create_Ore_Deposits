@@ -1,5 +1,6 @@
 package com.createcivilization.create_ore_deposits.content.blocks;
 
+import com.createcivilization.create_ore_deposits.content.blocks.custom.DepositDrillBlock;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
