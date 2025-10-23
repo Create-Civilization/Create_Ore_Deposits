@@ -4,10 +4,10 @@
 # Note that there are a couple of TOML lists in this file.
 # Find more information on toml format here:  https://github.com/toml-lang/toml
 # The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
-modLoader = "javafml" #mandatory
+modLoader = "kotlinforforge" #mandatory
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
-loaderVersion = "${loader_version_range}" #mandatory
-# The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
+loaderVersion = "[5.10,)" #mandatory
+# The licence for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
 # Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.
 license = "${mod_license}"
 # A URL to refer people to when problems occur with this mod
@@ -41,12 +41,12 @@ authors = "${mod_authors}" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description = '''${mod_description}'''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
-[[dependencies.${mod_id}]]
-modId="neoforge"
-type="required"
-versionRange="${neo_version_range}"
-ordering="NONE"
-side="BOTH"
+[[dependencies."${mod_id}"]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neo_version_range}"
+ordering = "NONE"
+side = "BOTH"
 
 [[dependencies."${mod_id}"]]
 modId = "minecraft"
@@ -56,9 +56,9 @@ versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.modid]]
-modId="create"
-mandatory=true
-versionRange="[6.0.0,)"
-ordering="NONE"
-side="BOTH"
+[[dependencies."${mod_id}"]]
+modId = "create"
+mandatory = true
+versionRange = "[6.0.0,)"
+ordering = "NONE"
+side = "BOTH"
