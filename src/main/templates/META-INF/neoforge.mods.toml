@@ -62,3 +62,11 @@ mandatory = true
 versionRange = "[6.0.0,)"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies."${mod_id}"]]
+modId = "kotlinforforge"
+mandatory = true
+type = "required"
+versionRange = "[5.10.0,)"
+ordering = "NONE"
+side = "BOTH"

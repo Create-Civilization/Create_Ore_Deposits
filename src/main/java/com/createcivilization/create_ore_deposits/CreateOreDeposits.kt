@@ -1,46 +1,40 @@
-package com.createcivilization.create_ore_deposits;
+package com.createcivilization.create_ore_deposits
 
-import com.mojang.logging.LogUtils;
+import com.createcivilization.create_ore_deposits.util.logI
 
-import com.simibubi.create.foundation.data.CreateRegistrate;
+import com.simibubi.create.foundation.data.CreateRegistrate
 
-import net.minecraft.resources.ResourceLocation;
-
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
-
-import org.slf4j.Logger;
+import net.neoforged.bus.api.IEventBus
+import net.neoforged.bus.api.SubscribeEvent
+import net.neoforged.fml.ModContainer
+import net.neoforged.fml.common.Mod
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
+import net.neoforged.neoforge.common.NeoForge
+import net.neoforged.neoforge.event.server.ServerStartingEvent
 
 @Mod(CreateOreDeposits.MOD_ID)
-public class CreateOreDeposits {
+class CreateOreDeposits(modEventBus: IEventBus, modContainer: ModContainer) {
 
-	public static final String MOD_ID = "create_ore_deposits";
-	public static final Logger LOGGER = LogUtils.getLogger();
-
-	public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
-
-	public CreateOreDeposits(IEventBus modEventBus, ModContainer modContainer) {
-		REGISTRATE.registerEventListeners(modEventBus);
-		modEventBus.addListener(this::commonSetup);
-		NeoForge.EVENT_BUS.register(this);
+	init {
+		REGISTRATE.registerEventListeners(modEventBus)
+		modEventBus.addListener(this::commonSetup)
+		NeoForge.EVENT_BUS.register(this)
 	}
 
-	private void commonSetup(final FMLCommonSetupEvent event) {
+	private fun commonSetup(event: FMLCommonSetupEvent?) {
 		// Some common setup code
 	}
 
-	public static ResourceLocation asResource(String path) {
-		return ResourceLocation.fromNamespaceAndPath(CreateOreDeposits.MOD_ID, path);
+	@SubscribeEvent
+	fun onServerStarting(event: ServerStartingEvent?) {
+		// Do something when the server starts
+		logI("CREATE ORE DEPOSIT GO BRRRRR")
 	}
 
-	@SubscribeEvent
-	public void onServerStarting(ServerStartingEvent event) {
-		// Do something when the server starts
-		LOGGER.info("CREATE ORE DEPOSIT GO BRRRRR");
+	companion object {
+
+		const val MOD_ID: String = "create_ore_deposits"
+
+		val REGISTRATE: CreateRegistrate = CreateRegistrate.create(MOD_ID)
 	}
 }
