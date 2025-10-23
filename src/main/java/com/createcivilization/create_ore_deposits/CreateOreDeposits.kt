@@ -1,6 +1,7 @@
 @file:Suppress("UnusedExpression") // Calling the objects implicitly invokes their initialisers
 package com.createcivilization.create_ore_deposits
 
+import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositBlocks
 import com.createcivilization.create_ore_deposits.registry.item.CreateOreDepositItems
 import com.createcivilization.create_ore_deposits.util.logI
 
@@ -19,6 +20,7 @@ object CreateOreDeposits {
 		MOD_BUS.addListener(this::commonSetup)
 		FORGE_BUS.register(this)
 		CreateOreDepositItems
+		CreateOreDepositBlocks
 	}
 
 	private fun commonSetup(event: FMLCommonSetupEvent) {
