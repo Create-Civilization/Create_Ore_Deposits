@@ -1,8 +1,9 @@
 {
-	"block.create_ore_deposits.iron_ore_deposit_block": "Iron Ore Deposit",
+	"block.create_ore_deposits.example_deposit": "Example Ore Deposit",
 	"block.create_ore_deposits.deposit_tester_block": "Deposit Tester",
 
 	"item.create_ore_deposits.test": "Test Item",
+	"item.create_ore_deposits.example_deposit": "Example Ore Deposit",
 
 	"fluid.create_ore_deposits.lubricant": "Lubricant",
 
