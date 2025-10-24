@@ -1,17 +1,63 @@
 package com.createcivilization.create_ore_deposits.util
 
+import net.minecraft.core.Registry
+import net.minecraft.resources.ResourceKey
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
 
+import net.neoforged.neoforge.registries.DeferredHolder
+import net.neoforged.neoforge.registries.DeferredRegister
+
+import java.util.function.Function
 import java.util.function.Supplier
 
 import kotlin.reflect.KProperty
 
 fun Item(): Item = Item(Item.Properties())
 
-operator fun Supplier<Item>.getValue(thisRef: Any?, property: KProperty<*>): Item = this.get()
+operator fun ItemProvider.getValue(thisRef: Any?, property: KProperty<*>): Item = this.invoke()
 
 fun Block(): Block = Block(BlockBehaviour.Properties.of())
 
-operator fun Supplier<Block>.getValue(thisRef: Any?, property: KProperty<*>): Block = this.get()
+operator fun BlockProvider.getValue(thisRef: Any?, property: KProperty<*>): Block = this.invoke()
+
+// Dearest Arctic, Orion & co. If you see these classes and wonder "what the fuck is this?", just don't even try to understand.
+// it's not worth the effort, registries are a bitch.
+
+class KotlinDeferredHolder<R, T : R>(key: ResourceKey<R>) : DeferredHolder<R, T>(key), () -> T {
+
+	constructor(
+		registryKey: ResourceKey<out Registry<R>>,
+		valueName: ResourceLocation
+	) : this(ResourceKey.create(registryKey, valueName))
+
+	override fun invoke(): T = this.get()
+}
+
+class KotlinDeferredRegister<T>(
+	registryKey: ResourceKey<out Registry<T>>,
+	namespace: String
+) : DeferredRegister<T>(registryKey, namespace) {
+
+	constructor(
+		registry: Registry<T>,
+		namespace: String
+	) : this(registry.key(), namespace)
+
+	override fun <I : T> register(
+		name: String,
+		sup: Supplier<out I>
+	): KotlinDeferredHolder<T, I> = super.register(name, sup) as KotlinDeferredHolder<T, I>
+
+	override fun <I : T> register(
+		name: String,
+		func: Function<ResourceLocation, out I>
+	): KotlinDeferredHolder<T, I> = super.register(name, func) as KotlinDeferredHolder<T, I>
+
+	override fun <I : T> createHolder(
+		registryKey: ResourceKey<out Registry<T>>,
+		key: ResourceLocation
+	): DeferredHolder<T, I> = KotlinDeferredHolder(registryKey, key)
+}
