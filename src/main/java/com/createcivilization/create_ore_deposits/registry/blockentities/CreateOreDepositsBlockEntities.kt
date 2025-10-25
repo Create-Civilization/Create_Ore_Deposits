@@ -8,6 +8,8 @@ import com.createcivilization.create_ore_deposits.util.KotlinDeferredRegister
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.level.block.entity.BlockEntityType
 
+import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
+
 object CreateOreDepositsBlockEntities {
 
 	@JvmField
@@ -23,4 +25,6 @@ object CreateOreDepositsBlockEntities {
 		).build(null)
 	}
 	val DEPOSIT_DRILL: BlockEntityType<DepositDrillBlockEntity> get() = _DEPOSIT_DRILL()
+
+	init { BLOCK_ENTITY_PROVIDER.register(MOD_BUS) }
 }
