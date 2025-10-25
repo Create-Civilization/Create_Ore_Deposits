@@ -53,14 +53,13 @@ class DepositDrillContraption(var orientation: Direction, val retract: Boolean) 
 
 	@Throws(AssemblyException::class)
 	private fun collectExtensions(world: Level, pos: BlockPos, direction: Direction): Boolean {
-		val poles: MutableList<StructureBlockInfo> = ArrayList<StructureBlockInfo>()
+		val poles: MutableList<StructureBlockInfo> = mutableListOf()
 		var actualStart = pos
 		var nextBlock = world.getBlockState(actualStart.relative(direction))
 		var extensionsInFront = 0
 		val blockState = world.getBlockState(pos)
 
-		if (!DepositDrillBlock.isDepositDrill(blockState))
-			return false
+		if (!DepositDrillBlock.isDepositDrill(blockState)) return false
 
 		if (blockState.getValue(DepositDrillBlock.DRILL_STATE) == DepositDrillBlock.DrillState.EXTENDED) {
 			while (
@@ -69,13 +68,7 @@ class DepositDrillContraption(var orientation: Direction, val retract: Boolean) 
 				&& nextBlock.getValue(BlockStateProperties.FACING) == direction
 			) {
 				actualStart = actualStart.relative(direction)
-				poles.add(
-					StructureBlockInfo(
-						actualStart,
-						nextBlock.setValue(BlockStateProperties.FACING, direction),
-						null
-					)
-				)
+				poles.add(StructureBlockInfo(actualStart, nextBlock.setValue(BlockStateProperties.FACING, direction), null))
 				extensionsInFront++
 
 				if (DepositDrillBlock.isPistonHead(nextBlock)) break // CHANGE WHEN WE HAVE OUR OWN POLES
@@ -130,7 +123,7 @@ class DepositDrillContraption(var orientation: Direction, val retract: Boolean) 
 		for (pole in poles) {
 			val relPos = pole.pos().relative(direction, -extensionsInFront)
 			val localPos = relPos.subtract(anchor)
-			getBlocks()[localPos] = StructureBlockInfo(localPos, pole.state(), null)
+			blocks[localPos] = StructureBlockInfo(localPos, pole.state(), null)
 			//pistonExtensionCollisionBox = pistonExtensionCollisionBox.union(AABB(localPos));
 		}
 
