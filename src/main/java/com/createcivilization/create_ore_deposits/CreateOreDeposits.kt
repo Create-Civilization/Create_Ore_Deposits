@@ -31,8 +31,9 @@ object CreateOreDeposits {
 
 	@SubscribeEvent
 	fun onServerStarting(event: ServerStartingEvent) {
-		// Do something when the server starts
-		logI("CREATE ORE DEPOSIT GO BRRRRR")
+		logI("Starting server...")
+
+		logI("Server started successfully.")
 	}
 
 	const val MOD_ID: String = "create_ore_deposits"
