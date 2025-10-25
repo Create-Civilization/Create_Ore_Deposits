@@ -2,6 +2,7 @@ package com.createcivilization.create_ore_deposits.registry.blockentities.entrie
 
 import com.createcivilization.create_ore_deposits.registry.block.entries.DepositDrillBlock
 import com.createcivilization.create_ore_deposits.registry.blockentities.CreateOreDepositsBlockEntities
+
 import com.simibubi.create.AllBlocks
 import com.simibubi.create.AllSoundEvents
 import com.simibubi.create.content.contraptions.AssemblyException
@@ -13,6 +14,7 @@ import com.simibubi.create.content.kinetics.base.IRotate
 import com.simibubi.create.foundation.advancement.AllAdvancements
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform
 import com.simibubi.create.foundation.utility.ServerSpeedProvider
+
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup
@@ -21,6 +23,7 @@ import net.minecraft.util.Mth
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.phys.Vec3
+
 import kotlin.math.sign
 
 class DepositDrillBlockEntity(
@@ -30,8 +33,8 @@ class DepositDrillBlockEntity(
 
 	var lastExceptionAccess: AssemblyException? by this::lastException
 
-	protected var hadCollisionWithOtherPiston: Boolean = false
-	protected var extensionLength: Int = 0
+	var extensionLength: Int = 0
+		private set
 
 	override fun read(compound: CompoundTag, registries: HolderLookup.Provider, clientPacket: Boolean) {
 		extensionLength = compound.getInt("ExtensionLength")
@@ -54,8 +57,8 @@ class DepositDrillBlockEntity(
 		if (!contraption.assemble(level!!, worldPosition)) return
 
 		val positive = Direction.get(Direction.AxisDirection.POSITIVE, direction.axis)
-		val movementDirection =
-			if ((getSpeed() > 0) xor (direction.axis != Direction.Axis.Z)) positive else positive.opposite
+		// "xor" is: (A || B) && !(A && B); This effectively means, A or B, but not A and B
+		val movementDirection = if ((getSpeed() > 0) xor (direction.axis != Direction.Axis.Z)) positive else positive.opposite
 
 		val anchor = contraption.anchor.relative(direction, contraption.initialExtensionProgress)
 		if (ContraptionCollider.isCollidingWithWorld(level, contraption, anchor.relative(movementDirection), movementDirection)) return
@@ -73,7 +76,7 @@ class DepositDrillBlockEntity(
 
 		val startPos = BlockPos.ZERO.relative(direction, contraption.initialExtensionProgress)
 		contraption.removeBlocksFromWorld(level, startPos)
-		movedContraption = ControlledContraptionEntity.create(getLevel(), this, contraption)
+		movedContraption = ControlledContraptionEntity.create(level, this, contraption)
 		resetContraptionToOffset()
 		forceMove = true
 		level!!.addFreshEntity(movedContraption)
@@ -87,7 +90,7 @@ class DepositDrillBlockEntity(
 		if (!running && movedContraption == null) return
 		if (!remove) level!!.setBlock(
 			worldPosition,
-			blockState.setValue(DepositDrillBlock.STATE, DepositDrillBlock.DrillState.EXTENDED),
+			blockState.setValue(DepositDrillBlock.DRILL_STATE, DepositDrillBlock.DrillState.EXTENDED),
 			3 or 16
 		)
 		if (movedContraption != null) {
@@ -108,21 +111,19 @@ class DepositDrillBlockEntity(
 	}
 
 	override fun getMovementSpeed(): Float {
-		var movementSpeed = Mth.clamp(convertToLinear(getSpeed()), -.49f, .49f)
+		var movementSpeed = Mth.clamp(convertToLinear(speed), -.49f, .49f)
 		if (level!!.isClientSide) movementSpeed *= ServerSpeedProvider.get()
 		val pistonDirection = blockState.getValue(BlockStateProperties.FACING)
 		val movementModifier = pistonDirection.axisDirection.step * (if (pistonDirection.axis == Direction.Axis.Z) -1 else 1)
 		movementSpeed = movementSpeed * -movementModifier + clientOffsetDiff / 2f
 
-		val extensionRange = getExtensionRange()
+		val extensionRange = extensionRange
 		movementSpeed = Mth.clamp(movementSpeed, 0 - offset, extensionRange - offset)
 		if (sequencedOffsetLimit >= 0) movementSpeed = Mth.clamp(movementSpeed.toDouble(), -sequencedOffsetLimit, sequencedOffsetLimit).toFloat()
 		return movementSpeed
 	}
 
-	override fun getExtensionRange(): Int {
-		return extensionLength
-	}
+	override fun getExtensionRange(): Int = extensionLength
 
 	override fun visitNewPosition() {}
 

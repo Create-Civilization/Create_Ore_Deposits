@@ -35,25 +35,21 @@ import net.minecraft.world.phys.shapes.VoxelShape
 
 class DepositDrillBlock(properties: Properties) : DirectionalAxisKineticBlock(properties), IBE<DepositDrillBlockEntity> {
 
-
-
 	constructor() : this(Properties.of())
 
 	init {
-		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH).setValue(STATE, DrillState.RETRACTED))
+		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH).setValue(DRILL_STATE, DrillState.RETRACTED))
 	}
 
-	override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block?, BlockState?>) {
-		builder.add(STATE)
+	override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
+		builder.add(DRILL_STATE)
 		super.createBlockStateDefinition(builder)
 	}
 
 	public override fun neighborChanged(state: BlockState, level: Level, pos: BlockPos, block: Block, fromPos: BlockPos, isMoving: Boolean) {
 		val direction = state.getValue(FACING)
 		if (fromPos != pos.relative(direction.opposite)) return
-		if (!level.isClientSide && !level.blockTicks
-				.willTickThisTick(pos, this)
-		) level.scheduleTick(pos, this, 1)
+		if (!level.isClientSide && !level.blockTicks.willTickThisTick(pos, this)) level.scheduleTick(pos, this, 1)
 	}
 
 	public override fun tick(state: BlockState, worldIn: ServerLevel, pos: BlockPos, r: RandomSource) {
@@ -68,8 +64,8 @@ class DepositDrillBlock(properties: Properties) : DirectionalAxisKineticBlock(pr
 		}
 	}
 
-	override fun onWrenched(state: BlockState, context: UseOnContext?): InteractionResult? {
-		if (state.getValue<DrillState>(STATE) != DrillState.RETRACTED) return InteractionResult.PASS
+	override fun onWrenched(state: BlockState, context: UseOnContext?): InteractionResult {
+		if (state.getValue(DRILL_STATE) != DrillState.RETRACTED) return InteractionResult.PASS
 		return super.onWrenched(state, context)
 	}
 
@@ -121,7 +117,7 @@ class DepositDrillBlock(properties: Properties) : DirectionalAxisKineticBlock(pr
 		pos: BlockPos,
 		context: CollisionContext
 	): VoxelShape = state.getValue(FACING).let {
-		when (state.getValue(STATE)) {
+		when (state.getValue(DRILL_STATE)) {
 			DrillState.EXTENDED -> AllShapes.MECHANICAL_PISTON_EXTENDED.get(it)
 			DrillState.MOVING -> AllShapes.MECHANICAL_PISTON.get(it)
 			else -> Shapes.block()
@@ -134,7 +130,7 @@ class DepositDrillBlock(properties: Properties) : DirectionalAxisKineticBlock(pr
 
 	companion object {
 
-		val STATE: EnumProperty<DrillState> = EnumProperty.create("state", DrillState::class.java)
+		val DRILL_STATE: EnumProperty<DrillState> = EnumProperty.create("drill_state", DrillState::class.java)
 
 		fun maxAllowedPistonPoles(): Int = AllConfigs.server().kinetics.maxPistonPoles.get()
 

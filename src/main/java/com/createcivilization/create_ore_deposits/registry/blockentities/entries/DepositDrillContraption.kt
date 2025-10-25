@@ -1,6 +1,7 @@
 package com.createcivilization.create_ore_deposits.registry.blockentities.entries
 
 import com.createcivilization.create_ore_deposits.registry.block.entries.DepositDrillBlock
+
 import com.simibubi.create.AllBlocks
 import com.simibubi.create.AllContraptionTypes
 import com.simibubi.create.api.contraption.BlockMovementChecks
@@ -9,7 +10,9 @@ import com.simibubi.create.content.contraptions.AssemblyException
 import com.simibubi.create.content.contraptions.TranslatingContraption
 import com.simibubi.create.content.contraptions.piston.PistonExtensionPoleBlock
 import com.simibubi.create.infrastructure.config.AllConfigs
+
 import net.createmod.catnip.math.VecHelper
+
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup
@@ -22,10 +25,11 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.PistonType
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo
-import net.minecraft.world.level.material.PushReaction
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
+
 import org.apache.commons.lang3.tuple.Pair
+
 import java.util.*
 
 class DepositDrillContraption(var orientation: Direction, val retract: Boolean) : TranslatingContraption() {
@@ -41,7 +45,8 @@ class DepositDrillContraption(var orientation: Direction, val retract: Boolean) 
 		if (!collectExtensions(world, pos, orientation)) return false
 		val count = blocks.size
 		if (!searchMovedStructure(world, anchor, if (retract) orientation.opposite else orientation)) return false
-		bounds = if (blocks.size == count) pistonExtensionCollisionBox else bounds.minmax(pistonExtensionCollisionBox)
+		// `collectExtensions` implicitly makes `pistonExtensionCollisionBox` non-null
+		bounds = if (blocks.size == count) pistonExtensionCollisionBox else bounds.minmax(pistonExtensionCollisionBox!!)
 		startMoving(world)
 		return true
 	}
@@ -57,7 +62,7 @@ class DepositDrillContraption(var orientation: Direction, val retract: Boolean) 
 		if (!DepositDrillBlock.isDepositDrill(blockState))
 			return false
 
-		if (blockState.getValue(DepositDrillBlock.STATE) == DepositDrillBlock.DrillState.EXTENDED) {
+		if (blockState.getValue(DepositDrillBlock.DRILL_STATE) == DepositDrillBlock.DrillState.EXTENDED) {
 			while (
 				PistonExtensionPoleBlock.PlacementHelper.get().matchesAxis(nextBlock, direction.axis)
 				|| DepositDrillBlock.isPistonHead(nextBlock)
@@ -146,17 +151,13 @@ class DepositDrillContraption(var orientation: Direction, val retract: Boolean) 
 		val retracting = direction != orientation
 		if (retracting) return true
 		for (offset in 0..AllConfigs.server().kinetics.maxChassisRange.get()) {
-			if (offset == 1 && retracting) return true
 			val currentPos = pos.relative(orientation, offset + initialExtensionProgress)
-			if (retracting && world.isOutsideBuildHeight(currentPos)) return true
 			if (!world.isLoaded(currentPos)) throw AssemblyException.unloadedChunk(currentPos)
 			val state = world.getBlockState(currentPos)
 			if (!BlockMovementChecks.isMovementNecessary(state, world, currentPos)) return true
 			if (BlockMovementChecks.isBrittle(state) && state.block !is WoolCarpetBlock) return true
 			if (DepositDrillBlock.isPistonHead(state) && state.getValue(BlockStateProperties.FACING) == direction.opposite) return true
-			if (!BlockMovementChecks.isMovementAllowed(state, world, currentPos)) if (retracting) return true
-			else throw AssemblyException.unmovableBlock(currentPos, state)
-			if (retracting && state.pistonPushReaction == PushReaction.PUSH_ONLY) return true
+			if (!BlockMovementChecks.isMovementAllowed(state, world, currentPos)) throw AssemblyException.unmovableBlock(currentPos, state)
 			frontier.add(currentPos)
 			if (BlockMovementChecks.isNotSupportive(state, orientation)) return true
 		}
@@ -178,7 +179,7 @@ class DepositDrillContraption(var orientation: Direction, val retract: Boolean) 
 			if (be == null || be.isRemoved) return true
 			if (!DepositDrillBlock.isExtensionPole(state) && DepositDrillBlock.isDepositDrill(pistonState)) world.setBlock(
 				pistonPos,
-				pistonState.setValue(DepositDrillBlock.STATE, DepositDrillBlock.DrillState.RETRACTED),
+				pistonState.setValue(DepositDrillBlock.DRILL_STATE, DepositDrillBlock.DrillState.RETRACTED),
 				3 or 16
 			)
 			return true
@@ -192,7 +193,7 @@ class DepositDrillContraption(var orientation: Direction, val retract: Boolean) 
 		if (pos == pistonPos && DepositDrillBlock.isDepositDrill(blockState)) {
 			world.setBlock(
 				pos,
-				blockState.setValue(DepositDrillBlock.STATE, DepositDrillBlock.DrillState.MOVING),
+				blockState.setValue(DepositDrillBlock.DRILL_STATE, DepositDrillBlock.DrillState.MOVING),
 				66 or 16
 			)
 			return true
@@ -207,11 +208,12 @@ class DepositDrillContraption(var orientation: Direction, val retract: Boolean) 
 		orientation = Direction.from3DDataValue(nbt.getInt("Orientation"))
 	}
 
-	override fun writeNBT(registries: HolderLookup.Provider, spawnPacket: Boolean): CompoundTag {
-		val tag = super.writeNBT(registries, spawnPacket)
-		tag.putInt("InitialLength", initialExtensionProgress)
-		tag.putInt("ExtensionLength", extensionLength)
-		tag.putInt("Orientation", orientation.get3DDataValue())
-		return tag
+	override fun writeNBT(
+		registries: HolderLookup.Provider,
+		spawnPacket: Boolean
+	): CompoundTag = super.writeNBT(registries, spawnPacket).also {
+		it.putInt("InitialLength", initialExtensionProgress)
+		it.putInt("ExtensionLength", extensionLength)
+		it.putInt("Orientation", orientation.get3DDataValue())
 	}
 }
