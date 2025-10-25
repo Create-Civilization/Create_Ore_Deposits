@@ -1,5 +1,6 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries
 
+import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlocks
 import com.createcivilization.create_ore_deposits.registry.blockentities.CreateOreDepositsBlockEntities
 import com.createcivilization.create_ore_deposits.registry.blockentities.entries.DepositDrillBlockEntity
 
@@ -133,20 +134,12 @@ class DepositDrillBlock(properties: Properties) : DirectionalAxisKineticBlock(pr
 
 		val STATE: EnumProperty<DrillState> = EnumProperty.create("state", DrillState::class.java)
 
-		fun maxAllowedPistonPoles(): Int {
-			return AllConfigs.server().kinetics.maxPistonPoles.get()
-		}
+		fun maxAllowedPistonPoles(): Int = AllConfigs.server().kinetics.maxPistonPoles.get()
 
-		fun isPiston(state: BlockState): Boolean {
-			return AllBlocks.MECHANICAL_PISTON.has(state)
-		}
+		fun isDepositDrill(state: BlockState): Boolean = state.`is`(CreateOreDepositsBlocks.DEPOSIT_DRILL)
 
-		fun isExtensionPole(state: BlockState): Boolean {
-			return AllBlocks.PISTON_EXTENSION_POLE.has(state)
-		}
+		fun isExtensionPole(state: BlockState): Boolean = AllBlocks.PISTON_EXTENSION_POLE.has(state)
 
-		fun isPistonHead(state: BlockState): Boolean {
-			return AllBlocks.MECHANICAL_PISTON_HEAD.has(state)
-		}
+		fun isPistonHead(state: BlockState): Boolean = AllBlocks.MECHANICAL_PISTON_HEAD.has(state)
 	}
 }
