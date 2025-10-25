@@ -35,6 +35,8 @@ import net.minecraft.world.phys.shapes.VoxelShape
 
 class DepositDrillBlock(properties: Properties) : DirectionalAxisKineticBlock(properties), IBE<DepositDrillBlockEntity> {
 
+
+
 	constructor() : this(Properties.of())
 
 	init {
@@ -58,7 +60,7 @@ class DepositDrillBlock(properties: Properties) : DirectionalAxisKineticBlock(pr
 		val direction = state.getValue(FACING)
 		val pole = worldIn.getBlockState(pos.relative(direction.opposite))
 		if (!AllBlocks.PISTON_EXTENSION_POLE.has(pole)) return
-		if (pole.getValue(PistonExtensionPoleBlock.FACING).axis !== direction.axis) return
+		if (pole.getValue(PistonExtensionPoleBlock.FACING).axis != direction.axis) return
 		withBlockEntityDo(worldIn, pos) { be: DepositDrillBlockEntity ->
 			if (be.lastExceptionAccess == null) return@withBlockEntityDo
 			be.lastExceptionAccess = null

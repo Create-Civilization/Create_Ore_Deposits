@@ -140,7 +140,7 @@ class DepositDrillContraption(var orientation: Direction, val retract: Boolean) 
 		world: Level,
 		pos: BlockPos,
 		direction: Direction,
-		frontier: Queue<BlockPos?>
+		frontier: Queue<BlockPos>
 	): Boolean {
 		frontier.clear()
 		val retracting = direction != orientation
