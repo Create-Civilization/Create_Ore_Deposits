@@ -10,8 +10,9 @@ import net.minecraft.world.item.Item
 
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 
-object CreateOreDepositItems {
+object CreateOreDepositsItems {
 
+	@JvmField
 	internal val ITEM_PROVIDER: KotlinDeferredRegister<Item> = KotlinDeferredRegister(
 		Registries.ITEM,
 		CreateOreDeposits.MOD_ID

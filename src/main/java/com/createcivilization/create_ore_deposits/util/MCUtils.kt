@@ -1,7 +1,7 @@
 package com.createcivilization.create_ore_deposits.util
 
-import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositBlocks
-import com.createcivilization.create_ore_deposits.registry.item.CreateOreDepositItems
+import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlocks
+import com.createcivilization.create_ore_deposits.registry.item.CreateOreDepositsItems
 
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
@@ -29,8 +29,8 @@ fun <BLOCK : Block, ITEM : BlockItem> makeBlock(
 	block: () -> BLOCK,
 	item: (block: () -> BLOCK) -> ITEM
 ): Pair<KotlinDeferredHolder<Block, BLOCK>, KotlinDeferredHolder<Item, ITEM>> =
-	CreateOreDepositBlocks.BLOCK_PROVIDER.register(name, block).let {
-		it to CreateOreDepositItems.ITEM_PROVIDER.register(name) { -> item(it) }
+	CreateOreDepositsBlocks.BLOCK_PROVIDER.register(name, block).let {
+		it to CreateOreDepositsItems.ITEM_PROVIDER.register(name) { -> item(it) }
 	}
 
 // Dearest Arctic, Orion & co. If you see these classes and wonder "what the fuck is this?", just don't even try to understand.

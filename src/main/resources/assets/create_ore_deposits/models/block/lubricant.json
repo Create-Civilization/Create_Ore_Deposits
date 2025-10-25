@@ -1,6 +1,5 @@
 {
-    "textures": {
-        "particle": "create_ore_deposits:block/fluid/lubricant_still"
-    }
+	"textures": {
+		"particle": "create_ore_deposits:block/fluid/lubricant_still"
+	}
 }
-

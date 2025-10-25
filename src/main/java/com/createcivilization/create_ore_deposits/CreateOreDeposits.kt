@@ -1,9 +1,9 @@
 @file:Suppress("UnusedExpression") // Calling the objects implicitly invokes their initialisers
 package com.createcivilization.create_ore_deposits
 
-import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositBlocks
-import com.createcivilization.create_ore_deposits.registry.blockentities.CreateOreDepositBlockEntities
-import com.createcivilization.create_ore_deposits.registry.item.CreateOreDepositItems
+import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlocks
+import com.createcivilization.create_ore_deposits.registry.blockentities.CreateOreDepositsBlockEntities
+import com.createcivilization.create_ore_deposits.registry.item.CreateOreDepositsItems
 import com.createcivilization.create_ore_deposits.util.logI
 
 import net.neoforged.bus.api.SubscribeEvent
@@ -20,9 +20,9 @@ object CreateOreDeposits {
 	init {
 		MOD_BUS.addListener(this::commonSetup)
 		FORGE_BUS.register(this)
-		CreateOreDepositItems
-		CreateOreDepositBlocks
-		CreateOreDepositBlockEntities
+		CreateOreDepositsItems
+		CreateOreDepositsBlocks
+		CreateOreDepositsBlockEntities
 	}
 
 	private fun commonSetup(event: FMLCommonSetupEvent) {
