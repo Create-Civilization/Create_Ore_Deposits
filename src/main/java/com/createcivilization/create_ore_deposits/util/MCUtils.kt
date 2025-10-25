@@ -1,8 +1,12 @@
 package com.createcivilization.create_ore_deposits.util
 
+import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositBlocks
+import com.createcivilization.create_ore_deposits.registry.item.CreateOreDepositItems
+
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
@@ -13,15 +17,21 @@ import net.neoforged.neoforge.registries.DeferredRegister
 import java.util.function.Function
 import java.util.function.Supplier
 
-import kotlin.reflect.KProperty
-
 fun Item(): Item = Item(Item.Properties())
-
-operator fun ItemProvider.getValue(thisRef: Any?, property: KProperty<*>): Item = this.invoke()
 
 fun Block(): Block = Block(BlockBehaviour.Properties.of())
 
-operator fun BlockProvider.getValue(thisRef: Any?, property: KProperty<*>): Block = this.invoke()
+/**
+ * Returns a [Pair] of [KotlinDeferredRegister]s, containing [ITEM] and [BLOCK] access.
+ */
+fun <BLOCK : Block, ITEM : BlockItem> makeBlock(
+	name: String,
+	block: () -> BLOCK,
+	item: (block: () -> BLOCK) -> ITEM
+): Pair<KotlinDeferredHolder<Block, BLOCK>, KotlinDeferredHolder<Item, ITEM>> =
+	CreateOreDepositBlocks.BLOCK_PROVIDER.register(name, block).let {
+		it to CreateOreDepositItems.ITEM_PROVIDER.register(name) { -> item(it) }
+	}
 
 // Dearest Arctic, Orion & co. If you see these classes and wonder "what the fuck is this?", just don't even try to understand.
 // it's not worth the effort, registries are a bitch.

@@ -2,6 +2,7 @@
 package com.createcivilization.create_ore_deposits
 
 import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositBlocks
+import com.createcivilization.create_ore_deposits.registry.blockentities.CreateOreDepositBlockEntities
 import com.createcivilization.create_ore_deposits.registry.item.CreateOreDepositItems
 import com.createcivilization.create_ore_deposits.util.logI
 
@@ -21,6 +22,7 @@ object CreateOreDeposits {
 		FORGE_BUS.register(this)
 		CreateOreDepositItems
 		CreateOreDepositBlocks
+		CreateOreDepositBlockEntities
 	}
 
 	private fun commonSetup(event: FMLCommonSetupEvent) {

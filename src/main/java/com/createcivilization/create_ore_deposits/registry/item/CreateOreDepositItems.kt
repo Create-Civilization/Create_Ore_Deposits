@@ -1,14 +1,11 @@
 package com.createcivilization.create_ore_deposits.registry.item
 
 import com.createcivilization.create_ore_deposits.CreateOreDeposits
-import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositBlocks
 import com.createcivilization.create_ore_deposits.util.Item
 import com.createcivilization.create_ore_deposits.util.ItemProvider
 import com.createcivilization.create_ore_deposits.util.KotlinDeferredRegister
-import com.createcivilization.create_ore_deposits.util.Registries
-import com.createcivilization.create_ore_deposits.util.getValue
 
-import net.minecraft.world.item.BlockItem
+import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.Item
 
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
@@ -21,12 +18,7 @@ object CreateOreDepositItems {
 	)
 
 	private val _TEST_ITEM: ItemProvider = ITEM_PROVIDER.register("test", ::Item)
-	val TEST_ITEM: Item by _TEST_ITEM
-
-	private val _EXAMPLE_DEPOSIT_ITEM: ItemProvider = ITEM_PROVIDER.register("example_deposit") { _ ->
-		BlockItem(CreateOreDepositBlocks.EXAMPLE_DEPOSIT, Item.Properties())
-	}
-	val EXAMPLE_DEPOSIT_ITEM: Item by _EXAMPLE_DEPOSIT_ITEM
+	val TEST_ITEM: Item get() = _TEST_ITEM()
 
 	init { ITEM_PROVIDER.register(MOD_BUS) }
 }
