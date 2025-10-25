@@ -73,9 +73,7 @@ class DepositDrillBlock(properties: Properties) : DirectionalAxisKineticBlock(pr
 	enum class DrillState : StringRepresentable {
 		RETRACTED, MOVING, EXTENDED;
 
-		override fun getSerializedName(): String {
-			return Lang.asId(name)
-		}
+		override fun getSerializedName(): String = Lang.asId(name)
 	}
 
 	override fun playerWillDestroy(worldIn: Level, pos: BlockPos, state: BlockState, player: Player?): BlockState {
@@ -95,11 +93,9 @@ class DepositDrillBlock(properties: Properties) : DirectionalAxisKineticBlock(pr
 			break
 		}
 
-		if (pistonHead != null) {
-			BlockPos.betweenClosedStream(pos, pistonHead)
-				.filter { p: BlockPos -> p != pos }
-				.forEach { p: BlockPos -> worldIn.destroyBlock(p, dropBlocks) }
-		}
+		if (pistonHead != null) BlockPos.betweenClosedStream(pos, pistonHead)
+			.filter { p: BlockPos -> p != pos }
+			.forEach { p: BlockPos -> worldIn.destroyBlock(p, dropBlocks) }
 
 		for (offset in 1..<maxPoles) {
 			val currentPos = pos.relative(direction.opposite, offset)

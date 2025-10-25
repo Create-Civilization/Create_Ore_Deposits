@@ -1,6 +1,7 @@
 package com.createcivilization.create_ore_deposits.registry.block
 
 import com.createcivilization.create_ore_deposits.CreateOreDeposits
+import com.createcivilization.create_ore_deposits.registry.block.entries.DepositDrillBlock
 import com.createcivilization.create_ore_deposits.util.Block
 import com.createcivilization.create_ore_deposits.util.BlockProvider
 import com.createcivilization.create_ore_deposits.util.ItemProvider
@@ -39,7 +40,7 @@ object CreateOreDepositsBlocks {
 		_EXAMPLE_DEPOSIT = exampleDeposit
 		_EXAMPLE_DEPOSIT_ITEM = exampleDepositItem
 
-		val (depositDrill, depositDrillItem) = makeBlock("deposit_drill", ::Block) { block ->
+		val (depositDrill, depositDrillItem) = makeBlock("deposit_drill", ::DepositDrillBlock) { block ->
 			BlockItem(block(), Item.Properties())
 		}
 		_DEPOSIT_DRILL = depositDrill
