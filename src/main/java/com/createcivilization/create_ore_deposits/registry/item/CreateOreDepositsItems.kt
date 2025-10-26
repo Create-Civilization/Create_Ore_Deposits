@@ -23,7 +23,7 @@ object CreateOreDepositsItems {
 	val TEST_ITEM: Item get() = _TEST_ITEM()
 
 
-	private val _UNREFINED_IRON_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_iron_ore", ::UnRefinedIronOre);
+	private val _UNREFINED_IRON_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_iron_ore", ::Item);
 	val UNREFINED_IRON_ORE_ITEM: Item get() = _UNREFINED_IRON_ORE_ITEM();
 
 	init { ITEM_PROVIDER.register(MOD_BUS) }
