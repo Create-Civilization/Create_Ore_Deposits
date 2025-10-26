@@ -1,7 +1,6 @@
 package com.createcivilization.create_ore_deposits.registry.item
 
 import com.createcivilization.create_ore_deposits.CreateOreDeposits
-import com.createcivilization.create_ore_deposits.registry.item.entries.UnRefinedIronOre
 import com.createcivilization.create_ore_deposits.util.Item
 import com.createcivilization.create_ore_deposits.util.ItemProvider
 import com.createcivilization.create_ore_deposits.util.KotlinDeferredRegister
@@ -25,6 +24,9 @@ object CreateOreDepositsItems {
 
 	private val _UNREFINED_IRON_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_iron_ore", ::Item);
 	val UNREFINED_IRON_ORE_ITEM: Item get() = _UNREFINED_IRON_ORE_ITEM();
+
+	//Fluids
+
 
 	init { ITEM_PROVIDER.register(MOD_BUS) }
 }

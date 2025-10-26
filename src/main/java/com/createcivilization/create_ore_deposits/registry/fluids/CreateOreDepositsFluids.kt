@@ -4,7 +4,8 @@ import com.createcivilization.create_ore_deposits.CreateOreDeposits
 import com.createcivilization.create_ore_deposits.util.KotlinDeferredRegister
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.level.material.Fluid
-import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
+import net.neoforged.neoforge.fluids.FluidType
+import net.neoforged.neoforge.registries.NeoForgeRegistries
 
 class CreateOreDepositsFluids {
 
@@ -13,5 +14,4 @@ class CreateOreDepositsFluids {
 		Registries.FLUID,
 		CreateOreDeposits.MOD_ID
 	)
-
 }
