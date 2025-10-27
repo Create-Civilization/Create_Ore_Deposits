@@ -27,7 +27,7 @@ object CreateOreDepositsFluids {
 
 	val SLAG: FluidEntry<BaseFlowingFluid.Flowing?>? =
 		REGISTRATE.fluid("slag", CreateOreDeposits.rl("block/fluid/slag_still"), CreateOreDeposits.rl("block/fluid/slag_flow"))
-			.properties{b -> b.viscosity(1500).density(500)}.fluidProperties{p -> p.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(25).explosionResistance(0f)}
-			.block{p, t -> SlagFluidBlock(p, t)}
-			.register() as FluidEntry<BaseFlowingFluid.Flowing?>?
+			.properties{b -> b.viscosity(1500).density(500)}.fluidProperties{p -> p.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(3).explosionResistance(0f)}
+			.block{p, t -> SlagFluidBlock(p, t)}.build()
+			.register()
 }
