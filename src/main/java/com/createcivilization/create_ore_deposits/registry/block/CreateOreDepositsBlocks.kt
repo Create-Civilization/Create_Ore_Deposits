@@ -32,7 +32,7 @@ object CreateOreDepositsBlocks {
 	val EXAMPLE_DEPOSIT_ITEM: Item get() = _EXAMPLE_DEPOSIT_ITEM()
 
 	val DRILL_BLOCK: BlockEntry<DepositDrillBlock> = CreateOreDeposits.REGISTRATE.block (
-		"drill_block"
+		"deposit_drill"
 	) { properties ->
 		DepositDrillBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion())
 	}

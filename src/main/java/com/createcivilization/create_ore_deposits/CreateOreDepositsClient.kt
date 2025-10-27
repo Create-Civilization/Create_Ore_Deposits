@@ -1,7 +1,6 @@
 package com.createcivilization.create_ore_deposits
 
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModels
-import net.createmod.ponder.foundation.PonderIndex
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.common.Mod
@@ -18,13 +17,12 @@ class CreateOreDepositsClient(modEventBus: IEventBus) {
 
 	companion object {
 		fun onCtorClient(modEventBus: IEventBus) {
-			val neoEventBus = NeoForge.EVENT_BUS
-
 			modEventBus.addListener(Consumer { event: FMLClientSetupEvent -> clientInit(event) })
 		}
 
-		fun clientInit(event: FMLClientSetupEvent?) {
+		fun clientInit(event: FMLClientSetupEvent) {
 			DepositDrillBlockModels.init()
+//			PonderIndex.addPlugin(CODPonderPlugin())
 		}
 	}
 }

@@ -8,6 +8,7 @@ import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterLayerDefinitions
 
 
+@Suppress("unused") // Kotlin can't see that Event subscriber is using this.
 @EventBusSubscriber(modid = CreateOreDeposits.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = [Dist.CLIENT])
 object ModClientBusEvents {
 	@SubscribeEvent

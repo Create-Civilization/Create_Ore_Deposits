@@ -1,6 +1,5 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill
 
-import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModels.Companion.DRILL_COIL
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModels.Companion.HOSE
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModels.Companion.DRILL_MAGNET
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModels.Companion.HOSE_HALF_MAGNET
@@ -26,23 +25,23 @@ class DepositDrillBlockVisual(dispatcher: VisualizationContext,
 	}
 
 	override fun getMagnetModel(): Instancer<TransformedInstance> {
-		return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(DRILL_MAGNET));
+		return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(DRILL_MAGNET))
 	}
 
 	override fun getHalfMagnetModel(): Instancer<TransformedInstance> {
-		return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(HOSE_HALF_MAGNET));
+		return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(HOSE_HALF_MAGNET))
 	}
 
 	override fun getCoilModel(): Instancer<ScrollInstance> {
-		return instancerProvider().instancer(AllInstanceTypes.SCROLLING, Models.partial(DRILL_COIL));
+		return instancerProvider().instancer(AllInstanceTypes.SCROLLING, Models.partial(AllPartialModels.HOSE_COIL))
 	}
 
 	override fun getHalfRopeModel(): Instancer<TransformedInstance> {
-		return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(HOSE_HALF));
+		return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(HOSE_HALF))
 	}
 
 	override fun getOffset(pt: Float): Float {
-		return blockEntity.getInterpolatedOffset(pt);
+		return blockEntity.getInterpolatedOffset(pt)
 	}
 
 	override fun isRunning(): Boolean {
@@ -50,6 +49,6 @@ class DepositDrillBlockVisual(dispatcher: VisualizationContext,
 	}
 
 	override fun getCoilAnimation(): SpriteShiftEntry {
-		return AllSpriteShifts.HOSE_PULLEY_COIL;
+		return AllSpriteShifts.HOSE_PULLEY_COIL
 	}
 }

@@ -21,11 +21,12 @@ object CreateOreDepositsBlockEntities {
     )
 
 	private val _DEPOSIT_DRILL: BlockEntityEntry<DepositDrillBlockEntity> = CreateOreDeposits.REGISTRATE
-		.blockEntity("deposit_drill", ::DepositDrillBlockEntity)
+		.blockEntity("deposit_drill_entity", ::DepositDrillBlockEntity)
 		.visual { SimpleBlockEntityVisualizer.Factory(::DepositDrillBlockVisual) }
 		.validBlock(CreateOreDepositsBlocks.DRILL_BLOCK)
 		.renderer { NonNullFunction(::DepositDrillBlockRenderer) }
 		.register()
+
 	val DEPOSIT_DRILL: BlockEntityType<DepositDrillBlockEntity> get() = _DEPOSIT_DRILL.get()
 
 	init { BLOCK_ENTITY_PROVIDER.register(MOD_BUS) }
