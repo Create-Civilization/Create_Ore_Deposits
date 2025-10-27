@@ -2,7 +2,8 @@
 package com.createcivilization.create_ore_deposits
 
 import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlocks
-import com.createcivilization.create_ore_deposits.registry.blockentities.CreateOreDepositsBlockEntities
+import com.createcivilization.create_ore_deposits.registry.blockentity.CreateOreDepositsBlockEntities
+import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
 import com.createcivilization.create_ore_deposits.registry.item.CreateOreDepositsItems
 import com.createcivilization.create_ore_deposits.util.logI
 
@@ -23,6 +24,7 @@ object CreateOreDeposits {
 		CreateOreDepositsItems
 		CreateOreDepositsBlocks
 		CreateOreDepositsBlockEntities
+		CreateOreDepositsFluids
 	}
 
 	private fun commonSetup(event: FMLCommonSetupEvent) {

@@ -1,7 +1,7 @@
-package com.createcivilization.create_ore_deposits.registry.blockentities.entries
+package com.createcivilization.create_ore_deposits.registry.blockentity.entries
 
 import com.createcivilization.create_ore_deposits.registry.block.entries.DepositDrillBlock
-import com.createcivilization.create_ore_deposits.registry.blockentities.CreateOreDepositsBlockEntities
+import com.createcivilization.create_ore_deposits.registry.blockentity.CreateOreDepositsBlockEntities
 
 import com.simibubi.create.AllBlocks
 import com.simibubi.create.AllSoundEvents

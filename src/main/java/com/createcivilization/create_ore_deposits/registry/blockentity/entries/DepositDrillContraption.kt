@@ -1,4 +1,4 @@
-package com.createcivilization.create_ore_deposits.registry.blockentities.entries
+package com.createcivilization.create_ore_deposits.registry.blockentity.entries
 
 import com.createcivilization.create_ore_deposits.registry.block.entries.DepositDrillBlock
 
@@ -32,7 +32,7 @@ import org.apache.commons.lang3.tuple.Pair
 
 import java.util.*
 
-class DepositDrillContraption(var orientation: Direction, val retract: Boolean) : TranslatingContraption() {
+data class DepositDrillContraption(var orientation: Direction, val retract: Boolean) : TranslatingContraption() {
 
 	var extensionLength: Int = 0
 	var initialExtensionProgress: Int = 0

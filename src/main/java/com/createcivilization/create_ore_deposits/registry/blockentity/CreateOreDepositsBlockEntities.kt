@@ -1,8 +1,8 @@
-package com.createcivilization.create_ore_deposits.registry.blockentities
+package com.createcivilization.create_ore_deposits.registry.blockentity
 
 import com.createcivilization.create_ore_deposits.CreateOreDeposits
 import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlocks
-import com.createcivilization.create_ore_deposits.registry.blockentities.entries.DepositDrillBlockEntity
+import com.createcivilization.create_ore_deposits.registry.blockentity.entries.DepositDrillBlockEntity
 import com.createcivilization.create_ore_deposits.util.KotlinDeferredRegister
 
 import net.minecraft.core.registries.Registries

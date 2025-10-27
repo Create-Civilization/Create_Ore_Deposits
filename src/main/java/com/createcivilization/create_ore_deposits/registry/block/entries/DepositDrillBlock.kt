@@ -1,8 +1,8 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries
 
 import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlocks
-import com.createcivilization.create_ore_deposits.registry.blockentities.CreateOreDepositsBlockEntities
-import com.createcivilization.create_ore_deposits.registry.blockentities.entries.DepositDrillBlockEntity
+import com.createcivilization.create_ore_deposits.registry.blockentity.CreateOreDepositsBlockEntities
+import com.createcivilization.create_ore_deposits.registry.blockentity.entries.DepositDrillBlockEntity
 
 import com.simibubi.create.AllBlocks
 import com.simibubi.create.AllShapes
