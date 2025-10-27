@@ -2,6 +2,8 @@ package com.createcivilization.create_ore_deposits.registry.block
 
 import com.createcivilization.create_ore_deposits.CreateOreDeposits
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlock
+import com.createcivilization.create_ore_deposits.registry.block.entries.DepositDrillBlock
+import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
 import com.createcivilization.create_ore_deposits.util.Block
 import com.createcivilization.create_ore_deposits.util.BlockProvider
 import com.createcivilization.create_ore_deposits.util.ItemProvider
@@ -15,6 +17,10 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockBehaviour
+import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.LiquidBlock
+import net.minecraft.world.level.block.state.BlockBehaviour
+import net.minecraft.world.level.material.MapColor
 
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 
@@ -38,6 +44,15 @@ object CreateOreDepositsBlocks {
 	}
 		.simpleItem()
 		.register()
+
+	// Directly registering because it doesn't really need an item.
+	private val _TEST_FLUID: BlockProvider = BLOCK_PROVIDER.register("test") { ->
+		LiquidBlock(
+			CreateOreDepositsFluids.TEST_FLUID,
+			BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).mapColor(MapColor.NONE)
+		)
+	}
+	val TEST_FLUID: Block get() = _TEST_FLUID()
 
 	init {
 		val (exampleDeposit, exampleDepositItem) = makeBlock("example_deposit", ::Block) { block ->
