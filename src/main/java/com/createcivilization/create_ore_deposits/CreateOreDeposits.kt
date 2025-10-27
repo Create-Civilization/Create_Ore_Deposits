@@ -3,10 +3,11 @@ package com.createcivilization.create_ore_deposits
 
 import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlockEntities
 import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlocks
-import com.createcivilization.create_ore_deposits.registry.blockentity.CreateOreDepositsBlockEntities
 import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
 import com.createcivilization.create_ore_deposits.registry.item.CreateOreDepositsItems
 import com.createcivilization.create_ore_deposits.util.logI
+import com.simibubi.create.foundation.data.CreateRegistrate
+import net.minecraft.resources.ResourceLocation
 
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.Mod

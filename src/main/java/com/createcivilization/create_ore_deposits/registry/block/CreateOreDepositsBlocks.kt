@@ -2,7 +2,6 @@ package com.createcivilization.create_ore_deposits.registry.block
 
 import com.createcivilization.create_ore_deposits.CreateOreDeposits
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlock
-import com.createcivilization.create_ore_deposits.registry.block.entries.DepositDrillBlock
 import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
 import com.createcivilization.create_ore_deposits.util.Block
 import com.createcivilization.create_ore_deposits.util.BlockProvider
@@ -15,8 +14,6 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.Blocks
-import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.LiquidBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
@@ -37,7 +34,7 @@ object CreateOreDepositsBlocks {
 	private val _EXAMPLE_DEPOSIT_ITEM: ItemProvider
 	val EXAMPLE_DEPOSIT_ITEM: Item get() = _EXAMPLE_DEPOSIT_ITEM()
 
-	val DRILL_BLOCK: BlockEntry<DepositDrillBlock> = CreateOreDeposits.REGISTRATE.block (
+	val DRILL_BLOCK: BlockEntry<DepositDrillBlock> = CreateOreDeposits.REGISTRATE.block(
 		"deposit_drill"
 	) { properties ->
 		DepositDrillBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion())
