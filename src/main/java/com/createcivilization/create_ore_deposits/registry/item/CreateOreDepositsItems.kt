@@ -22,10 +22,15 @@ object CreateOreDepositsItems {
 	val TEST_ITEM: Item get() = _TEST_ITEM()
 
 
+	//Iron Stuff
 	private val _UNREFINED_IRON_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_iron_ore", ::Item);
 	val UNREFINED_IRON_ORE_ITEM: Item get() = _UNREFINED_IRON_ORE_ITEM();
 
-	//Fluids
+	private val _UNREFINED_IRON_ORE_POWDER_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_iron_ore_powder", ::Item);
+	val UNREFINED_IRON_ORE_POWDER_ITEM: Item get() = _UNREFINED_IRON_ORE_POWDER_ITEM();
+
+	private val _IRON_ORE_POWDER_ITEM: ItemProvider = ITEM_PROVIDER.register("iron_ore_powder", ::Item);
+	val IRON_ORE_POWDER_ITEM: Item get() = _IRON_ORE_POWDER_ITEM();
 
 
 	init { ITEM_PROVIDER.register(MOD_BUS) }
