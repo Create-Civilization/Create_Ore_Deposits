@@ -4,6 +4,9 @@
 
 	"item.create_ore_deposits.test": "Test Item",
 	"item.create_ore_deposits.example_deposit": "Example Ore Deposit",
+	"item.create_ore_deposits.unrefined_iron_ore": "Unrefined Iron Ore",
+	"item.create_ore_deposits.unrefined_iron_ore_powder": "Unrefined Iron Ore Powder",
+	"item.create_ore_deposits.iron_ore_powder": "Iron Ore Powder",
 
 	"fluid.create_ore_deposits.lubricant": "Lubricant",
 

@@ -8,15 +8,13 @@
 	"processing_time": 250,
 	"results": [
 		{
-			"id": "minecraft:sand"
+			"count": 3,
+			"id": "create_ore_deposits:unrefined_iron_ore_powder"
 		},
 		{
-			"chance": 0.1,
-			"id": "minecraft:flint"
-		},
-		{
-			"chance": 0.05,
-			"id": "minecraft:clay_ball"
+			"count": 1,
+			"chance": 0.25,
+			"id": "create_ore_deposits:unrefined_iron_ore_powder"
 		}
 	]
 }
