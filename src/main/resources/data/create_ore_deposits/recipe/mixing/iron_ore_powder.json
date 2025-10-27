@@ -9,7 +9,11 @@
 	"results": [
 		{
 			"amount": 50,
-			"id": "minecraft:lava"
+			"id": "create_ore_deposits:molten_iron"
+		},
+		{
+			"amount": 15,
+			"id": "create_ore_deposits:slag"
 		}
 	]
 }
