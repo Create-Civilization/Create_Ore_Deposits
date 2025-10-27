@@ -1,17 +1,20 @@
 package com.createcivilization.create_ore_deposits.registry.block
 
 import com.createcivilization.create_ore_deposits.CreateOreDeposits
-import com.createcivilization.create_ore_deposits.registry.block.entries.DepositDrillBlock
+import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlock
 import com.createcivilization.create_ore_deposits.util.Block
 import com.createcivilization.create_ore_deposits.util.BlockProvider
 import com.createcivilization.create_ore_deposits.util.ItemProvider
 import com.createcivilization.create_ore_deposits.util.KotlinDeferredRegister
 import com.createcivilization.create_ore_deposits.util.makeBlock
+import com.tterrag.registrate.util.entry.BlockEntry
 
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.state.BlockBehaviour
 
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 
@@ -28,10 +31,13 @@ object CreateOreDepositsBlocks {
 	private val _EXAMPLE_DEPOSIT_ITEM: ItemProvider
 	val EXAMPLE_DEPOSIT_ITEM: Item get() = _EXAMPLE_DEPOSIT_ITEM()
 
-	private val _DEPOSIT_DRILL: BlockProvider
-	val DEPOSIT_DRILL: Block get() = _DEPOSIT_DRILL()
-	private val _DEPOSIT_DRILL_ITEM: ItemProvider
-	val DEPOSIT_DRILL_ITEM: Item get() = _DEPOSIT_DRILL_ITEM()
+	val DRILL_BLOCK: BlockEntry<DepositDrillBlock> = CreateOreDeposits.REGISTRATE.block (
+		"drill_block"
+	) { properties ->
+		DepositDrillBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion())
+	}
+		.simpleItem()
+		.register()
 
 	init {
 		val (exampleDeposit, exampleDepositItem) = makeBlock("example_deposit", ::Block) { block ->
@@ -39,12 +45,6 @@ object CreateOreDepositsBlocks {
 		}
 		_EXAMPLE_DEPOSIT = exampleDeposit
 		_EXAMPLE_DEPOSIT_ITEM = exampleDepositItem
-
-		val (depositDrill, depositDrillItem) = makeBlock("deposit_drill", ::DepositDrillBlock) { block ->
-			BlockItem(block(), Item.Properties())
-		}
-		_DEPOSIT_DRILL = depositDrill
-		_DEPOSIT_DRILL_ITEM = depositDrillItem
 
 		BLOCK_PROVIDER.register(MOD_BUS)
 	}
