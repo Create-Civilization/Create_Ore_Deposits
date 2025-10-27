@@ -25,7 +25,7 @@ object CreateOreDepositsFluids {
 	val SLAG_STILL: ResourceLocation get() = fluidRL("slag", false);
 	val SLAG_FLOWING: ResourceLocation get() = fluidRL("slag", true);
 
-	//Molten Iron
+	//Molten Iron Textures
 	val MOLTEN_IRON_STILL: ResourceLocation get() = fluidRL("molten_iron", false);
 	val MOLTEN_IRON_FLOWING: ResourceLocation get() = fluidRL("molten_iron", true);
 

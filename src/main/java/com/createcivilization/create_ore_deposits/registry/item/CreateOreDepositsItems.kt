@@ -30,5 +30,9 @@ object CreateOreDepositsItems {
 	private val _IRON_ORE_POWDER_ITEM: ItemProvider = ITEM_PROVIDER.register("iron_ore_powder", ::Item)
 	val IRON_ORE_POWDER_ITEM: Item get() = _IRON_ORE_POWDER_ITEM()
 
+	//Cast TEMP THIS WILL BE BOOFED
+	private val _CAST_ITEM: ItemProvider = ITEM_PROVIDER.register("cast", ::Item)
+	val CAST_ITEM: Item get() = _CAST_ITEM()
+
 	init { ITEM_PROVIDER.register(MOD_BUS) }
 }
