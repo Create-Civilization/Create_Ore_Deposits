@@ -1,32 +1,29 @@
 package com.createcivilization.create_ore_deposits.registry.fluid
 
 import com.createcivilization.create_ore_deposits.CreateOreDeposits
-import com.createcivilization.create_ore_deposits.registry.fluid.entries.TestFluid
-import com.createcivilization.create_ore_deposits.util.KotlinDeferredRegister
+import com.createcivilization.create_ore_deposits.CreateOreDeposits.REGISTRATE
+import com.tterrag.registrate.util.entry.FluidEntry
+import net.neoforged.neoforge.fluids.BaseFlowingFluid
 
-import net.minecraft.core.registries.Registries
-import net.minecraft.world.level.material.FlowingFluid
-import net.minecraft.world.level.material.Fluid
 
-import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 
 /**
  * DO NOT USE NEO'S HEAVILY ABSTRACTED FLUID CLASS! IT WORKS VERY DIFFERENTLY! TOO MUCH OF A HASSLE!
  */
 object CreateOreDepositsFluids {
 
-	@JvmField
-	internal val FLUID_PROVIDER: KotlinDeferredRegister<Fluid> = KotlinDeferredRegister(
-		Registries.FLUID,
-		CreateOreDeposits.MOD_ID
+
+	val LUBRICANT: FluidEntry<BaseFlowingFluid.Flowing?>? = REGISTRATE.fluid(
+		"lubricant",
+		CreateOreDeposits.rl("block/fluid/lubricant_still"),
+		CreateOreDeposits.rl("block/fluid/lubricant_flow")
 	)
-
-	private val _TEST_FLUID: () -> FlowingFluid = FLUID_PROVIDER.register("test", TestFluid::Source)
-	val TEST_FLUID: FlowingFluid get() = _TEST_FLUID()
-	private val _TEST_FLUID_FLOWING: () -> FlowingFluid = FLUID_PROVIDER.register("flowing_test", TestFluid::Flowing)
-	val TEST_FLUID_FLOWING: FlowingFluid get() = _TEST_FLUID_FLOWING()
-
-	init {
-		FLUID_PROVIDER.register(MOD_BUS)
-	}
+		.properties { b -> b.viscosity(1500)
+				.density(500)
+		}
+		.fluidProperties { p -> p.levelDecreasePerBlock(2)
+				.tickRate(25)
+				.slopeFindDistance(3)
+				.explosionResistance(100f)
+		}.register()
 }

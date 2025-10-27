@@ -20,11 +20,6 @@ object CreateOreDepositsItems {
 		CreateOreDeposits.MOD_ID
 	)
 
-	private val _TEST_BUCKET: ItemProvider = ITEM_PROVIDER.register("test_bucket") { ->
-		BucketItem(CreateOreDepositsFluids.TEST_FLUID, Item.Properties())
-	}
-	val TEST_BUCKET: Item get() = _TEST_BUCKET()
-
 	// Iron Stuff
 	private val _UNREFINED_IRON_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_iron_ore", ::Item)
 	val UNREFINED_IRON_ORE_ITEM: Item get() = _UNREFINED_IRON_ORE_ITEM()
