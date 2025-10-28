@@ -13,6 +13,7 @@ import net.createmod.catnip.render.SpriteShiftEntry
 import net.createmod.catnip.render.SuperByteBuffer
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.core.Direction
+import net.minecraft.world.level.block.state.properties.BlockStateProperties
 
 
 class DepositDrillBlockRenderer(
@@ -21,7 +22,7 @@ class DepositDrillBlockRenderer(
 
 	protected override fun getShaftAxis(be: DepositDrillBlockEntity): Direction.Axis {
 		return be.blockState
-			.getValue(HosePulleyBlock.HORIZONTAL_FACING)
+			.getValue(BlockStateProperties.HORIZONTAL_FACING)
 			.clockWise
 			.axis;
 	}
