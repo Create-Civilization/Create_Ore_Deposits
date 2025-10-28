@@ -20,7 +20,7 @@ class FluidHandler(capacity: Int, allowedFluids: MutableSet<Fluid>?) : IFluidHan
 	private var allowedFluids: MutableSet<Fluid>?
 
 	init {
-		this.tank = FluidTank(capacity, Predicate { fluidStack: FluidStack? -> isAllowed(fluidStack!!.fluid) })
+		this.tank = FluidTank(capacity, Predicate { fluidStack: FluidStack -> isAllowed(fluidStack.fluid) })
 		this.allowedFluids = allowedFluids
 	}
 

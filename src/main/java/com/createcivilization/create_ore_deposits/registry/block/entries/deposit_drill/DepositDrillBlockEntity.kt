@@ -1,5 +1,6 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill
 
+import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
 import com.createcivilization.create_ore_deposits.registry.fluid.FluidHandler
 import com.simibubi.create.content.kinetics.base.BlockBreakingKineticBlockEntity
 import com.simibubi.create.foundation.utility.BlockHelper
@@ -13,6 +14,7 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
+import net.minecraft.world.level.material.Fluid
 import net.minecraft.world.level.material.Fluids
 import net.neoforged.neoforge.items.IItemHandler
 import net.neoforged.neoforge.items.ItemStackHandler
@@ -34,7 +36,7 @@ class DepositDrillBlockEntity(
 	private var lastBlock: Block? = null
 
 	private val itemHandler: IItemHandler = ItemStackHandler()
-	private val fluidHandler: FluidHandler = FluidHandler(1000, null) // Put lube here
+	private val fluidHandler: FluidHandler = FluidHandler(1000, mutableSetOf(CreateOreDepositsFluids.LUBRICANT.get(), CreateOreDepositsFluids.LUBRICANT.getSource())) // Put lube here
 
 	override fun tick() {
 		super.tick()
