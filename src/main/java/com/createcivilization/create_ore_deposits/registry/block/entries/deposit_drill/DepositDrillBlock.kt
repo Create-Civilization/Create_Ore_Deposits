@@ -2,7 +2,6 @@ package com.createcivilization.create_ore_deposits.registry.block.entries.deposi
 
 import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlockEntities
 import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock
-import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock
 import com.simibubi.create.foundation.block.IBE
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction

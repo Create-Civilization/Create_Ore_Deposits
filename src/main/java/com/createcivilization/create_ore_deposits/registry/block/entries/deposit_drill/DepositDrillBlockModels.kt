@@ -1,6 +1,5 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill
 
-import com.createcivilization.create_ore_deposits.CreateOreDeposits
 import com.createcivilization.create_ore_deposits.CreateOreDeposits.asResource
 import dev.engine_room.flywheel.lib.model.baked.PartialModel
 import net.createmod.catnip.render.SpriteShiftEntry
