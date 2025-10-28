@@ -1,5 +1,6 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill
 
+import com.createcivilization.create_ore_deposits.registry.fluid.FluidHandler
 import com.simibubi.create.content.kinetics.base.BlockBreakingKineticBlockEntity
 import com.simibubi.create.foundation.utility.BlockHelper
 import com.simibubi.create.foundation.utility.ServerSpeedProvider
@@ -12,6 +13,7 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
+import net.minecraft.world.level.material.Fluids
 import net.neoforged.neoforge.items.IItemHandler
 import net.neoforged.neoforge.items.ItemStackHandler
 import java.util.function.Consumer
@@ -29,9 +31,10 @@ class DepositDrillBlockEntity(
 	// The Float value distance from the bottom of the drill, should always be positive
 	private var drillOffset: Float = 0f
 	private var lerpedOffset: LerpedFloat = LerpedFloat.linear().startWithValue(min)
-	private lateinit var lastBlock: Block
+	private var lastBlock: Block? = null
 
 	private val itemHandler: IItemHandler = ItemStackHandler()
+	private val fluidHandler: FluidHandler = FluidHandler(1000, null) // Put lube here
 
 	override fun tick() {
 		super.tick()
@@ -93,6 +96,11 @@ class DepositDrillBlockEntity(
 		// Checks if the axis is the same as the facing axis and if the axis direction is the opposite of the facing
 		// In short, checks if the direction is the opposite of the facing direction
 		return if (direction.axis == facingAxis && direction.axisDirection == Direction.AxisDirection.NEGATIVE) itemHandler else null
+	}
+
+	fun getFluidHandler(direction: Direction): FluidHandler? {
+		// Checks if the axis is the Y axis (up and down) and if its positive (just up) thus from the top
+		return if (direction.axis == Direction.Axis.Y && direction.axisDirection == Direction.AxisDirection.POSITIVE) fluidHandler else null
 	}
 
 }

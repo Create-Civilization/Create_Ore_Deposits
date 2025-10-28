@@ -17,5 +17,11 @@ object CreateOreDepositsCapabilities {
 			CreateOreDepositsBlockEntities.DEPOSIT_DRILL,
 			DepositDrillBlockEntity::getItemHandler
 		)
+
+		event.registerBlockEntity(
+			Capabilities.FluidHandler.BLOCK,
+			CreateOreDepositsBlockEntities.DEPOSIT_DRILL,
+			DepositDrillBlockEntity::getFluidHandler
+		)
 	}
 }
