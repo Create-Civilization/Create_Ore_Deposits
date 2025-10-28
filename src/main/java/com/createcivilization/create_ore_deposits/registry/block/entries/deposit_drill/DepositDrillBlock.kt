@@ -11,7 +11,6 @@ import net.minecraft.world.level.LevelReader
 import net.minecraft.world.level.block.RenderShape
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
-import net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING
 import java.util.function.Function
 
 
@@ -35,7 +34,7 @@ class DepositDrillBlock(properties: Properties) : HorizontalAxisKineticBlock(pro
 		state: BlockState,
 		face: Direction
 	): Boolean {
-		return face == (state.getValue(HORIZONTAL_FACING)).clockWise
+		return face.axis == (state.getValue(HORIZONTAL_AXIS))
 	}
 
 	override fun onBlockEntityUse(
@@ -51,6 +50,7 @@ class DepositDrillBlock(properties: Properties) : HorizontalAxisKineticBlock(pro
 
 
 	// This code is required if you make it HorizontalKineticBlock
+	// Switch Horizontal_axis to Horizontal_facing
 //	override fun getRotationAxis(blockState: BlockState): Direction.Axis {
 //		return (blockState.getValue(HORIZONTAL_FACING)).clockWise.axis
 //	}

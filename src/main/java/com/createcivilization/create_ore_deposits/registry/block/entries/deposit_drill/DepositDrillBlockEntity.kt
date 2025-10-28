@@ -19,7 +19,7 @@ class DepositDrillBlockEntity(
 ) : BlockBreakingKineticBlockEntity(type, pos, blockState) {
 
 	// The Float value distance from the bottom of the drill, should always be positive
-	private var drillOffset: Float = min.toFloat()
+	private var drillOffset: Float = 0f
 	private var lerpedOffset: LerpedFloat = LerpedFloat.linear().startWithValue(min)
 
 	override fun tick() {
@@ -40,7 +40,7 @@ class DepositDrillBlockEntity(
 	}
 
 	fun getTargetPos() : BlockPos {
-		return blockPos.offset(0, (-lerpedOffset.value - 0.5).toInt(), 0)
+		return blockPos.offset(0, (-lerpedOffset.value.toInt() - 1), 0)
 	}
 
 	fun getInterpolatedOffset(partialTicks: Float) : Float {
