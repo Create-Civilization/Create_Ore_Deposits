@@ -13,7 +13,6 @@ import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
 import net.neoforged.neoforge.event.server.ServerStartingEvent
-
 import thedarkcolour.kotlinforforge.neoforge.forge.FORGE_BUS
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 
@@ -43,6 +42,10 @@ object CreateOreDeposits {
 		logI("Starting server...")
 
 		logI("Server started successfully.")
+	}
+
+	fun rl(path: String): ResourceLocation {
+		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path)
 	}
 
 	const val MOD_ID: String = "create_ore_deposits"

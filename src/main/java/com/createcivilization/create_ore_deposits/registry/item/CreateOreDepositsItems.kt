@@ -1,13 +1,11 @@
 package com.createcivilization.create_ore_deposits.registry.item
 
 import com.createcivilization.create_ore_deposits.CreateOreDeposits
-import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
 import com.createcivilization.create_ore_deposits.util.Item
 import com.createcivilization.create_ore_deposits.util.ItemProvider
 import com.createcivilization.create_ore_deposits.util.KotlinDeferredRegister
 
 import net.minecraft.core.registries.Registries
-import net.minecraft.world.item.BucketItem
 import net.minecraft.world.item.Item
 
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
@@ -19,11 +17,6 @@ object CreateOreDepositsItems {
 		Registries.ITEM,
 		CreateOreDeposits.MOD_ID
 	)
-
-	private val _TEST_BUCKET: ItemProvider = ITEM_PROVIDER.register("test_bucket") { ->
-		BucketItem(CreateOreDepositsFluids.TEST_FLUID, Item.Properties())
-	}
-	val TEST_BUCKET: Item get() = _TEST_BUCKET()
 
 	// Iron Stuff
 	private val _UNREFINED_IRON_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_iron_ore", ::Item)

@@ -4,7 +4,6 @@ import com.createcivilization.create_ore_deposits.registry.block.entries.deposit
 import com.simibubi.create.AllPartialModels
 import com.simibubi.create.AllSpriteShifts
 import com.simibubi.create.content.contraptions.pulley.AbstractPulleyRenderer
-import com.simibubi.create.content.fluids.hosePulley.HosePulleyBlock
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModels.Companion.HOSE
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModels.Companion.HOSE_HALF
 import dev.engine_room.flywheel.lib.model.baked.PartialModel
@@ -13,6 +12,7 @@ import net.createmod.catnip.render.SpriteShiftEntry
 import net.createmod.catnip.render.SuperByteBuffer
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.core.Direction
+import net.minecraft.world.level.block.state.properties.BlockStateProperties
 
 
 class DepositDrillBlockRenderer(
@@ -21,13 +21,13 @@ class DepositDrillBlockRenderer(
 
 	protected override fun getShaftAxis(be: DepositDrillBlockEntity): Direction.Axis {
 		return be.blockState
-			.getValue(HosePulleyBlock.HORIZONTAL_FACING)
+			.getValue(BlockStateProperties.HORIZONTAL_FACING)
 			.clockWise
-			.axis;
+			.axis
 	}
 
 	protected override fun getCoil(): PartialModel {
-		return AllPartialModels.HOSE_COIL;
+		return AllPartialModels.HOSE_COIL
 	}
 
 	protected override fun getCoilShift(): SpriteShiftEntry? {
@@ -39,7 +39,7 @@ class DepositDrillBlockRenderer(
 	}
 
 	override fun renderMagnet(be: DepositDrillBlockEntity): SuperByteBuffer {
-		return CachedBuffers.partial(DRILL_MAGNET, be.blockState);
+		return CachedBuffers.partial(DRILL_MAGNET, be.blockState)
 	}
 
 	override fun getOffset(
