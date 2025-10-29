@@ -2,14 +2,15 @@ package com.createcivilization.create_ore_deposits.registry.block.entries.deposi
 
 import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
 import com.createcivilization.create_ore_deposits.registry.fluid.FluidHandler
-import com.createcivilization.create_ore_deposits.util.logI
 import com.simibubi.create.content.kinetics.base.BlockBreakingKineticBlockEntity
 import com.simibubi.create.foundation.utility.BlockHelper
 import com.simibubi.create.foundation.utility.ServerSpeedProvider
 import net.createmod.catnip.animation.LerpedFloat
+import net.createmod.catnip.nbt.NBTHelper
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.Block
@@ -37,7 +38,7 @@ class DepositDrillBlockEntity(
 	private var lerpedOffset: LerpedFloat = LerpedFloat.linear().startWithValue(min)
 	private var lastBlock: Block? = null
 
-	private val itemHandler: IItemHandler = ItemStackHandler()
+	private val itemHandler: ItemStackHandler = ItemStackHandler()
 	private val fluidHandler: FluidHandler = FluidHandler(1000, mutableSetOf(CreateOreDepositsFluids.LUBRICANT.get(), CreateOreDepositsFluids.LUBRICANT.getSource())) // Put lube here
 
 	override fun tick() {
@@ -87,16 +88,26 @@ class DepositDrillBlockEntity(
 	}
 
 	override fun read(compound: CompoundTag, registries: HolderLookup.Provider, clientPacket: Boolean) {
-		compound.getCompound("FluidHandler").let { fluidNBT ->
-			fluidHandler.deserializeNBT(registries, fluidNBT)
-		}
+		val nbt = compound.getCompound("Deposit_Drill")
+
+		drillOffset = nbt.getFloat("DrillOffset")
+		if (nbt.contains("LastBlock"))
+			lastBlock = BuiltInRegistries.BLOCK.get(NBTHelper.readResourceLocation(nbt, "LastBlock"))
+		itemHandler.deserializeNBT(registries, nbt.getCompound("ItemHandler"))
+		fluidHandler.deserializeNBT(registries, nbt.getCompound("FluidHandler"))
+
 		super.read(compound, registries, clientPacket)
-		logI("reading: ${compound}\nisClient:${level?.isClientSide}")
-		logI(fluidHandler.getFluidInTank(0).amount)
 	}
 
+
 	override fun write(compound: CompoundTag, registries: HolderLookup.Provider, clientPacket: Boolean) {
-		compound.put("FluidHandler", fluidHandler.serializeNBT(registries))
+		val nbt = CompoundTag()
+		nbt.putFloat("DrillOffset", drillOffset)
+		if (lastBlock != null) NBTHelper.writeResourceLocation(nbt, "LastBlock", BuiltInRegistries.BLOCK.getKey(lastBlock!!))
+		nbt.put("ItemHandler", itemHandler.serializeNBT(registries))
+		nbt.put("FluidHandler", fluidHandler.serializeNBT(registries))
+
+		compound.put("Deposit_Drill", nbt)
 		super.write(compound, registries, clientPacket)
 	}
 
