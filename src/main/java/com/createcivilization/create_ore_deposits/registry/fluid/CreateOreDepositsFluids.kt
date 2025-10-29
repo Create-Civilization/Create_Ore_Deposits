@@ -63,7 +63,7 @@ object CreateOreDepositsFluids {
 
 	//Iron Stuff
 
-	val MOLTEN_IRON: FluidEntry<BaseFlowingFluid.Flowing?>? =
+	val MOLTEN_IRON: FluidEntry<BaseFlowingFluid.Flowing> =
 		REGISTRATE.fluid("molten_iron", MOLTEN_IRON_STILL, MOLTEN_IRON_FLOWING)
 			.properties { _ -> BlockBehaviour.Properties.ofFullCopy(Blocks.LAVA)}
 			.fluidProperties{p -> p.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(3).explosionResistance(0f)}
