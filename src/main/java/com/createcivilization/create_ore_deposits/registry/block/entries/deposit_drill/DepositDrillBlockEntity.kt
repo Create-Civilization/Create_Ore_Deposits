@@ -52,8 +52,9 @@ class DepositDrillBlockEntity(
 		val targetBlock = getTargetBlock()
 		val targetBlockIsAir = targetBlock == Blocks.AIR
 		val movementSpeed = getMovementSpeed()
+		val canMove = targetBlockIsAir || movementSpeed < 0
 
-		if (targetBlockIsAir || movementSpeed < 0) {
+		if (canMove) {
 			drillOffset = (movementSpeed + drillOffset).coerceAtLeast(0f)
 			lerpedOffset.forceNextSync()
 			setLerpedOffset(drillOffset)
@@ -81,7 +82,9 @@ class DepositDrillBlockEntity(
 		val inventory = itemHandler.getStackInSlot(0)
 		val inventoryNotFull = inventory.count != itemHandler.getSlotLimit(0)
 		val targetBlockIsTheSameAsLastBlock = getTargetBlock() == lastBlock
+
 		val canMine = inventory.isEmpty || (inventoryNotFull && targetBlockIsTheSameAsLastBlock)
+
 		return if (canMine) getTargetPos() else BlockPos.ZERO
 	}
 
@@ -133,8 +136,9 @@ class DepositDrillBlockEntity(
 		val tip = getDrillTipPos()
 		val stateAtTip = level?.getBlockState(tip)
 
-		val isDepositBlock = stateAtTip?.let { isBlockStateADeposit(it) } == true
-		return if (isDepositBlock && level != null) {
+		val blockAtDrillTipIsADepositBlock = stateAtTip?.let { isBlockStateADeposit(it) } == true
+
+		return if (blockAtDrillTipIsADepositBlock) {
 			getFurthestDepositConnectedToDeposit(level!!, tip)
 		} else {
 			tip
