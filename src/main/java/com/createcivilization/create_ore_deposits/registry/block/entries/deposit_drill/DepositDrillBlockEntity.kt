@@ -1,5 +1,6 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill
 
+import com.createcivilization.create_ore_deposits.CreateOreDepositsLang
 import com.createcivilization.create_ore_deposits.CreateOreDepositsTags
 import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
 import com.createcivilization.create_ore_deposits.registry.fluid.FluidHandler
@@ -8,11 +9,13 @@ import com.simibubi.create.foundation.utility.BlockHelper
 import com.simibubi.create.foundation.utility.ServerSpeedProvider
 import net.createmod.catnip.animation.LerpedFloat
 import net.createmod.catnip.nbt.NBTHelper
+import net.minecraft.ChatFormatting
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -117,6 +120,44 @@ class DepositDrillBlockEntity(
 
 		compound.put("Deposit_Drill", nbt)
 		super.write(compound, registries, clientPacket)
+	}
+
+	override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
+		CreateOreDepositsLang.translate("tooltip.drill.header")
+			.forGoggles(tooltip)
+
+		val targetBlock = level?.getBlockState(getDrillTipPos())?.block!!
+		if (targetBlock != Blocks.AIR) {
+			CreateOreDepositsLang.translate(
+				"tooltip.drill.drilling",
+				Component.translatable(targetBlock.descriptionId)
+			)
+				.style(ChatFormatting.GRAY)
+				.forGoggles(tooltip)
+		}
+
+		if(!itemHandler.getStackInSlot(0).isEmpty) {
+			CreateOreDepositsLang.translate(
+				"tooltip.drill.contains",
+				Component.translatable(itemHandler.getStackInSlot(0).descriptionId),
+				itemHandler.getStackInSlot(0).count
+			)
+				.style(ChatFormatting.GREEN)
+				.forGoggles(tooltip)
+		}
+
+		val fluidInTank = fluidHandler.getFluidInTank(0)
+		if(!fluidInTank.isEmpty) {
+			CreateOreDepositsLang.translate(
+				"tooltip.drill.contains.lube",
+				Component.translatable(fluidInTank.descriptionId),
+				fluidInTank.amount
+			)
+				.style(ChatFormatting.BLUE)
+				.forGoggles(tooltip)
+		}
+
+		return super.addToGoggleTooltip(tooltip, isPlayerSneaking)
 	}
 
 	fun setLerpedOffset(value: Number) {
