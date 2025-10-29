@@ -51,12 +51,9 @@ class DepositDrillBlockEntity(
 		// Compiler inlining will optimize this don't worry.
 		val targetBlock = getTargetBlock()
 		val targetBlockIsAir = targetBlock == Blocks.AIR
-		val itemStack = itemHandler.getStackInSlot(0)
-		val itemStackIsNotFull = itemStack.count != itemHandler.getSlotLimit(0)
-		val targetBlockIsTheSameAsLastBlock = targetBlock == lastBlock
 		val movementSpeed = getMovementSpeed()
 
-		if ((targetBlockIsAir && (itemStack.isEmpty || (itemStackIsNotFull && targetBlockIsTheSameAsLastBlock))) || movementSpeed < 0) {
+		if (targetBlockIsAir || movementSpeed < 0) {
 			drillOffset = (movementSpeed + drillOffset).coerceAtLeast(0f)
 			lerpedOffset.forceNextSync()
 			setLerpedOffset(drillOffset)
@@ -81,7 +78,11 @@ class DepositDrillBlockEntity(
 	}
 
 	override fun getBreakingPos(): BlockPos {
-		return getTargetPos()
+		val inventory = itemHandler.getStackInSlot(0)
+		val inventoryNotFull = inventory.count != itemHandler.getSlotLimit(0)
+		val targetBlockIsTheSameAsLastBlock = getTargetBlock() == lastBlock
+		val canMine = inventory.isEmpty || (inventoryNotFull && targetBlockIsTheSameAsLastBlock)
+		return if (canMine) getTargetPos() else BlockPos.ZERO
 	}
 
 	override fun calculateStressApplied(): Float {
