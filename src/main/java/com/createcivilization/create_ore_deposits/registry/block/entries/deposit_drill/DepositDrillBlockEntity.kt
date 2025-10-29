@@ -1,5 +1,6 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill
 
+import com.createcivilization.create_ore_deposits.CreateOreDepositsTags
 import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
 import com.createcivilization.create_ore_deposits.registry.fluid.FluidHandler
 import com.simibubi.create.content.kinetics.base.BlockBreakingKineticBlockEntity
@@ -13,6 +14,7 @@ import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.entity.BlockEntityType
@@ -22,7 +24,9 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler
 import net.neoforged.neoforge.items.IItemHandler
 import net.neoforged.neoforge.items.ItemStackHandler
 import java.util.function.Consumer
+import java.util.function.Predicate
 import kotlin.math.roundToInt
+
 
 // Minimum value for LerpedFloat to not get jumpy
 private const val min = 0.5
@@ -48,11 +52,11 @@ class DepositDrillBlockEntity(
 		val targetBlock = getTargetBlock()
 		val targetBlockIsAir = targetBlock == Blocks.AIR
 		val itemStack = itemHandler.getStackInSlot(0)
-		val itemStackIsFull = itemStack.count != itemHandler.getSlotLimit(0)
+		val itemStackIsNotFull = itemStack.count != itemHandler.getSlotLimit(0)
 		val targetBlockIsTheSameAsLastBlock = targetBlock == lastBlock
 		val movementSpeed = getMovementSpeed()
 
-		if ((targetBlockIsAir && (itemStack.isEmpty || (itemStackIsFull && targetBlockIsTheSameAsLastBlock))) || movementSpeed < 0) {
+		if ((targetBlockIsAir && (itemStack.isEmpty || (itemStackIsNotFull && targetBlockIsTheSameAsLastBlock))) || movementSpeed < 0) {
 			drillOffset = (movementSpeed + drillOffset).coerceAtLeast(0f)
 			lerpedOffset.forceNextSync()
 			setLerpedOffset(drillOffset)
@@ -116,10 +120,85 @@ class DepositDrillBlockEntity(
 	}
 
 	fun getTargetBlock() : Block {
-		return level?.getBlockState(getTargetPos())?.block!!
+		return getTargetBlockState()?.block!!
+	}
+
+	fun getTargetBlockState() : BlockState? {
+		// This now simply returns the block state at the resolved target position.
+		return level?.getBlockState(getTargetPos())
 	}
 
 	fun getTargetPos() : BlockPos {
+		val tip = getDrillTipPos()
+		val stateAtTip = level?.getBlockState(tip)
+
+		val isDepositBlock = stateAtTip?.let { isBlockStateADeposit(it) } == true
+		return if (isDepositBlock && level != null) {
+			getFurthestDepositConnectedToDeposit(level!!, tip)
+		} else {
+			tip
+		}
+	}
+
+	private fun isBlockStateADeposit(state: BlockState) : Boolean {
+		return state.`is`(CreateOreDepositsTags.DEPOSIT)
+	}
+
+
+
+	private fun getFurthestDepositConnectedToDeposit(
+		level: Level,
+		startingDepositPos: BlockPos
+	): BlockPos {
+		val startingDepositState = level.getBlockState(startingDepositPos)
+		val connectedBlocks = getConnectedBlocksWithFilter(level, startingDepositPos, startingDepositState::equals)
+
+		return connectedBlocks.maxByOrNull { blockPos ->
+			startingDepositPos.distSqr(blockPos)
+		} ?: startingDepositPos // fallback if list is empty
+	}
+
+	private fun getConnectedBlocksWithFilter(
+		level: Level,
+		startingDepositPos: BlockPos,
+		filter: Predicate<BlockState>
+	) : List<BlockPos> {
+		val connected = mutableListOf<BlockPos>()
+		val visited = mutableListOf<BlockPos>()
+		val queue = ArrayDeque<BlockPos>()
+
+		queue += startingDepositPos
+		visited += startingDepositPos
+
+		while (queue.isNotEmpty()) {
+			val current = queue.removeFirst()
+
+			if (!filter.test(level.getBlockState(current))) continue
+
+			connected.add(current)
+
+			val offsets = setOf(
+				BlockPos(1, 0, 0),
+				BlockPos(-1, 0, 0),
+				BlockPos(0, 1, 0),
+				BlockPos(0, -1, 0),
+				BlockPos(0, 0, 1),
+				BlockPos(0, 0, -1)
+			)
+			val neighbors = offsets.map { pos -> current.offset(pos) }
+
+			for (neighbor in neighbors) {
+				if (neighbor !in visited && filter.test(level.getBlockState(neighbor))) {
+					visited.add(neighbor)
+					queue.add(neighbor)
+				}
+			}
+		}
+
+		return connected
+	}
+
+	fun getDrillTipPos() : BlockPos {
 		return blockPos.offset(0, (-lerpedOffset.value.toInt() - 1), 0)
 	}
 
