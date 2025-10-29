@@ -2,18 +2,22 @@ package com.createcivilization.create_ore_deposits.registry.block.entries.deposi
 
 import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
 import com.createcivilization.create_ore_deposits.registry.fluid.FluidHandler
+import com.createcivilization.create_ore_deposits.util.logI
 import com.simibubi.create.content.kinetics.base.BlockBreakingKineticBlockEntity
 import com.simibubi.create.foundation.utility.BlockHelper
 import com.simibubi.create.foundation.utility.ServerSpeedProvider
 import net.createmod.catnip.animation.LerpedFloat
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.core.HolderLookup
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
+import net.neoforged.neoforge.fluids.capability.IFluidHandler
 import net.neoforged.neoforge.items.IItemHandler
 import net.neoforged.neoforge.items.ItemStackHandler
 import java.util.function.Consumer
@@ -57,6 +61,13 @@ class DepositDrillBlockEntity(
 		}
 	}
 
+	override fun lazyTick() {
+		super.lazyTick()
+		setChanged()
+		sendData()
+		if (getMovementSpeed() != 0f) (fluidHandler.drain(1, IFluidHandler.FluidAction.EXECUTE))
+	}
+
 	override fun onBlockBroken(stateToBreak: BlockState) {
 		lastBlock = getTargetBlock()
 		BlockHelper.destroyBlock(level, breakingPos, 1f, Consumer { drops: ItemStack ->
@@ -66,6 +77,27 @@ class DepositDrillBlockEntity(
 
 	override fun getBreakingPos(): BlockPos {
 		return getTargetPos()
+	}
+
+	override fun calculateStressApplied(): Float {
+		if (fluidHandler.getFluidInTank(0).amount > 1) {
+			return 512f / 2f
+		}
+		return 512f
+	}
+
+	override fun read(compound: CompoundTag, registries: HolderLookup.Provider, clientPacket: Boolean) {
+		compound.getCompound("FluidHandler").let { fluidNBT ->
+			fluidHandler.deserializeNBT(registries, fluidNBT)
+		}
+		super.read(compound, registries, clientPacket)
+		logI("reading: ${compound}\nisClient:${level?.isClientSide}")
+		logI(fluidHandler.getFluidInTank(0).amount)
+	}
+
+	override fun write(compound: CompoundTag, registries: HolderLookup.Provider, clientPacket: Boolean) {
+		compound.put("FluidHandler", fluidHandler.serializeNBT(registries))
+		super.write(compound, registries, clientPacket)
 	}
 
 	fun setLerpedOffset(value: Number) {

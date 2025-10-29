@@ -1,8 +1,12 @@
 package com.createcivilization.create_ore_deposits.registry.fluid
 
+import com.createcivilization.create_ore_deposits.util.logI
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.ListTag
+import net.minecraft.nbt.StringTag
+import net.minecraft.nbt.Tag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.material.Fluid
 import net.neoforged.neoforge.common.util.INBTSerializable
@@ -58,24 +62,50 @@ class FluidHandler(capacity: Int, allowedFluids: MutableSet<Fluid>?) : IFluidHan
 
 	override fun serializeNBT(provider: HolderLookup.Provider): CompoundTag {
 		val nbt = CompoundTag()
-		this.tank.writeToNBT(provider, nbt)
-		if (allowedFluids != null) {
-			nbt.putInt("size", allowedFluids!!.size)
-			var i = 0
-			for (fluid in allowedFluids) {
-				nbt.putString((i++).toString(), BuiltInRegistries.FLUID.getKey(fluid).toString())
+		tank.writeToNBT(provider, nbt)
+		allowedFluids?.let { fluids ->
+			val fluidListTag = ListTag()
+			for (fluid in fluids) {
+				val id = BuiltInRegistries.FLUID.getKey(fluid).toString()
+				fluidListTag.add(StringTag.valueOf(id))
 			}
+			nbt.put("AllowedFluids", fluidListTag)
 		}
 		return nbt
 	}
 
 	override fun deserializeNBT(provider: HolderLookup.Provider, nbt: CompoundTag) {
-		this.tank.readFromNBT(provider, nbt)
-		val size = nbt.getInt("size") - 1
-		val fluidList: MutableList<Fluid> = ArrayList()
-		for (i in 0..<size) {
-			fluidList.add(BuiltInRegistries.FLUID.get(ResourceLocation.parse(nbt.getString(i.toString()))))
+		tank.readFromNBT(provider, nbt)
+		allowedFluids = mutableSetOf()
+		val fluidListTag = nbt.getList("AllowedFluids", StringTag.TAG_STRING.toInt())
+		for (i in 0 until fluidListTag.size) {
+			val id = fluidListTag.getString(i)
+			val fluid = BuiltInRegistries.FLUID.get(ResourceLocation.parse(id))
+			allowedFluids?.add(fluid)
 		}
-		this.allowedFluids = Set.copyOf(fluidList)
 	}
+
+//	override fun serializeNBT(provider: HolderLookup.Provider): CompoundTag {
+//		val nbt = CompoundTag()
+//		this.tank.writeToNBT(provider, nbt)
+//		if (allowedFluids != null) {
+//			nbt.putInt("size", allowedFluids!!.size)
+//			var i = 0
+//			for (fluid in allowedFluids) {
+//				nbt.putString((i++).toString(), BuiltInRegistries.FLUID.getKey(fluid).toString())
+//			}
+//		}
+//		return nbt
+//	}
+//
+//	override fun deserializeNBT(provider: HolderLookup.Provider, nbt: CompoundTag) {
+//		logI("compound: $nbt")
+//		this.tank.readFromNBT(provider, nbt)
+//		val size = nbt.getInt("size")
+//		val fluidList: MutableList<Fluid> = ArrayList()
+//		for (i in 0 until size) {
+//			fluidList.add(BuiltInRegistries.FLUID.get(ResourceLocation.parse(nbt.getString(i.toString()))))
+//		}
+//		this.allowedFluids = Set.copyOf(fluidList)
+//	}
 }
