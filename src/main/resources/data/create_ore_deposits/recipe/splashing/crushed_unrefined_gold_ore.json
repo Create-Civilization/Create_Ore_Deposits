@@ -1,0 +1,18 @@
+{
+	"type": "create:splashing",
+	"ingredients": [
+		{
+			"item": "create_ore_deposits:crushed_unrefined_gold_ore"
+		}
+	],
+	"results": [
+		{
+			"count": 1,
+			"id": "create_ore_deposits:unrefined_gold_ore_powder"
+		},
+		{
+			"count": 1,
+			"id": "minecraft:gravel"
+		}
+	]
+}

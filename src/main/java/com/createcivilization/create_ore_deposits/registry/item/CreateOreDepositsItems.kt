@@ -37,11 +37,11 @@ object CreateOreDepositsItems {
 	private val _CRUSHED_UNREFINED_GOLD_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("crushed_unrefined_gold_ore", ::Item)
 	val CRUSHED_UNREFINED_GOLD_ORE_ITEM: Item get() = _CRUSHED_UNREFINED_GOLD_ORE_ITEM()
 
-	private val _UNREFINED_GOLD_ORE_POWDER: ItemProvider = ITEM_PROVIDER.register("unrefined_gold_ore_powder", ::Item)
-	val UNREFINED_GOLD_ORE_POWDER: Item get() = _UNREFINED_GOLD_ORE_POWDER()
+	private val _UNREFINED_GOLD_ORE_POWDER_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_gold_ore_powder", ::Item)
+	val UNREFINED_GOLD_ORE_POWDER_ITEM: Item get() = _UNREFINED_GOLD_ORE_POWDER_ITEM()
 
-	private val _GOLD_DUST_ITEM: ItemProvider = ITEM_PROVIDER.register("gold_dust", ::Item)
-	val GOLD_DUST_ITEM: Item get() = _GOLD_DUST_ITEM()
+	private val _GOLD_ORE_POWDER_ITEM: ItemProvider = ITEM_PROVIDER.register("gold_ore_powder", ::Item)
+	val GOLD_ORE_POWDER_ITEM: Item get() = _GOLD_ORE_POWDER_ITEM()
 
 
 	//Cast TEMP THIS WILL BE BOOFED
