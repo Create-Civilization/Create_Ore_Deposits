@@ -7,6 +7,7 @@ import com.createcivilization.create_ore_deposits.util.BlockProvider
 import com.createcivilization.create_ore_deposits.util.ItemProvider
 import com.createcivilization.create_ore_deposits.util.KotlinDeferredRegister
 import com.createcivilization.create_ore_deposits.util.makeBlock
+
 import com.tterrag.registrate.util.entry.BlockEntry
 
 import net.minecraft.core.registries.Registries
@@ -31,14 +32,12 @@ object CreateOreDepositsBlocks {
 	private val _EXAMPLE_DEPOSIT_ITEM: ItemProvider
 	val EXAMPLE_DEPOSIT_ITEM: Item get() = _EXAMPLE_DEPOSIT_ITEM()
 
-	val DRILL_BLOCK: BlockEntry<DepositDrillBlock> = CreateOreDeposits.REGISTRATE.block(
-		"deposit_drill"
-	) { properties ->
-		DepositDrillBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion())
-	}
+	@Suppress("ObjectPropertyName")
+	internal val _DRILL_BLOCK: BlockEntry<DepositDrillBlock> = CreateOreDeposits.REGISTRATE
+		.block("deposit_drill") { DepositDrillBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()) }
 		.simpleItem()
 		.register()
-
+	val DRILL_BLOCK: DepositDrillBlock get() = _DRILL_BLOCK.get()
 
 	init {
 		val (exampleDeposit, exampleDepositItem) = makeBlock("example_deposit", ::Block) { block ->

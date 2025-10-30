@@ -2,6 +2,7 @@ package com.createcivilization.create_ore_deposits.registry.block.entries.deposi
 
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexConsumer
+
 import net.minecraft.client.model.Model
 import net.minecraft.client.model.geom.ModelPart
 import net.minecraft.client.model.geom.PartPose
@@ -11,8 +12,8 @@ import net.minecraft.client.model.geom.builders.LayerDefinition
 import net.minecraft.client.model.geom.builders.MeshDefinition
 import net.minecraft.client.renderer.RenderType
 
-
 class DrillBlockModel(root: ModelPart) : Model(RenderType::entityCutoutNoCull) {
+
 	val main: ModelPart = root.getChild("main")
 
 	override fun renderToBuffer(
@@ -21,11 +22,10 @@ class DrillBlockModel(root: ModelPart) : Model(RenderType::entityCutoutNoCull) {
 		packedLight: Int,
 		packedOverlay: Int,
 		color: Int
-	) {
-		main.render(poseStack, vertexConsumer, packedLight, packedOverlay, color)
-	}
+	) = this.main.render(poseStack, vertexConsumer, packedLight, packedOverlay, color)
 
 	companion object {
+
 		fun createModel(): LayerDefinition {
 			val mesh = MeshDefinition()
 			val part = mesh.root

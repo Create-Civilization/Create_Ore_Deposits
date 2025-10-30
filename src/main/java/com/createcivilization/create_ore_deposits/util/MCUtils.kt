@@ -1,5 +1,6 @@
 package com.createcivilization.create_ore_deposits.util
 
+import com.createcivilization.create_ore_deposits.CreateOreDeposits
 import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlocks
 import com.createcivilization.create_ore_deposits.registry.item.CreateOreDepositsItems
 
@@ -16,6 +17,8 @@ import net.neoforged.neoforge.registries.DeferredRegister
 
 import java.util.function.Function
 import java.util.function.Supplier
+
+fun String.resource(): ResourceLocation = ResourceLocation.fromNamespaceAndPath(CreateOreDeposits.MOD_ID, this)
 
 fun Item(): Item = Item(Item.Properties())
 

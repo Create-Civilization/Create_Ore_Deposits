@@ -1,28 +1,25 @@
 package com.createcivilization.create_ore_deposits
 
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModels
+import com.createcivilization.create_ore_deposits.util.logI
+
 import net.neoforged.api.distmarker.Dist
-import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
-import net.neoforged.neoforge.common.NeoForge
-import java.util.function.Consumer
 
+import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 
 @Mod(value = CreateOreDeposits.MOD_ID, dist = [Dist.CLIENT])
-class CreateOreDepositsClient(modEventBus: IEventBus) {
+object CreateOreDepositsClient {
+
 	init {
-		onCtorClient(modEventBus)
+		MOD_BUS.addListener(::clientInit)
 	}
 
-	companion object {
-		fun onCtorClient(modEventBus: IEventBus) {
-			modEventBus.addListener(Consumer { event: FMLClientSetupEvent -> clientInit(event) })
-		}
-
-		fun clientInit(event: FMLClientSetupEvent) {
-			DepositDrillBlockModels.init()
-//			PonderIndex.addPlugin(CODPonderPlugin())
-		}
+	@Suppress("UnusedExpression") // Calls static initialiser
+	fun clientInit(event: FMLClientSetupEvent) {
+		logI("In client init!")
+		DepositDrillBlockModels
+//		PonderIndex.addPlugin(CODPonderPlugin())
 	}
 }

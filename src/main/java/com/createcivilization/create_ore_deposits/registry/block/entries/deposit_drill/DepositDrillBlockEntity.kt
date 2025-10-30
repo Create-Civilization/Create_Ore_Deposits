@@ -1,14 +1,17 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill
 
-import com.createcivilization.create_ore_deposits.CreateOreDepositsLang
-import com.createcivilization.create_ore_deposits.CreateOreDepositsTags
+import com.createcivilization.create_ore_deposits.util.translate
+import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDepositsTags
 import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
 import com.createcivilization.create_ore_deposits.registry.fluid.FluidHandler
+
 import com.simibubi.create.content.kinetics.base.BlockBreakingKineticBlockEntity
 import com.simibubi.create.foundation.utility.BlockHelper
 import com.simibubi.create.foundation.utility.ServerSpeedProvider
+
 import net.createmod.catnip.animation.LerpedFloat
 import net.createmod.catnip.nbt.NBTHelper
+
 import net.minecraft.ChatFormatting
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -23,13 +26,14 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
+
 import net.neoforged.neoforge.fluids.capability.IFluidHandler
 import net.neoforged.neoforge.items.IItemHandler
 import net.neoforged.neoforge.items.ItemStackHandler
-import java.util.function.Consumer
-import java.util.function.Predicate
-import kotlin.math.roundToInt
 
+import java.util.function.Predicate
+
+import kotlin.math.roundToInt
 
 // Minimum value for LerpedFloat to not get jumpy
 private const val min = 0.5
@@ -40,13 +44,24 @@ class DepositDrillBlockEntity(
 	blockState: BlockState
 ) : BlockBreakingKineticBlockEntity(type, pos, blockState) {
 
+	/**
+	 * Allows array access syntax on the [itemHandler] property.
+	 */
+	operator fun ItemStackHandler.get(index: Int): ItemStack = this.getStackInSlot(index)
+
 	// The Float value distance from the bottom of the drill, should always be positive
 	private var drillOffset: Float = 0f
 	private var lerpedOffset: LerpedFloat = LerpedFloat.linear().startWithValue(min)
 	private var lastBlock: Block? = null
 
 	private val itemHandler: ItemStackHandler = ItemStackHandler()
-	private val fluidHandler: FluidHandler = FluidHandler(1000, mutableSetOf(CreateOreDepositsFluids.LUBRICANT.get(), CreateOreDepositsFluids.LUBRICANT.getSource())) // Put lube here
+	private val fluidHandler: FluidHandler = FluidHandler(
+		1000,
+		mutableSetOf(
+			CreateOreDepositsFluids.LUBRICANT,
+			CreateOreDepositsFluids.LUBRICANT.source
+		)
+	) // Put lube here
 
 	override fun tick() {
 		super.tick()
@@ -71,18 +86,16 @@ class DepositDrillBlockEntity(
 		super.lazyTick()
 		setChanged()
 		sendData()
-		if (getMovementSpeed() != 0f) (fluidHandler.drain(1, IFluidHandler.FluidAction.EXECUTE))
+		if (getMovementSpeed() != 0f) fluidHandler.drain(1, IFluidHandler.FluidAction.EXECUTE)
 	}
 
 	override fun onBlockBroken(stateToBreak: BlockState) {
 		lastBlock = getTargetBlock()
-		BlockHelper.destroyBlock(level, breakingPos, 1f, Consumer { drops: ItemStack ->
-			itemHandler.insertItem(0, drops, false)
-		})
+		BlockHelper.destroyBlock(level, breakingPos, 1f) { drops: ItemStack -> itemHandler.insertItem(0, drops, false) }
 	}
 
 	override fun getBreakingPos(): BlockPos {
-		val inventory = itemHandler.getStackInSlot(0)
+		val inventory = itemHandler[0]
 		val inventoryNotFull = inventory.count != itemHandler.getSlotLimit(0)
 		val targetBlockIsTheSameAsLastBlock = getTargetBlock() == lastBlock
 
@@ -91,25 +104,19 @@ class DepositDrillBlockEntity(
 		return if (canMine) getTargetPos() else BlockPos.ZERO
 	}
 
-	override fun calculateStressApplied(): Float {
-		if (fluidHandler.getFluidInTank(0).amount > 1) {
-			return 512f / 2f
-		}
-		return 512f
-	}
+	override fun calculateStressApplied(): Float =
+		if (fluidHandler.getFluidInTank(0).amount > 1) 512f / 2f else 512f
 
 	override fun read(compound: CompoundTag, registries: HolderLookup.Provider, clientPacket: Boolean) {
 		val nbt = compound.getCompound("Deposit_Drill")
 
 		drillOffset = nbt.getFloat("DrillOffset")
-		if (nbt.contains("LastBlock"))
-			lastBlock = BuiltInRegistries.BLOCK.get(NBTHelper.readResourceLocation(nbt, "LastBlock"))
+		if (nbt.contains("LastBlock")) lastBlock = BuiltInRegistries.BLOCK.get(NBTHelper.readResourceLocation(nbt, "LastBlock"))
 		itemHandler.deserializeNBT(registries, nbt.getCompound("ItemHandler"))
 		fluidHandler.deserializeNBT(registries, nbt.getCompound("FluidHandler"))
 
 		super.read(compound, registries, clientPacket)
 	}
-
 
 	override fun write(compound: CompoundTag, registries: HolderLookup.Provider, clientPacket: Boolean) {
 		val nbt = CompoundTag()
@@ -123,39 +130,24 @@ class DepositDrillBlockEntity(
 	}
 
 	override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
-		CreateOreDepositsLang.translate("tooltip.drill.header")
-			.forGoggles(tooltip)
+		translate("tooltip.drill.header").forGoggles(tooltip)
 
 		val targetBlock = level?.getBlockState(getDrillTipPos())?.block!!
-		if (targetBlock != Blocks.AIR) {
-			CreateOreDepositsLang.translate(
-				"tooltip.drill.drilling",
-				Component.translatable(targetBlock.descriptionId)
-			)
+		if (targetBlock != Blocks.AIR)
+			translate("tooltip.drill.drilling", Component.translatable(targetBlock.descriptionId))
 				.style(ChatFormatting.GRAY)
 				.forGoggles(tooltip)
-		}
 
-		if(!itemHandler.getStackInSlot(0).isEmpty) {
-			CreateOreDepositsLang.translate(
-				"tooltip.drill.contains",
-				Component.translatable(itemHandler.getStackInSlot(0).descriptionId),
-				itemHandler.getStackInSlot(0).count
-			)
+		if (!itemHandler[0].isEmpty)
+			translate("tooltip.drill.contains", Component.translatable(itemHandler[0].descriptionId), itemHandler[0].count)
 				.style(ChatFormatting.GREEN)
 				.forGoggles(tooltip)
-		}
 
 		val fluidInTank = fluidHandler.getFluidInTank(0)
-		if(!fluidInTank.isEmpty) {
-			CreateOreDepositsLang.translate(
-				"tooltip.drill.contains.lube",
-				Component.translatable(fluidInTank.descriptionId),
-				fluidInTank.amount
-			)
+		if (!fluidInTank.isEmpty)
+			translate("tooltip.drill.contains.lube", Component.translatable(fluidInTank.descriptionId), fluidInTank.amount)
 				.style(ChatFormatting.BLUE)
 				.forGoggles(tooltip)
-		}
 
 		return super.addToGoggleTooltip(tooltip, isPlayerSneaking)
 	}
@@ -164,33 +156,24 @@ class DepositDrillBlockEntity(
 		lerpedOffset.setValue(value.toDouble().coerceAtLeast(min))
 	}
 
-	fun getTargetBlock() : Block {
-		return getTargetBlockState()?.block!!
-	}
+	fun getTargetBlock(): Block = getTargetBlockState()?.block!!
 
-	fun getTargetBlockState() : BlockState? {
+	fun getTargetBlockState(): BlockState? {
 		// This now simply returns the block state at the resolved target position.
 		return level?.getBlockState(getTargetPos())
 	}
 
-	fun getTargetPos() : BlockPos {
+	fun getTargetPos(): BlockPos {
 		val tip = getDrillTipPos()
 		val stateAtTip = level?.getBlockState(tip)
 
-		val blockAtDrillTipIsADepositBlock = stateAtTip?.let { isBlockStateADeposit(it) } == true
+		val blockAtDrillTipIsADepositBlock = stateAtTip?.let(::isBlockStateADeposit) == true
 
-		return if (blockAtDrillTipIsADepositBlock) {
-			getFurthestDepositConnectedToDeposit(level!!, tip)
-		} else {
-			tip
-		}
+		return if (blockAtDrillTipIsADepositBlock) getFurthestDepositConnectedToDeposit(level!!, tip) else tip
 	}
 
-	private fun isBlockStateADeposit(state: BlockState) : Boolean {
-		return state.`is`(CreateOreDepositsTags.DEPOSIT)
-	}
-
-
+	private fun isBlockStateADeposit(state: BlockState): Boolean =
+		state.`is`(CreateOreDepositsTags.DEPOSIT)
 
 	private fun getFurthestDepositConnectedToDeposit(
 		level: Level,
@@ -208,7 +191,7 @@ class DepositDrillBlockEntity(
 		level: Level,
 		startingDepositPos: BlockPos,
 		filter: Predicate<BlockState>
-	) : List<BlockPos> {
+	): List<BlockPos> {
 		val connected = mutableListOf<BlockPos>()
 		val visited = mutableListOf<BlockPos>()
 		val queue = ArrayDeque<BlockPos>()
@@ -244,13 +227,9 @@ class DepositDrillBlockEntity(
 		return connected
 	}
 
-	fun getDrillTipPos() : BlockPos {
-		return blockPos.offset(0, (-lerpedOffset.value.toInt() - 1), 0)
-	}
+	fun getDrillTipPos(): BlockPos = blockPos.offset(0, (-lerpedOffset.value.toInt() - 1), 0)
 
-	fun getInterpolatedOffset(partialTicks: Float) : Float {
-		return lerpedOffset.getValue(partialTicks).coerceAtLeast(3 / 16f)
-	}
+	fun getInterpolatedOffset(partialTicks: Float): Float = lerpedOffset.getValue(partialTicks).coerceAtLeast(3 / 16f)
 
 	fun getMovementSpeed(): Float {
 		var movementSpeed = convertToLinear(getSpeed())
@@ -270,5 +249,4 @@ class DepositDrillBlockEntity(
 		// Checks if the axis is the Y axis (up and down) and if its positive (just up) thus from the top
 		return if (direction.axis == Direction.Axis.Y && direction.axisDirection == Direction.AxisDirection.POSITIVE) fluidHandler else null
 	}
-
 }
