@@ -18,8 +18,8 @@ import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 object CreateOreDepositsClient {
 
 	init {
-		MOD_BUS.addListener(::clientInit)
-		MOD_BUS.addListener(::onRegisterLayerDefinitions)
+		MOD_BUS.addListener(this::clientInit)
+		MOD_BUS.addListener(this::onRegisterLayerDefinitions)
 	}
 
 	@Suppress("UnusedExpression") // Calls static initialiser
