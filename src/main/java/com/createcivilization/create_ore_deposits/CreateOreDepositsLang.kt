@@ -8,11 +8,12 @@ import net.minecraft.network.chat.MutableComponent
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.state.BlockState
 import net.neoforged.neoforge.fluids.FluidStack
+
 import kotlin.collections.ArrayList
 import kotlin.collections.MutableList
 
-
 object CreateOreDepositsLang : Lang() {
+
 	fun translateDirect(key: String, vararg args: Any): MutableComponent {
 		val args1 = LangBuilder.resolveBuilders(args)
 		return Component.translatable(CreateOreDeposits.MOD_ID + key, args1)
@@ -25,45 +26,22 @@ object CreateOreDepositsLang : Lang() {
 	}
 
 	//
-	fun builder(): LangBuilder {
-		return LangBuilder(CreateOreDeposits.MOD_ID)
-	}
+	fun builder(): LangBuilder = LangBuilder(CreateOreDeposits.MOD_ID)
 
 	fun blockName(state: BlockState): LangBuilder {
-		return builder().add(
-			state.block
-				.name
-		)
+		return builder().add(state.block.name)
 	}
 
-	fun itemName(stack: ItemStack): LangBuilder {
-		return builder().add(
-			stack.hoverName
-				.copy()
-		)
-	}
+	fun itemName(stack: ItemStack): LangBuilder = builder().add(stack.hoverName.copy())
 
-	fun fluidName(stack: FluidStack): LangBuilder {
-		return builder().add(
-			stack.hoverName
-				.copy()
-		)
-	}
+	fun fluidName(stack: FluidStack): LangBuilder = builder().add(stack.hoverName.copy())
 
-	fun number(d: Double): LangBuilder {
-		return builder().text(LangNumberFormat.format(d))
-	}
+	fun number(d: Double): LangBuilder = builder().text(LangNumberFormat.format(d))
 
-	fun translate(langKey: String, vararg args: Any): LangBuilder {
-		return builder().translate(langKey, *args)
-	}
+	fun translate(langKey: String, vararg args: Any): LangBuilder = builder().translate(langKey, *args)
 
-	fun text(text: String): LangBuilder {
-		return builder().text(text)
-	}
+	fun text(text: String): LangBuilder = builder().text(text)
 
 	// Use while implementing and replace all references with Lang.translate
-	fun temporaryText(text: String): LangBuilder {
-		return builder().text(text)
-	}
+	fun temporaryText(text: String): LangBuilder = builder().text(text)
 }
