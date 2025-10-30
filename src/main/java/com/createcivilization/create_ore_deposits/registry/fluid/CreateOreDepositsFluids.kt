@@ -4,6 +4,7 @@ import com.createcivilization.create_ore_deposits.CreateOreDeposits
 import com.createcivilization.create_ore_deposits.CreateOreDeposits.REGISTRATE
 import com.createcivilization.create_ore_deposits.registry.fluid.entries.MoltenMetalFluidBlock
 import com.createcivilization.create_ore_deposits.registry.fluid.entries.SlurryWasteBlock
+import com.createcivilization.create_ore_deposits.util.resource
 import com.simibubi.create.AllFluids.TintedFluidType
 import com.tterrag.registrate.builders.FluidBuilder.FluidTypeFactory
 import com.tterrag.registrate.util.entry.FluidEntry
@@ -23,7 +24,7 @@ import java.util.function.Supplier
 
 object CreateOreDepositsFluids {
 
-	fun fluidRL(name: String, flowing: Boolean): ResourceLocation = CreateOreDeposits.rl("block/fluid/$name/${name}_${if (flowing) "flow" else "still"}");
+	fun fluidRL(name: String, flowing: Boolean): ResourceLocation = ("block/fluid/$name/${name}_${if (flowing) "flow" else "still"}".resource());
 
 	//Lubricant Textures
 	val LUBRICANT_STILL: ResourceLocation get() = fluidRL("lubricant", false);
@@ -55,11 +56,6 @@ object CreateOreDepositsFluids {
 				.explosionResistance(100f)
 		}.register()
 
-	val SLAG: FluidEntry<BaseFlowingFluid.Flowing> =
-		REGISTRATE.fluid("slag", SLAG_STILL, SLAG_FLOWING)
-			.properties{ _ -> BlockBehaviour.Properties.ofFullCopy(Blocks.LAVA)}.fluidProperties{p -> p.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(3).explosionResistance(0f)}
-			.block{f, p -> MoltenMetalFluidBlock(f, p)}.build()
-			.register()
 
 	//Iron Stuff
 
