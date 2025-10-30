@@ -1,4 +1,4 @@
-package com.createcivilization.create_ore_deposits
+package com.createcivilization.create_ore_deposits.registry.tag
 
 import com.createcivilization.create_ore_deposits.util.resource
 

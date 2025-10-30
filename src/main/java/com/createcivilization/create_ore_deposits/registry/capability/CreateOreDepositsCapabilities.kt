@@ -1,5 +1,6 @@
-package com.createcivilization.create_ore_deposits
+package com.createcivilization.create_ore_deposits.registry.capability
 
+import com.createcivilization.create_ore_deposits.CreateOreDeposits
 import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlockEntities
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockEntity
 
