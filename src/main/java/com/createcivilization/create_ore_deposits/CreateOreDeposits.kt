@@ -9,8 +9,6 @@ import com.createcivilization.create_ore_deposits.util.logI
 
 import com.simibubi.create.foundation.data.CreateRegistrate
 
-import net.minecraft.resources.ResourceLocation
-
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
@@ -34,6 +32,7 @@ object CreateOreDeposits {
 		CreateOreDepositsBlocks
 		CreateOreDepositsBlockEntities
 		CreateOreDepositsFluids
+		CreateOreDepositsTags
 	}
 
 	private fun commonSetup(event: FMLCommonSetupEvent) {
@@ -48,8 +47,4 @@ object CreateOreDeposits {
 	}
 
 	const val MOD_ID: String = "create_ore_deposits"
-
-	fun asResource(path: String): ResourceLocation {
-		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path)
-	}
 }

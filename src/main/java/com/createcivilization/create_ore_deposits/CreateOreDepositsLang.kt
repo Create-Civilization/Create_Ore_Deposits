@@ -14,10 +14,8 @@ import kotlin.collections.MutableList
 
 object CreateOreDepositsLang : Lang() {
 
-	fun translateDirect(key: String, vararg args: Any): MutableComponent {
-		val args1 = LangBuilder.resolveBuilders(args)
-		return Component.translatable(CreateOreDeposits.MOD_ID + key, args1)
-	}
+	fun translateDirect(key: String, vararg args: Any): MutableComponent =
+		Component.translatable(CreateOreDeposits.MOD_ID + key, LangBuilder.resolveBuilders(args))
 
 	fun translatedOptions(prefix: String, vararg keys: String): MutableList<Component> {
 		val result: MutableList<Component> = ArrayList(keys.size)

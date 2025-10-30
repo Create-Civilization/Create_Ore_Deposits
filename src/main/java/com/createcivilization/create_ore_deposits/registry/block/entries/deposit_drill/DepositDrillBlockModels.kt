@@ -1,32 +1,25 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill
 
-import com.createcivilization.create_ore_deposits.CreateOreDeposits.asResource
+import com.createcivilization.create_ore_deposits.util.resource
+
 import dev.engine_room.flywheel.lib.model.baked.PartialModel
+
 import net.createmod.catnip.render.SpriteShiftEntry
 import net.createmod.catnip.render.SpriteShifter
 
+object DepositDrillBlockModels {
 
-class DepositDrillBlockModels {
-	companion object {
-		val DRILL_COIL: PartialModel = block("drill/drill_coil")
-		val HOSE: PartialModel = block("drill/rope")
-		val DRILL_MAGNET: PartialModel = block("drill/pulley_drill")
-		val HOSE_HALF: PartialModel = block("drill/rope_half")
-		val HOSE_HALF_MAGNET: PartialModel = block("drill/rope_half_drill")
+	val DRILL_COIL: PartialModel = "drill/drill_coil".block()
+	val HOSE: PartialModel = "drill/rope".block()
+	val DRILL_MAGNET: PartialModel = "drill/pulley_drill".block()
+	val HOSE_HALF: PartialModel = "drill/rope_half".block()
+	val HOSE_HALF_MAGNET: PartialModel = "drill/rope_half_drill".block()
 
-		val DRILL_PULLEY_COIL: SpriteShiftEntry =
-			get("block/drill/hose_pulley_coil", "block/drill/hose_pulley_coil_scroll")
+	val DRILL_PULLEY_COIL: SpriteShiftEntry = get("block/drill/hose_pulley_coil", "block/drill/hose_pulley_coil_scroll")
 
-		private fun get(originalLocation: String, targetLocation: String): SpriteShiftEntry {
-			return SpriteShifter.get(asResource(originalLocation), asResource(targetLocation))
-		}
+	@Suppress("SameParameterValue")
+	private fun get(originalLocation: String, targetLocation: String): SpriteShiftEntry =
+		SpriteShifter.get(originalLocation.resource(), targetLocation.resource())
 
-		private fun block(path: String): PartialModel {
-			return PartialModel.of(asResource("block/$path"))
-		}
-
-		fun init() {
-			// init static fields
-		}
-	}
+	private fun String.block(): PartialModel = PartialModel.of("block/$this".resource())
 }
