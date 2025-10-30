@@ -10,6 +10,7 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.RedStoneOreBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
 
 object DepositsRegistry {
@@ -34,10 +35,10 @@ object DepositsRegistry {
 //		copyFrom = AllBlocks.ZINC_ORE::get
 //	)
 
-//	val REDSTONE_ORE_DEPOSIT: DepositBlockEntry = depositBlock(
-//		name = "redstone_ore_deposit",
-//		copyFrom = Blocks::REDSTONE_ORE
-//	)
+	val REDSTONE_ORE_DEPOSIT: DepositBlockEntry = _depositBlock(
+		name = "redstone_ore_deposit",
+		block = { RedStoneOreBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REDSTONE_ORE)) }
+	)
 
 	val LAPIS_ORE_DEPOSIT: DepositBlockEntry = depositBlock(
 		name = "lapis_ore_deposit",
