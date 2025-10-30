@@ -4,14 +4,14 @@ import com.createcivilization.create_ore_deposits.util.BlockProvider
 import com.createcivilization.create_ore_deposits.util.ItemProvider
 import com.createcivilization.create_ore_deposits.util.makeBlock
 
-import com.simibubi.create.AllBlocks
-
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.RedStoneOreBlock
+import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour
+import net.minecraft.world.level.material.MapColor
 
 object DepositsRegistry {
 
@@ -30,10 +30,18 @@ object DepositsRegistry {
 		copyFrom = Blocks::COPPER_ORE
 	)
 
-//	val ZINC_ORE_DEPOSIT: DepositBlockEntry = depositBlock(
-//		name = "zinc_ore_deposit",
-//		copyFrom = AllBlocks.ZINC_ORE::get
-//	)
+	val ZINC_ORE_DEPOSIT: DepositBlockEntry = _depositBlock(
+		name = "zinc_ore_deposit",
+		block = {
+			Block(
+				// Copied this from [AllBlocks.ZINC_ORE], since copying it via [ofFullCopy] is broken.
+				BlockBehaviour.Properties.of()
+					.mapColor(MapColor.METAL)
+					.requiresCorrectToolForDrops()
+					.sound(SoundType.STONE)
+			)
+		}
+	)
 
 	val REDSTONE_ORE_DEPOSIT: DepositBlockEntry = _depositBlock(
 		name = "redstone_ore_deposit",
