@@ -15,21 +15,25 @@ import net.minecraft.world.level.material.MapColor
 
 object DepositsRegistry {
 
+	@JvmField
 	val IRON_ORE_DEPOSIT: DepositBlockEntry = depositBlock(
 		name = "iron_ore_deposit",
 		copyFrom = Blocks::IRON_ORE
 	)
 
+	@JvmField
 	val GOLD_ORE_DEPOSIT: DepositBlockEntry = depositBlock(
 		name = "gold_ore_deposit",
 		copyFrom = Blocks::GOLD_ORE
 	)
 
+	@JvmField
 	val COPPER_ORE_DEPOSIT: DepositBlockEntry = depositBlock(
 		name = "copper_ore_deposit",
 		copyFrom = Blocks::COPPER_ORE
 	)
 
+	@JvmField
 	val ZINC_ORE_DEPOSIT: DepositBlockEntry = _depositBlock(
 		name = "zinc_ore_deposit",
 		block = {
@@ -43,31 +47,37 @@ object DepositsRegistry {
 		}
 	)
 
+	@JvmField
 	val REDSTONE_ORE_DEPOSIT: DepositBlockEntry = _depositBlock(
 		name = "redstone_ore_deposit",
 		block = { RedStoneOreBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REDSTONE_ORE)) }
 	)
 
+	@JvmField
 	val LAPIS_ORE_DEPOSIT: DepositBlockEntry = depositBlock(
 		name = "lapis_ore_deposit",
 		copyFrom = Blocks::LAPIS_ORE
 	)
 
+	@JvmField
 	val DIAMOND_ORE_DEPOSIT: DepositBlockEntry = depositBlock(
 		name = "diamond_ore_deposit",
 		copyFrom = Blocks::DIAMOND_ORE
 	)
 
+	@JvmField
 	val EMERALD_ORE_DEPOSIT: DepositBlockEntry = depositBlock(
 		name = "emerald_ore_deposit",
 		copyFrom = Blocks::EMERALD_ORE
 	)
 
+	@JvmField
 	val QUARTZ_ORE_DEPOSIT: DepositBlockEntry = depositBlock(
 		name = "quartz_ore_deposit",
 		copyFrom = Blocks::NETHER_QUARTZ_ORE
 	)
 
+	@JvmField
 	val NETHERITE_ORE_DEPOSIT: DepositBlockEntry = depositBlock(
 		name = "netherite_ore_deposit",
 		copyFrom = Blocks::ANCIENT_DEBRIS
