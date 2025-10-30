@@ -11,16 +11,23 @@ import net.minecraft.world.level.block.Block
 
 object DepositsRegistry {
 
-	private val _EXAMPLE_DEPOSIT: BlockProvider
-	val EXAMPLE_DEPOSIT: Block get() = _EXAMPLE_DEPOSIT()
-	private val _EXAMPLE_DEPOSIT_ITEM: ItemProvider
-	val EXAMPLE_DEPOSIT_ITEM: Item get() = _EXAMPLE_DEPOSIT_ITEM()
+	val EXAMPLE_DEPOSIT: DepositBlockEntry
 
 	init {
-		val (exampleDeposit, exampleDepositItem) = makeBlock("example_deposit", ::Block) { block ->
+		EXAMPLE_DEPOSIT = makeBlock("example_deposit", ::Block) { block: BlockProvider ->
 			BlockItem(block(), Item.Properties())
-		}
-		_EXAMPLE_DEPOSIT = exampleDeposit
-		_EXAMPLE_DEPOSIT_ITEM = exampleDepositItem
+		}.toEntry()
+	}
+
+	fun Pair<BlockProvider, ItemProvider>.toEntry(): DepositBlockEntry = DepositBlockEntry(this.first, this.second)
+
+	data class DepositBlockEntry(
+		@JvmField val blockProvider: BlockProvider,
+		@JvmField val itemProvider: ItemProvider
+	) {
+
+		val block: Block get() = this.blockProvider()
+
+		val item: Item get() = this.itemProvider()
 	}
 }
