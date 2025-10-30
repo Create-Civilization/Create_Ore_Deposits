@@ -9,12 +9,12 @@ import net.neoforged.neoforge.fluids.BaseFlowingFluid
 
 object CreateOreDepositsFluids {
 
-	val LUBRICANT: FluidEntry<BaseFlowingFluid.Flowing> = CreateOreDeposits.REGISTRATE
+	private val _LUBRICANT: FluidEntry<BaseFlowingFluid.Flowing> = CreateOreDeposits.REGISTRATE
 		.fluid("lubricant", "block/fluid/lubricant_still".resource(), "block/fluid/lubricant_flow".resource())
 		.properties { it.viscosity(1500).density(500) }
 		.fluidProperties { it.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(3).explosionResistance(100f) }
 		.register()
-
+	val LUBRICANT: BaseFlowingFluid.Flowing get() = _LUBRICANT.get()
 
 	val SLAG: FluidEntry<BaseFlowingFluid.Flowing> = CreateOreDeposits.REGISTRATE
 		.fluid("slag", "block/fluid/slag_still".resource(), "block/fluid/slag_flow".resource())

@@ -1,6 +1,6 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill
 
-import com.createcivilization.create_ore_deposits.CreateOreDepositsLang
+import com.createcivilization.create_ore_deposits.util.translate
 import com.createcivilization.create_ore_deposits.CreateOreDepositsTags
 import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
 import com.createcivilization.create_ore_deposits.registry.fluid.FluidHandler
@@ -44,13 +44,24 @@ class DepositDrillBlockEntity(
 	blockState: BlockState
 ) : BlockBreakingKineticBlockEntity(type, pos, blockState) {
 
+	/**
+	 * Allows array access syntax on the [itemHandler] property.
+	 */
+	operator fun ItemStackHandler.get(index: Int): ItemStack = this.getStackInSlot(index)
+
 	// The Float value distance from the bottom of the drill, should always be positive
 	private var drillOffset: Float = 0f
 	private var lerpedOffset: LerpedFloat = LerpedFloat.linear().startWithValue(min)
 	private var lastBlock: Block? = null
 
 	private val itemHandler: ItemStackHandler = ItemStackHandler()
-	private val fluidHandler: FluidHandler = FluidHandler(1000, mutableSetOf(CreateOreDepositsFluids.LUBRICANT.get(), CreateOreDepositsFluids.LUBRICANT.getSource())) // Put lube here
+	private val fluidHandler: FluidHandler = FluidHandler(
+		1000,
+		mutableSetOf(
+			CreateOreDepositsFluids.LUBRICANT,
+			CreateOreDepositsFluids.LUBRICANT.source
+		)
+	) // Put lube here
 
 	override fun tick() {
 		super.tick()
@@ -80,13 +91,11 @@ class DepositDrillBlockEntity(
 
 	override fun onBlockBroken(stateToBreak: BlockState) {
 		lastBlock = getTargetBlock()
-		BlockHelper.destroyBlock(level, breakingPos, 1f, { drops: ItemStack ->
-			itemHandler.insertItem(0, drops, false)
-		})
+		BlockHelper.destroyBlock(level, breakingPos, 1f) { drops: ItemStack -> itemHandler.insertItem(0, drops, false) }
 	}
 
 	override fun getBreakingPos(): BlockPos {
-		val inventory = itemHandler.getStackInSlot(0)
+		val inventory = itemHandler[0]
 		val inventoryNotFull = inventory.count != itemHandler.getSlotLimit(0)
 		val targetBlockIsTheSameAsLastBlock = getTargetBlock() == lastBlock
 
@@ -109,7 +118,6 @@ class DepositDrillBlockEntity(
 		super.read(compound, registries, clientPacket)
 	}
 
-
 	override fun write(compound: CompoundTag, registries: HolderLookup.Provider, clientPacket: Boolean) {
 		val nbt = CompoundTag()
 		nbt.putFloat("DrillOffset", drillOffset)
@@ -122,35 +130,24 @@ class DepositDrillBlockEntity(
 	}
 
 	override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
-		CreateOreDepositsLang.translate("tooltip.drill.header").forGoggles(tooltip)
+		translate("tooltip.drill.header").forGoggles(tooltip)
 
 		val targetBlock = level?.getBlockState(getDrillTipPos())?.block!!
-		if (targetBlock != Blocks.AIR) {
-			CreateOreDepositsLang.translate("tooltip.drill.drilling", Component.translatable(targetBlock.descriptionId))
+		if (targetBlock != Blocks.AIR)
+			translate("tooltip.drill.drilling", Component.translatable(targetBlock.descriptionId))
 				.style(ChatFormatting.GRAY)
 				.forGoggles(tooltip)
-		}
 
-		if(!itemHandler.getStackInSlot(0).isEmpty) {
-			CreateOreDepositsLang.translate(
-				"tooltip.drill.contains",
-				Component.translatable(itemHandler.getStackInSlot(0).descriptionId),
-				itemHandler.getStackInSlot(0).count
-			)
+		if (!itemHandler[0].isEmpty)
+			translate("tooltip.drill.contains", Component.translatable(itemHandler[0].descriptionId), itemHandler[0].count)
 				.style(ChatFormatting.GREEN)
 				.forGoggles(tooltip)
-		}
 
 		val fluidInTank = fluidHandler.getFluidInTank(0)
-		if (!fluidInTank.isEmpty) {
-			CreateOreDepositsLang.translate(
-				"tooltip.drill.contains.lube",
-				Component.translatable(fluidInTank.descriptionId),
-				fluidInTank.amount
-			)
+		if (!fluidInTank.isEmpty)
+			translate("tooltip.drill.contains.lube", Component.translatable(fluidInTank.descriptionId), fluidInTank.amount)
 				.style(ChatFormatting.BLUE)
 				.forGoggles(tooltip)
-		}
 
 		return super.addToGoggleTooltip(tooltip, isPlayerSneaking)
 	}

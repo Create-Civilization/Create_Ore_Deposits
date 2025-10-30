@@ -1,64 +1,48 @@
 package com.createcivilization.create_ore_deposits.registry.fluid
 
-import com.createcivilization.create_ore_deposits.util.logI
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.StringTag
-import net.minecraft.nbt.Tag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.material.Fluid
+
 import net.neoforged.neoforge.common.util.INBTSerializable
 import net.neoforged.neoforge.fluids.FluidStack
 import net.neoforged.neoforge.fluids.capability.IFluidHandler
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank
-import java.util.Set
-import java.util.function.Predicate
 
+// TODO: Delegate?
+class FluidHandler(capacity: Int, allowedFluids: MutableSet<Fluid>?) : IFluidHandler, INBTSerializable<CompoundTag> {
 
-class FluidHandler(capacity: Int, allowedFluids: MutableSet<Fluid>?) : IFluidHandler,
-	INBTSerializable<CompoundTag> {
 	private val tank: FluidTank
 	private var allowedFluids: MutableSet<Fluid>?
 
 	init {
-		this.tank = FluidTank(capacity, Predicate { fluidStack: FluidStack -> isAllowed(fluidStack.fluid) })
+		this.tank = FluidTank(capacity, ::isAllowed)
 		this.allowedFluids = allowedFluids
 	}
 
-	fun isAllowed(fluid: Fluid?): Boolean {
-		return allowedFluids == null || allowedFluids!!.contains(fluid)
-	}
+	fun isAllowed(fluidStack: FluidStack): Boolean = this.isAllowed(fluidStack.fluid)
 
-	override fun getTanks(): Int {
-		return 1
-	}
+	fun isAllowed(fluid: Fluid?): Boolean = allowedFluids == null || allowedFluids!!.contains(fluid)
 
-	override fun getFluidInTank(i: Int): FluidStack {
-		return this.tank.getFluid()
-	}
+	override fun getTanks(): Int = 1
 
-	override fun getTankCapacity(i: Int): Int {
-		return this.tank.getCapacity()
-	}
+	override fun getFluidInTank(i: Int): FluidStack = this.tank.getFluid()
 
-	override fun isFluidValid(i: Int, fluidStack: FluidStack): Boolean {
-		return isAllowed(fluidStack.fluid)
-	}
+	override fun getTankCapacity(i: Int): Int = this.tank.getCapacity()
 
-	override fun fill(fluidStack: FluidStack, fluidAction: FluidAction): Int {
-		return if (isAllowed(fluidStack.fluid)) tank.fill(fluidStack, fluidAction) else 0
-	}
+	override fun isFluidValid(i: Int, fluidStack: FluidStack): Boolean = isAllowed(fluidStack)
 
-	override fun drain(fluidStack: FluidStack, fluidAction: FluidAction): FluidStack {
-		return tank.drain(fluidStack, fluidAction)
-	}
+	override fun fill(fluidStack: FluidStack, fluidAction: FluidAction): Int =
+		if (isAllowed(fluidStack)) tank.fill(fluidStack, fluidAction) else 0
 
-	override fun drain(i: Int, fluidAction: FluidAction): FluidStack {
-		return tank.drain(i, fluidAction)
-	}
+	override fun drain(fluidStack: FluidStack, fluidAction: FluidAction): FluidStack = tank.drain(fluidStack, fluidAction)
+
+	override fun drain(i: Int, fluidAction: FluidAction): FluidStack = tank.drain(i, fluidAction)
 
 	override fun serializeNBT(provider: HolderLookup.Provider): CompoundTag {
 		val nbt = CompoundTag()
