@@ -10,7 +10,6 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.state.BlockBehaviour
 
 import net.neoforged.neoforge.registries.DeferredHolder
 import net.neoforged.neoforge.registries.DeferredRegister
@@ -21,8 +20,6 @@ import java.util.function.Supplier
 fun String.resource(): ResourceLocation = ResourceLocation.fromNamespaceAndPath(CreateOreDeposits.MOD_ID, this)
 
 fun Item(): Item = Item(Item.Properties())
-
-fun Block(): Block = Block(BlockBehaviour.Properties.of())
 
 /**
  * Returns a [Pair] of [KotlinDeferredRegister]s, containing [ITEM] and [BLOCK] access.
