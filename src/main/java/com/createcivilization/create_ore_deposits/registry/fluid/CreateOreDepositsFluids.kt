@@ -45,7 +45,7 @@ object CreateOreDepositsFluids {
 	val WASTE_SLURRY_STILL: ResourceLocation get() = fluidRL("waste_slurry", false);
 	val WASTE_SLURRY_FLOWING: ResourceLocation get() = fluidRL("waste_slurry", true);
 
-	val LUBRICANT: FluidEntry<BaseFlowingFluid.Flowing?>? = REGISTRATE.fluid("lubricant",LUBRICANT_STILL,LUBRICANT_FLOWING)
+	val LUBRICANT: FluidEntry<BaseFlowingFluid.Flowing> = REGISTRATE.fluid("lubricant",LUBRICANT_STILL,LUBRICANT_FLOWING)
 		.properties { b -> b.viscosity(1500)
 				.density(500)
 		}
@@ -55,7 +55,7 @@ object CreateOreDepositsFluids {
 				.explosionResistance(100f)
 		}.register()
 
-	val SLAG: FluidEntry<BaseFlowingFluid.Flowing?>? =
+	val SLAG: FluidEntry<BaseFlowingFluid.Flowing> =
 		REGISTRATE.fluid("slag", SLAG_STILL, SLAG_FLOWING)
 			.properties{ _ -> BlockBehaviour.Properties.ofFullCopy(Blocks.LAVA)}.fluidProperties{p -> p.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(3).explosionResistance(0f)}
 			.block{f, p -> MoltenMetalFluidBlock(f, p)}.build()
@@ -72,14 +72,14 @@ object CreateOreDepositsFluids {
 
 	//Gold Stuff
 
-	val MOLTEN_GOLD: FluidEntry<BaseFlowingFluid.Flowing?>? =
+	val MOLTEN_GOLD: FluidEntry<BaseFlowingFluid.Flowing> =
 		REGISTRATE.fluid("molten_gold", MOLTEN_GOLD_STILL, MOLTEN_GOLD_FLOWING, )
 			.properties { _ -> BlockBehaviour.Properties.ofFullCopy(Blocks.LAVA)}
 			.fluidProperties{p -> p.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(3).explosionResistance(0f)}
 			.block{f,p -> MoltenMetalFluidBlock(f,p)}.build()
 			.register()
 
-	val WASTE_SLURRY: FluidEntry<BaseFlowingFluid.Flowing?>? =
+	val WASTE_SLURRY: FluidEntry<BaseFlowingFluid.Flowing> =
 		REGISTRATE.fluid("waste_slurry", WASTE_SLURRY_STILL, WASTE_SLURRY_FLOWING,
 			SolidRenderedPlaceableFluidType.create(0x0a7031, { -> 1f/32f * 2f}))
 			.properties { _ -> BlockBehaviour.Properties.ofFullCopy(Blocks.WATER) }
