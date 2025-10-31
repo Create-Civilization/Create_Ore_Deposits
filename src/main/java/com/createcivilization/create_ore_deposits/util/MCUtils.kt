@@ -24,18 +24,6 @@ fun Item(): Item = Item(Item.Properties())
 
 fun Block(): Block = Block(BlockBehaviour.Properties.of())
 
-/**
- * Returns a [Pair] of [KotlinDeferredRegister]s, containing [ITEM] and [BLOCK] access.
- */
-fun <BLOCK : Block, ITEM : BlockItem> makeBlock(
-	name: String,
-	block: () -> BLOCK,
-	item: (block: () -> BLOCK) -> ITEM
-): Pair<KotlinDeferredHolder<Block, BLOCK>, KotlinDeferredHolder<Item, ITEM>> =
-	CreateOreDepositsBlocks.BLOCK_PROVIDER.register(name, block).let {
-		it to CreateOreDepositsItems.ITEM_PROVIDER.register(name) { -> item(it) }
-	}
-
 // Dearest Arctic, Orion & co. If you see these classes and wonder "what the fuck is this?", just don't even try to understand.
 // it's not worth the effort, registries are a bitch.
 
