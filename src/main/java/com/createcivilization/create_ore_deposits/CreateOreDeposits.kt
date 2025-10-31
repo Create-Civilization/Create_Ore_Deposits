@@ -5,6 +5,7 @@ import com.createcivilization.create_ore_deposits.registry.block.CreateOreDeposi
 import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlocks
 import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
 import com.createcivilization.create_ore_deposits.registry.item.CreateOreDepositsItems
+import com.createcivilization.create_ore_deposits.registry.tab.CreateOreDepositsTabs
 import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDepositsTags
 import com.createcivilization.create_ore_deposits.util.logI
 
@@ -22,6 +23,7 @@ import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 object CreateOreDeposits {
 
 	val REGISTRATE: CreateRegistrate = CreateRegistrate.create(MOD_ID)
+		.defaultCreativeTab(CreateOreDepositsTabs.BASE_CREATIVE_TAB.key!!)
 
 	init {
 		MOD_BUS.addListener(this::commonSetup)
@@ -34,6 +36,8 @@ object CreateOreDeposits {
 		CreateOreDepositsBlockEntities
 		CreateOreDepositsFluids
 		CreateOreDepositsTags
+
+		CreateOreDepositsTabs.register(MOD_BUS)
 	}
 
 	private fun commonSetup(event: FMLCommonSetupEvent) {

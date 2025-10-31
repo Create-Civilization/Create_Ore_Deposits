@@ -3,6 +3,7 @@ package com.createcivilization.create_ore_deposits.registry.block
 import com.createcivilization.create_ore_deposits.CreateOreDeposits
 import com.createcivilization.create_ore_deposits.CreateOreDeposits.REGISTRATE
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlock
+import com.createcivilization.create_ore_deposits.registry.tab.CreateOreDepositsTabs
 import com.createcivilization.create_ore_deposits.util.BlockProvider
 import com.createcivilization.create_ore_deposits.util.ItemProvider
 import com.simibubi.create.AllBlocks
@@ -30,9 +31,10 @@ import java.util.function.Supplier
 object CreateOreDepositsBlocks {
 
 	val EXAMPLE_DEPOSIT: BlockEntry<Block> = REGISTRATE.block("example_deposit", ::Block)
-		.initialProperties(SharedProperties::stone)
+		.initialProperties(SharedProperties::stone) // Specify your custom tab
 		.simpleItem()
 		.register()
+
 
 	internal val DRILL_BLOCK: BlockEntry<DepositDrillBlock> = REGISTRATE
 		.block("deposit_drill") { DepositDrillBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()) }
