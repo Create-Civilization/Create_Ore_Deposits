@@ -97,16 +97,16 @@ object DepositsRegistry {
 		name: String,
 		block: BlockProvider,
 		item: (BlockProvider) -> BlockItem = this::defaultItem
-	): DepositBlockEntry = makeBlock(name, block, item).toEntry()
+	): DepositBlockEntry = makeBlock(name, block, item).let(DepositsRegistry::DepositBlockEntry)
 
 	private fun defaultItem(block: BlockProvider): BlockItem = BlockItem(block(), Item.Properties())
-
-	fun Pair<BlockProvider, ItemProvider>.toEntry(): DepositBlockEntry = DepositBlockEntry(this.first, this.second)
 
 	data class DepositBlockEntry(
 		@JvmField val blockProvider: BlockProvider,
 		@JvmField val itemProvider: ItemProvider
 	) {
+
+		constructor(pair: Pair<BlockProvider, ItemProvider>) : this(pair.first, pair.second)
 
 		val block: Block get() = this.blockProvider()
 
