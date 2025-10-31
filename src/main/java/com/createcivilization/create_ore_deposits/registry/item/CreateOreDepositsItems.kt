@@ -22,48 +22,30 @@ object CreateOreDepositsItems {
 	)
 
 	// Iron Stuff
-	private val _UNREFINED_RAW_IRON_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_raw_iron_ore", ::Item)
-	val UNREFINED_RAW_IRON_ORE_ITEM: Item get() = _UNREFINED_RAW_IRON_ORE_ITEM()
+	val UNREFINED_RAW_IRON_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("unrefined_raw_iron_ore", ::Item).register()
+	val CRUSHED_UNREFINED_IRON_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("crushed_unrefined_iron_ore", ::Item).register()
 
-	private val _CRUSHED_UNREFINED_IRON_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("crushed_unrefined_iron_ore", ::Item)
-	val CRUSHED_UNREFINED_IRON_ORE_ITEM: Item get() = _CRUSHED_UNREFINED_IRON_ORE_ITEM()
+	// Gold Stuff
+	val UNREFINED_RAW_GOLD_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("unrefined_raw_gold_ore", ::Item).register()
+	val CRUSHED_UNREFINED_RAW_GOLD_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("crushed_unrefined_raw_gold_ore", ::Item).register()
 
+	// Copper Stuff
+	val UNREFINED_RAW_COPPER_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("unrefined_raw_copper_ore", ::Item).register()
+	val CRUSHED_UNREFINED_RAW_COPPER_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("crushed_unrefined_raw_copper_ore", ::Item).register()
 
-	//Gold Stuff
-	private val _UNREFINED_RAW_GOLD_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_raw_gold_ore", ::Item)
-	val UNREFINED_RAW_GOLD_ORE_ITEM: Item get() = _UNREFINED_RAW_GOLD_ORE_ITEM()
+	// Zinc Stuff
+	val UNREFINED_RAW_ZINC_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("unrefined_raw_zinc_ore", ::Item).register()
+	val CRUSHED_UNREFINED_RAW_ZINC_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("crushed_unrefined_raw_zinc_ore", ::Item).register()
 
-	private val _CRUSHED_UNREFINED_RAW_GOLD_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("crushed_unrefined_raw_gold_ore", ::Item)
-	val CRUSHED_UNREFINED_RAW_GOLD_ORE_ITEM: Item get() = _CRUSHED_UNREFINED_RAW_GOLD_ORE_ITEM()
+	// Netherite Stuff
+	val UNREFINED_NETHERITE_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("unrefined_netherite_ore", ::Item).register()
+	val CRUSHED_UNREFINED_NETHERITE_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("crushed_unrefined_netherite_ore", ::Item).register()
+	val CRUSHED_NETHERITE_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("crushed_netherite_ore", ::Item).register()
 
-
-	//Copper Stuff
-	private val _UNREFINED_RAW_COPPER_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_raw_copper_ore", ::Item)
-	val UNREFINED_RAW_COPPER_ORE_ITEM: Item get() = _UNREFINED_RAW_COPPER_ORE_ITEM()
-
-	private val _CRUSHED_UNREFINED_RAW_COPPER_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("crushed_unrefined_raw_copper_ore", ::Item)
-	val CRUSHED_UNREFINED_RAW_COPPER_ORE_ITEM: Item get() = _CRUSHED_UNREFINED_RAW_COPPER_ORE_ITEM()
-
-	//Zinc Stuff
-	private val _UNREFINED_RAW_ZINC_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_raw_zinc_ore", ::Item)
-	val UNREFINED_RAW_ZINC_ORE_ITEM: Item get() = _UNREFINED_RAW_ZINC_ORE_ITEM()
-
-	private val _CRUSHED_UNREFINED_RAW_ZINC_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("crushed_unrefined_raw_zinc_ore", ::Item)
-	val CRUSHED_UNREFINED_RAW_ZINC_ORE_ITEM: Item get() = _CRUSHED_UNREFINED_RAW_ZINC_ORE_ITEM()
-
-	//Netherite Stuff
-	private val _UNREFINED_NETHERITE_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_netherite_ore", ::Item)
-	val UNREFINED_NETHERITE_ORE_ITEM: Item get() = _UNREFINED_NETHERITE_ORE_ITEM()
-
-	private val _CRUSHED_UNREFINED_NETHERITE_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("crushed_unrefined_netherite_ore", ::Item)
-	val CRUSHED_UNREFINED_NETHERITE_ORE_ITEM: Item get() = _CRUSHED_UNREFINED_NETHERITE_ORE_ITEM()
-
-	private val _CRUSHED_NETHERITE_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("crushed_netherite_ore", ::Item)
-	val CRUSHED_NETHERITE_ORE_ITEM: Item get() = _CRUSHED_NETHERITE_ORE_ITEM()
 
 	//Cast TEMP THIS WILL BE BOOFED
-	private val _CAST_ITEM: ItemProvider = ITEM_PROVIDER.register("cast", ::Item)
-	val CAST_ITEM: Item get() = _CAST_ITEM()
+
+	val CAST_ITEM: ItemEntry<Item> = REGISTRATE.item("cast", ::Item).register()
 
 	init { ITEM_PROVIDER.register(MOD_BUS) }
 }
