@@ -42,9 +42,17 @@ object CreateOreDepositsFluids {
 	val MOLTEN_GOLD_STILL: ResourceLocation get() = fluidRL("molten_gold", false);
 	val MOLTEN_GOLD_FLOWING: ResourceLocation get() = fluidRL("molten_gold", true);
 
-	//Slurry Textures
-	val WASTE_SLURRY_STILL: ResourceLocation get() = fluidRL("waste_slurry", false);
-	val WASTE_SLURRY_FLOWING: ResourceLocation get() = fluidRL("waste_slurry", true);
+	//Molten Copper Textures
+	val MOLTEN_COPPER_STILL: ResourceLocation get() = fluidRL("molten_copper", false);
+	val MOLTEN_COPPER_FLOWING: ResourceLocation get() = fluidRL("molten_copper", true);
+
+	//Molten Zinc Textures
+	val MOLTEN_ZINC_STILL: ResourceLocation get() = fluidRL("molten_zinc", false);
+	val MOLTEN_ZINC_FLOWING: ResourceLocation get() = fluidRL("molten_zinc", true);
+
+	//Molten Netherite Textures
+	val MOLTEN_NETHERITE_STILL: ResourceLocation get() = fluidRL("molten_netherite", false);
+	val MOLTEN_NETHERITE_FLOWING: ResourceLocation get() = fluidRL("molten_netherite", true);
 
 	val LUBRICANT: FluidEntry<BaseFlowingFluid.Flowing> = REGISTRATE.fluid("lubricant",LUBRICANT_STILL,LUBRICANT_FLOWING)
 		.properties { b -> b.viscosity(1500)
@@ -56,6 +64,12 @@ object CreateOreDepositsFluids {
 				.explosionResistance(100f)
 		}.register()
 
+	val SLAG: FluidEntry<BaseFlowingFluid.Flowing> =
+		REGISTRATE.fluid("slag", SLAG_STILL, SLAG_FLOWING)
+			.properties { _ -> BlockBehaviour.Properties.ofFullCopy(Blocks.LAVA)}
+			.fluidProperties{p -> p.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(3).explosionResistance(0f)}
+			.block{f,p -> MoltenMetalFluidBlock(f,p)}.build()
+			.register()
 
 	//Iron Stuff
 
@@ -75,15 +89,27 @@ object CreateOreDepositsFluids {
 			.block{f,p -> MoltenMetalFluidBlock(f,p)}.build()
 			.register()
 
-	val WASTE_SLURRY: FluidEntry<BaseFlowingFluid.Flowing> =
-		REGISTRATE.fluid("waste_slurry", WASTE_SLURRY_STILL, WASTE_SLURRY_FLOWING,
-			SolidRenderedPlaceableFluidType.create(0x0a7031, { -> 1f/32f * 2f}))
-			.properties { _ -> BlockBehaviour.Properties.ofFullCopy(Blocks.WATER) }
-			.fluidProperties { p -> p.levelDecreasePerBlock(1).tickRate(5).slopeFindDistance(3).explosionResistance(100f)}
-			.block{f,p -> SlurryWasteBlock(f,p) }
-			.properties{p -> p.mapColor { MapColor.COLOR_GREEN }}
-			.build()
+	val MOLTEN_COPPER: FluidEntry<BaseFlowingFluid.Flowing> =
+		REGISTRATE.fluid("molten_copper", MOLTEN_COPPER_STILL, MOLTEN_COPPER_FLOWING, )
+			.properties { _ -> BlockBehaviour.Properties.ofFullCopy(Blocks.LAVA)}
+			.fluidProperties{p -> p.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(3).explosionResistance(0f)}
+			.block{f,p -> MoltenMetalFluidBlock(f,p)}.build()
 			.register()
+
+	val MOLTEN_ZINC: FluidEntry<BaseFlowingFluid.Flowing> =
+		REGISTRATE.fluid("molten_zinc", MOLTEN_ZINC_STILL, MOLTEN_ZINC_FLOWING, )
+			.properties { _ -> BlockBehaviour.Properties.ofFullCopy(Blocks.LAVA)}
+			.fluidProperties{p -> p.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(3).explosionResistance(0f)}
+			.block{f,p -> MoltenMetalFluidBlock(f,p)}.build()
+			.register()
+
+	val MOLTEN_NETHERITE: FluidEntry<BaseFlowingFluid.Flowing> =
+		REGISTRATE.fluid("molten_netherite", MOLTEN_NETHERITE_STILL, MOLTEN_NETHERITE_FLOWING, )
+			.properties { _ -> BlockBehaviour.Properties.ofFullCopy(Blocks.LAVA)}
+			.fluidProperties{p -> p.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(3).explosionResistance(0f)}
+			.block{f,p -> MoltenMetalFluidBlock(f,p)}.build()
+			.register()
+
 
 
 
