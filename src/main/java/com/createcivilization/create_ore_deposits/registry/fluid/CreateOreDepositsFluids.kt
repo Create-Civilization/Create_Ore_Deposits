@@ -27,32 +27,32 @@ object CreateOreDepositsFluids {
 	fun fluidRL(name: String, flowing: Boolean): ResourceLocation = ("block/fluid/$name/${name}_${if (flowing) "flow" else "still"}".resource());
 
 	//Lubricant Textures
-	val LUBRICANT_STILL: ResourceLocation get() = fluidRL("lubricant", false);
-	val LUBRICANT_FLOWING: ResourceLocation get() = fluidRL("lubricant", true);
+	val LUBRICANT_STILL: ResourceLocation = fluidRL("lubricant", false);
+	val LUBRICANT_FLOWING: ResourceLocation = fluidRL("lubricant", true);
 
 	//Slag Textures
-	val SLAG_STILL: ResourceLocation get() = fluidRL("slag", false);
-	val SLAG_FLOWING: ResourceLocation get() = fluidRL("slag", true);
+	val SLAG_STILL: ResourceLocation = fluidRL("slag", false);
+	val SLAG_FLOWING: ResourceLocation = fluidRL("slag", true);
 
 	//Molten Iron Textures
-	val MOLTEN_IRON_STILL: ResourceLocation get() = fluidRL("molten_iron", false);
-	val MOLTEN_IRON_FLOWING: ResourceLocation get() = fluidRL("molten_iron", true);
+	val MOLTEN_IRON_STILL: ResourceLocation = fluidRL("molten_iron", false);
+	val MOLTEN_IRON_FLOWING: ResourceLocation = fluidRL("molten_iron", true);
 
 	//Molten Gold Textures
-	val MOLTEN_GOLD_STILL: ResourceLocation get() = fluidRL("molten_gold", false);
-	val MOLTEN_GOLD_FLOWING: ResourceLocation get() = fluidRL("molten_gold", true);
+	val MOLTEN_GOLD_STILL: ResourceLocation = fluidRL("molten_gold", false);
+	val MOLTEN_GOLD_FLOWING: ResourceLocation = fluidRL("molten_gold", true);
 
 	//Molten Copper Textures
-	val MOLTEN_COPPER_STILL: ResourceLocation get() = fluidRL("molten_copper", false);
-	val MOLTEN_COPPER_FLOWING: ResourceLocation get() = fluidRL("molten_copper", true);
+	val MOLTEN_COPPER_STILL: ResourceLocation = fluidRL("molten_copper", false);
+	val MOLTEN_COPPER_FLOWING: ResourceLocation = fluidRL("molten_copper", true);
 
 	//Molten Zinc Textures
-	val MOLTEN_ZINC_STILL: ResourceLocation get() = fluidRL("molten_zinc", false);
-	val MOLTEN_ZINC_FLOWING: ResourceLocation get() = fluidRL("molten_zinc", true);
+	val MOLTEN_ZINC_STILL: ResourceLocation = fluidRL("molten_zinc", false);
+	val MOLTEN_ZINC_FLOWING: ResourceLocation = fluidRL("molten_zinc", true);
 
 	//Molten Netherite Textures
-	val MOLTEN_NETHERITE_STILL: ResourceLocation get() = fluidRL("molten_netherite", false);
-	val MOLTEN_NETHERITE_FLOWING: ResourceLocation get() = fluidRL("molten_netherite", true);
+	val MOLTEN_NETHERITE_STILL: ResourceLocation = fluidRL("molten_netherite", false);
+	val MOLTEN_NETHERITE_FLOWING: ResourceLocation = fluidRL("molten_netherite", true);
 
 	val LUBRICANT: FluidEntry<BaseFlowingFluid.Flowing> = REGISTRATE.fluid("lubricant",LUBRICANT_STILL,LUBRICANT_FLOWING)
 		.properties { b -> b.viscosity(1500)

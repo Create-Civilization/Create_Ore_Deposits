@@ -58,8 +58,7 @@ class DepositDrillBlockEntity(
 	private val fluidHandler: FluidHandler = FluidHandler(
 		1000,
 		mutableSetOf(
-			CreateOreDepositsFluids.LUBRICANT,
-			CreateOreDepositsFluids.LUBRICANT.source
+			CreateOreDepositsFluids.LUBRICANT.getSource()
 		)
 	) // Put lube here
 

@@ -1,0 +1,18 @@
+{
+  "type": "create:filling",
+  "ingredients": [
+    {
+      "item": "create_ore_deposits:cast"
+    },
+    {
+      "type": "fluid_stack",
+      "amount": 500,
+      "fluid": "create_ore_deposits:molten_zinc"
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:zinc_ingot"
+    }
+  ]
+}

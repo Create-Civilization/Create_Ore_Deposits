@@ -1,13 +1,16 @@
 package com.createcivilization.create_ore_deposits.registry.item
 
 import com.createcivilization.create_ore_deposits.CreateOreDeposits
+import com.createcivilization.create_ore_deposits.CreateOreDeposits.REGISTRATE
 import com.createcivilization.create_ore_deposits.util.Item
 import com.createcivilization.create_ore_deposits.util.ItemProvider
 import com.createcivilization.create_ore_deposits.util.KotlinDeferredRegister
-
+import com.simibubi.create.AllItems
+import com.simibubi.create.AllTags
+import com.simibubi.create.AllTags.AllItemTags
+import com.tterrag.registrate.util.entry.ItemEntry
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.Item
-
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 
 object CreateOreDepositsItems {
@@ -19,44 +22,34 @@ object CreateOreDepositsItems {
 	)
 
 	// Iron Stuff
-	private val _UNREFINED_IRON_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_iron_ore", ::Item)
-	val UNREFINED_IRON_ORE_ITEM: Item get() = _UNREFINED_IRON_ORE_ITEM()
+	private val _UNREFINED_RAW_IRON_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_raw_iron_ore", ::Item)
+	val UNREFINED_RAW_IRON_ORE_ITEM: Item get() = _UNREFINED_RAW_IRON_ORE_ITEM()
 
 	private val _CRUSHED_UNREFINED_IRON_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("crushed_unrefined_iron_ore", ::Item)
 	val CRUSHED_UNREFINED_IRON_ORE_ITEM: Item get() = _CRUSHED_UNREFINED_IRON_ORE_ITEM()
 
-	private val _CRUSHED_IRON_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("crushed_iron_ore", ::Item)
-	val CRUSHED_IRON_ORE_ITEM: Item get() = _CRUSHED_IRON_ORE_ITEM()
 
 	//Gold Stuff
-	private val _UNREFINED_GOLD_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_gold_ore", ::Item)
-	val UNREFINED_GOLD_ORE_ITEM: Item get() = _UNREFINED_GOLD_ORE_ITEM()
+	private val _UNREFINED_RAW_GOLD_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_raw_gold_ore", ::Item)
+	val UNREFINED_RAW_GOLD_ORE_ITEM: Item get() = _UNREFINED_RAW_GOLD_ORE_ITEM()
 
-	private val _CRUSHED_UNREFINED_GOLD_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("crushed_unrefined_gold_ore", ::Item)
-	val CRUSHED_UNREFINED_GOLD_ORE_ITEM: Item get() = _CRUSHED_UNREFINED_GOLD_ORE_ITEM()
+	private val _CRUSHED_UNREFINED_RAW_GOLD_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("crushed_unrefined_raw_gold_ore", ::Item)
+	val CRUSHED_UNREFINED_RAW_GOLD_ORE_ITEM: Item get() = _CRUSHED_UNREFINED_RAW_GOLD_ORE_ITEM()
 
-	private val _CRUSHED_GOLD_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("crushed_gold_ore", ::Item)
-	val CRUSHED_GOLD_ORE_ITEM: Item get() = _CRUSHED_GOLD_ORE_ITEM()
 
 	//Copper Stuff
-	private val _UNREFINED_COPPER_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_copper_ore", ::Item)
-	val UNREFINED_COPPER_ORE_ITEM: Item get() = _UNREFINED_COPPER_ORE_ITEM()
+	private val _UNREFINED_RAW_COPPER_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_raw_copper_ore", ::Item)
+	val UNREFINED_RAW_COPPER_ORE_ITEM: Item get() = _UNREFINED_RAW_COPPER_ORE_ITEM()
 
-	private val _CRUSHED_UNREFINED_COPPER_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("crushed_unrefined_copper_ore", ::Item)
-	val CRUSHED_UNREFINED_COPPER_ORE_ITEM: Item get() = _CRUSHED_UNREFINED_COPPER_ORE_ITEM()
-
-	private val _CRUSHED_COPPER_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("crushed_copper_ore", ::Item)
-	val CRUSHED_COPPER_ORE_ITEM: Item get() = _CRUSHED_COPPER_ORE_ITEM()
+	private val _CRUSHED_UNREFINED_RAW_COPPER_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("crushed_unrefined_raw_copper_ore", ::Item)
+	val CRUSHED_UNREFINED_RAW_COPPER_ORE_ITEM: Item get() = _CRUSHED_UNREFINED_RAW_COPPER_ORE_ITEM()
 
 	//Zinc Stuff
-	private val _UNREFINED_ZINC_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_zinc_ore", ::Item)
-	val UNREFINED_ZINC_ORE_ITEM: Item get() = _UNREFINED_ZINC_ORE_ITEM()
+	private val _UNREFINED_RAW_ZINC_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_raw_zinc_ore", ::Item)
+	val UNREFINED_RAW_ZINC_ORE_ITEM: Item get() = _UNREFINED_RAW_ZINC_ORE_ITEM()
 
-	private val _CRUSHED_UNREFINED_ZINC_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("crushed_unrefined_zinc_ore", ::Item)
-	val CRUSHED_UNREFINED_ZINC_ORE_ITEM: Item get() = _CRUSHED_UNREFINED_ZINC_ORE_ITEM()
-
-	private val _CRUSHED_ZINC_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("crushed_zinc_ore", ::Item)
-	val CRUSHED_ZINC_ORE_ITEM: Item get() = _CRUSHED_ZINC_ORE_ITEM()
+	private val _CRUSHED_UNREFINED_RAW_ZINC_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("crushed_unrefined_raw_zinc_ore", ::Item)
+	val CRUSHED_UNREFINED_RAW_ZINC_ORE_ITEM: Item get() = _CRUSHED_UNREFINED_RAW_ZINC_ORE_ITEM()
 
 	//Netherite Stuff
 	private val _UNREFINED_NETHERITE_ORE_ITEM: ItemProvider = ITEM_PROVIDER.register("unrefined_netherite_ore", ::Item)

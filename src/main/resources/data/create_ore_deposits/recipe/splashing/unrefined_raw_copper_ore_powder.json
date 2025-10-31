@@ -1,0 +1,18 @@
+{
+  "type": "create:splashing",
+  "ingredients": [
+    {
+      "item": "create_ore_deposits:crushed_unrefined_raw_copper_ore"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "create:crushed_raw_copper"
+    },
+    {
+      "count": 1,
+      "id": "minecraft:gravel"
+    }
+  ]
+}

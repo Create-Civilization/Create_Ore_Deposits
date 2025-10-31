@@ -3,13 +3,13 @@
   "heat_requirement": "superheated",
   "ingredients": [
     {
-      "item": "create:crushed_raw_iron"
+      "item": "create:crushed_raw_copper"
     }
   ],
   "results": [
     {
       "amount": 50,
-      "id": "create_ore_deposits:molten_iron"
+      "id": "create_ore_deposits:molten_copper"
     },
     {
       "amount": 15,
