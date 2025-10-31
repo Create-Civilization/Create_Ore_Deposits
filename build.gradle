@@ -4,6 +4,7 @@ plugins {
 	id 'idea'
 	id 'net.neoforged.moddev' version '2.0.76'
 	id 'org.jetbrains.kotlin.jvm' version "2.2.20"
+	id "me.modmuss50.mod-publish-plugin" version "0.8.4"
 }
 
 group = mod_group_id
