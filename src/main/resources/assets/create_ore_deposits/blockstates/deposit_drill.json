@@ -1,14 +1,12 @@
 {
 	"variants": {
-		"": {
-			"model": "create_ore_deposits:block/drill/block"
+		"facing=north": {
+			"model": "create_ore_deposits:block/drill/block",
+			"y": 0
 		},
 		"facing=east": {
 			"model": "create_ore_deposits:block/drill/block",
 			"y": 90
-		},
-		"facing=north": {
-			"model": "create_ore_deposits:block/drill/block"
 		},
 		"facing=south": {
 			"model": "create_ore_deposits:block/drill/block",
