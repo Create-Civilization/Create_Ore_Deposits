@@ -15,12 +15,6 @@ import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 
 object CreateOreDepositsItems {
 
-	@JvmField
-	internal val ITEM_PROVIDER: KotlinDeferredRegister<Item> = KotlinDeferredRegister(
-		Registries.ITEM,
-		CreateOreDeposits.MOD_ID
-	)
-
 	// Iron Stuff
 	val UNREFINED_RAW_IRON_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("unrefined_raw_iron_ore", ::Item).register()
 	val CRUSHED_UNREFINED_IRON_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("crushed_unrefined_iron_ore", ::Item).register()
@@ -46,6 +40,4 @@ object CreateOreDepositsItems {
 	//Cast TEMP THIS WILL BE BOOFED
 
 	val CAST_ITEM: ItemEntry<Item> = REGISTRATE.item("cast", ::Item).register()
-
-	init { ITEM_PROVIDER.register(MOD_BUS) }
 }
