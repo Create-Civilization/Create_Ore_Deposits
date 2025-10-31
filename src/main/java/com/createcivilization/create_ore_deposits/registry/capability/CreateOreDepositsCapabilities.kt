@@ -17,13 +17,13 @@ object CreateOreDepositsCapabilities {
 	fun onRegisterCapabilities(event: RegisterCapabilitiesEvent) {
 		event.registerBlockEntity(
 			Capabilities.ItemHandler.BLOCK,
-			CreateOreDepositsBlockEntities.DEPOSIT_DRILL,
+			CreateOreDepositsBlockEntities.DEPOSIT_DRILL.get(),
 			DepositDrillBlockEntity::getItemHandler
 		)
 
 		event.registerBlockEntity(
 			Capabilities.FluidHandler.BLOCK,
-			CreateOreDepositsBlockEntities.DEPOSIT_DRILL,
+			CreateOreDepositsBlockEntities.DEPOSIT_DRILL.get(),
 			DepositDrillBlockEntity::getFluidHandler
 		)
 	}

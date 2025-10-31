@@ -1,51 +1,41 @@
 package com.createcivilization.create_ore_deposits.registry.block
 
 import com.createcivilization.create_ore_deposits.CreateOreDeposits
+import com.createcivilization.create_ore_deposits.CreateOreDeposits.REGISTRATE
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlock
-import com.createcivilization.create_ore_deposits.util.Block
 import com.createcivilization.create_ore_deposits.util.BlockProvider
 import com.createcivilization.create_ore_deposits.util.ItemProvider
-import com.createcivilization.create_ore_deposits.util.KotlinDeferredRegister
-import com.createcivilization.create_ore_deposits.util.makeBlock
-
+import com.simibubi.create.AllBlocks
+import com.simibubi.create.AllTags.AllBlockTags
+import com.simibubi.create.foundation.data.AssetLookup
+import com.simibubi.create.foundation.data.CreateRegistrate
+import com.simibubi.create.foundation.data.SharedProperties
+import com.simibubi.create.foundation.data.TagGen
+import com.tterrag.registrate.builders.BlockBuilder
+import com.tterrag.registrate.providers.DataGenContext
+import com.tterrag.registrate.providers.RegistrateBlockstateProvider
 import com.tterrag.registrate.util.entry.BlockEntry
-
-import net.minecraft.core.registries.Registries
-import net.minecraft.world.item.BlockItem
+import com.tterrag.registrate.util.nullness.NonNullBiConsumer
+import com.tterrag.registrate.util.nullness.NonNullFunction
+import com.tterrag.registrate.util.nullness.NonNullSupplier
+import com.tterrag.registrate.util.nullness.NonNullUnaryOperator
+import net.minecraft.client.renderer.RenderType
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockBehaviour
-
-import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
+import net.minecraft.world.level.material.MapColor
+import java.util.function.Supplier
 
 object CreateOreDepositsBlocks {
 
-	@JvmField
-	internal val BLOCK_PROVIDER: KotlinDeferredRegister<Block> = KotlinDeferredRegister(
-		Registries.BLOCK,
-		CreateOreDeposits.MOD_ID
-	)
+	val EXAMPLE_DEPOSIT: BlockEntry<Block> = REGISTRATE.block("example_deposit", ::Block)
+		.initialProperties(SharedProperties::stone)
+		.simpleItem()
+		.register()
 
-	private val _EXAMPLE_DEPOSIT: BlockProvider
-	val EXAMPLE_DEPOSIT: Block get() = _EXAMPLE_DEPOSIT()
-	private val _EXAMPLE_DEPOSIT_ITEM: ItemProvider
-	val EXAMPLE_DEPOSIT_ITEM: Item get() = _EXAMPLE_DEPOSIT_ITEM()
-
-	@Suppress("ObjectPropertyName")
-	internal val _DRILL_BLOCK: BlockEntry<DepositDrillBlock> = CreateOreDeposits.REGISTRATE
+	internal val DRILL_BLOCK: BlockEntry<DepositDrillBlock> = REGISTRATE
 		.block("deposit_drill") { DepositDrillBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()) }
 		.simpleItem()
 		.register()
-	val DRILL_BLOCK: DepositDrillBlock get() = _DRILL_BLOCK.get()
-
-	init {
-		val (exampleDeposit, exampleDepositItem) = makeBlock("example_deposit", ::Block) { block ->
-			BlockItem(block(), Item.Properties())
-		}
-		_EXAMPLE_DEPOSIT = exampleDeposit
-		_EXAMPLE_DEPOSIT_ITEM = exampleDepositItem
-
-		BLOCK_PROVIDER.register(MOD_BUS)
-	}
 }

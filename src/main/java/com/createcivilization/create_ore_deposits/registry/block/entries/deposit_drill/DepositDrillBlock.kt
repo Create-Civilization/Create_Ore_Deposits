@@ -21,7 +21,7 @@ class DepositDrillBlock(properties: Properties) : HorizontalAxisKineticBlock(pro
 	override fun getBlockEntityClass(): Class<DepositDrillBlockEntity> = DepositDrillBlockEntity::class.java
 
 	override fun getBlockEntityType(): BlockEntityType<out DepositDrillBlockEntity> =
-		CreateOreDepositsBlockEntities.DEPOSIT_DRILL
+		CreateOreDepositsBlockEntities.DEPOSIT_DRILL.get()
 
 	override fun getRenderShape(pState: BlockState): RenderShape = RenderShape.MODEL
 
