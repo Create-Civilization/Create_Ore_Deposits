@@ -17,7 +17,7 @@ object CreateOreDepositsItems {
 
 	// Iron Stuff
 	val UNREFINED_RAW_IRON_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("unrefined_raw_iron_ore", ::Item).register()
-	val CRUSHED_UNREFINED_IRON_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("crushed_unrefined_iron_ore", ::Item).register()
+	val CRUSHED_UNREFINED_RAW_IRON_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("crushed_unrefined_raw_iron_ore", ::Item).register()
 
 	// Gold Stuff
 	val UNREFINED_RAW_GOLD_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("unrefined_raw_gold_ore", ::Item).register()
