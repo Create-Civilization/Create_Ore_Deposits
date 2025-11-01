@@ -240,6 +240,7 @@ class DepositDrillBlockEntity(
 	private val facingAxis: Direction.Axis = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING).axis
 
 	fun getItemHandler(direction: Direction): IItemHandler? {
+		//Grabs block state and checks if the right side of the block. If it is we can slap a funnel on it.
 		return if (direction == blockState.getValue(BlockStateProperties.HORIZONTAL_FACING).counterClockWise) itemHandler else null
 	}
 
