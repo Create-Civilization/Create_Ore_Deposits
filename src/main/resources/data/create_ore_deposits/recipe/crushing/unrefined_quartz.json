@@ -1,0 +1,25 @@
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "create_ore_deposits:unrefined_quartz_ore"
+    }
+  ],
+  "processing_time": 250,
+  "results": [
+    {
+      "count": 6,
+      "id": "create_ore_deposits:quartz_fragment"
+    },
+    {
+      "count": 2,
+      "chance": 0.25,
+      "id": "create_ore_deposits:quartz_fragment"
+    },
+		{
+			"count": 1,
+			"chance": 0.10,
+			"id": "create_ore_deposits:quartz_fragment"
+		}
+	]
+}

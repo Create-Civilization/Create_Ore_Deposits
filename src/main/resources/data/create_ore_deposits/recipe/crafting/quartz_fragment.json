@@ -1,0 +1,18 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"key": {
+		"Q": {
+			"item": "create_ore_deposits:quartz_fragment"
+		}
+	},
+	"pattern": [
+		"QQQ",
+		"QQQ",
+		"QQQ"
+	],
+	"result": {
+		"count": 1,
+		"id": "minecraft:quartz"
+	}
+}

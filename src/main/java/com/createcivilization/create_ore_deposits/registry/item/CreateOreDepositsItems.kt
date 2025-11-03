@@ -1,17 +1,8 @@
 package com.createcivilization.create_ore_deposits.registry.item
 
-import com.createcivilization.create_ore_deposits.CreateOreDeposits
 import com.createcivilization.create_ore_deposits.CreateOreDeposits.REGISTRATE
-import com.createcivilization.create_ore_deposits.util.Item
-import com.createcivilization.create_ore_deposits.util.ItemProvider
-import com.createcivilization.create_ore_deposits.util.KotlinDeferredRegister
-import com.simibubi.create.AllItems
-import com.simibubi.create.AllTags
-import com.simibubi.create.AllTags.AllItemTags
 import com.tterrag.registrate.util.entry.ItemEntry
-import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.Item
-import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 
 object CreateOreDepositsItems {
 
@@ -36,6 +27,13 @@ object CreateOreDepositsItems {
 	val CRUSHED_UNREFINED_NETHERITE_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("crushed_unrefined_netherite_ore", ::Item).register()
 	val CRUSHED_NETHERITE_ORE_ITEM: ItemEntry<Item> = REGISTRATE.item("crushed_netherite_ore", ::Item).register()
 
+	// Quartz
+	val UNREFINED_QUARTZ_ITEM: ItemEntry<Item> = REGISTRATE.item("unrefined_quartz_ore", ::Item).register()
+	val QUARTZ_FRAGMENT_ITEM: ItemEntry<Item> = REGISTRATE.item("quartz_fragment", ::Item).register()
+
+	// Redstone
+	val UNREFINED_REDSTONE_ITEM: ItemEntry<Item> = REGISTRATE.item("unrefined_redstone_ore", ::Item).register()
+	val REDSTONE_CHUNK_ITEM: ItemEntry<Item> = REGISTRATE.item("redstone_chunk", ::Item).register()
 
 	//Cast TEMP THIS WILL BE BOOFED
 
