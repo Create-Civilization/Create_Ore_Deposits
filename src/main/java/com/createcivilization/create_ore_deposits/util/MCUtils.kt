@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.state.BlockBehaviour
 
 import net.neoforged.neoforge.registries.DeferredHolder
 import net.neoforged.neoforge.registries.DeferredRegister
@@ -21,17 +22,7 @@ fun String.resource(): ResourceLocation = ResourceLocation.fromNamespaceAndPath(
 
 fun Item(): Item = Item(Item.Properties())
 
-/**
- * Returns a [Pair] of [KotlinDeferredRegister]s, containing [ITEM] and [BLOCK] access.
- */
-fun <BLOCK : Block, ITEM : BlockItem> makeBlock(
-	name: String,
-	block: () -> BLOCK,
-	item: (block: () -> BLOCK) -> ITEM
-): Pair<KotlinDeferredHolder<Block, BLOCK>, KotlinDeferredHolder<Item, ITEM>> =
-	CreateOreDepositsBlocks.BLOCK_PROVIDER.register(name, block).let {
-		it to CreateOreDepositsItems.ITEM_PROVIDER.register(name) { -> item(it) }
-	}
+fun Block(): Block = Block(BlockBehaviour.Properties.of())
 
 // Dearest Arctic, Orion & co. If you see these classes and wonder "what the fuck is this?", just don't even try to understand.
 // it's not worth the effort, registries are a bitch.

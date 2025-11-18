@@ -1,0 +1,45 @@
+name: Build
+
+on:
+    push:
+        branches:
+            - 1.21.1
+    pull_request:
+        branches:
+            - 1.21.1
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+
+            - name: Set up JDK
+              uses: actions/setup-java@v4
+              with:
+                  distribution: 'temurin'
+                  java-version: '21'
+
+            - name: Setup The Elephant
+              uses: gradle/actions/setup-gradle@v3
+              with:
+                  cache-read-only: false
+
+            - name: Grant Execute Perms
+              run: chmod +x gradlew
+
+            - name: Get version
+              id: version
+              run: echo "MOD_VERSION=$(grep 'mod_version' gradle.properties | cut -d'=' -f2)" >> $GITHUB_OUTPUT
+
+            - name: Build with Elephant
+              run: ./gradlew build
+
+            - name: Upload Build Artifacts
+              uses: actions/upload-artifact@v4
+              if: success()
+              with:
+                  name: create_ore_deposits-${{ steps.version.outputs.MOD_VERSION }}
+                  path: build/libs/*.jar

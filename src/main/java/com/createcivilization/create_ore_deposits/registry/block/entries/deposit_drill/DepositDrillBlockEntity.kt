@@ -237,12 +237,11 @@ class DepositDrillBlockEntity(
 		return movementSpeed
 	}
 
-	private val facingAxis: Direction.Axis = blockState.getValue(BlockStateProperties.HORIZONTAL_AXIS)
+	private val facingAxis: Direction.Axis = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING).axis
 
 	fun getItemHandler(direction: Direction): IItemHandler? {
-		// Checks if the axis is the same as the facing axis and if the axis direction is the opposite of the facing
-		// In short, checks if the direction is the opposite of the facing direction
-		return if (direction.axis == facingAxis && direction.axisDirection == Direction.AxisDirection.NEGATIVE) itemHandler else null
+		//Grabs block state and checks if the right side of the block. If it is we can slap a funnel on it.
+		return if (direction == blockState.getValue(BlockStateProperties.HORIZONTAL_FACING).counterClockWise) itemHandler else null
 	}
 
 	fun getFluidHandler(direction: Direction): FluidHandler? {

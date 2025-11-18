@@ -1,10 +1,10 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill
 
 import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlockEntities
-
 import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock
+import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock
+import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock.HORIZONTAL_FACING
 import com.simibubi.create.foundation.block.IBE
-
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.world.InteractionResult
@@ -13,20 +13,22 @@ import net.minecraft.world.level.LevelReader
 import net.minecraft.world.level.block.RenderShape
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
-
 import java.util.function.Function
 
-class DepositDrillBlock(properties: Properties) : HorizontalAxisKineticBlock(properties), IBE<DepositDrillBlockEntity> {
+class DepositDrillBlock(properties: Properties) : HorizontalKineticBlock(properties), IBE<DepositDrillBlockEntity> {
 
 	override fun getBlockEntityClass(): Class<DepositDrillBlockEntity> = DepositDrillBlockEntity::class.java
 
 	override fun getBlockEntityType(): BlockEntityType<out DepositDrillBlockEntity> =
-		CreateOreDepositsBlockEntities.DEPOSIT_DRILL
+		CreateOreDepositsBlockEntities.DEPOSIT_DRILL.get()
 
 	override fun getRenderShape(pState: BlockState): RenderShape = RenderShape.MODEL
 
 	override fun hasShaftTowards(world: LevelReader, pos: BlockPos, state: BlockState, face: Direction): Boolean =
-		face.axis == state.getValue(HORIZONTAL_AXIS)
+		face == state.getValue(HORIZONTAL_FACING).clockWise
+
+	override fun getRotationAxis(state: BlockState): Direction.Axis =
+		state.getValue(HORIZONTAL_FACING).clockWise.axis
 
 	override fun onBlockEntityUse(
 		world: BlockGetter,
