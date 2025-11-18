@@ -22,56 +22,24 @@ object CreateOreDepositsBlocks {
 		.simpleItem()
 		.register()
 
-	//Deposits
-	val IRON_ORE_DEPOSIT: BlockEntry<Block> = REGISTRATE
-		.block("iron_ore_deposit") {Block(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_ORE))}
-		.simpleItem()
-		.register()
-
-	val GOLD_ORE_DEPOSIT: BlockEntry<Block> = REGISTRATE
-		.block("gold_ore_deposit") { Block(BlockBehaviour.Properties.ofFullCopy(Blocks.GOLD_ORE))}
-		.simpleItem()
-		.register()
-
-	val COPPER_ORE_DEPOSIT: BlockEntry<Block> = REGISTRATE
-		.block("copper_ore_deposit") {Block(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_ORE))}
-		.simpleItem()
-		.register()
-
-	val REDSTONE_ORE_DEPOSIT: BlockEntry<Block> = REGISTRATE
-		.block("redstone_ore_deposit") {Block(BlockBehaviour.Properties.ofFullCopy(Blocks.REDSTONE_ORE))}
-		.simpleItem()
-		.register()
-
-	val LAPIS_ORE_DEPOSIT: BlockEntry<Block> = REGISTRATE
-		.block("lapis_ore_deposit") {Block(BlockBehaviour.Properties.ofFullCopy(Blocks.LAPIS_ORE))}
-		.simpleItem()
-		.register()
-
-	val DIAMOND_ORE_DEPOSIT: BlockEntry<Block> = REGISTRATE
-		.block("diamond_ore_deposit") { Block(BlockBehaviour.Properties.ofFullCopy(Blocks.LAPIS_ORE))}
-		.simpleItem()
-		.register()
-
-	val EMERALD_ORE_DEPOSIT: BlockEntry<Block> = REGISTRATE
-		.block("emerald_ore_deposit") { Block(BlockBehaviour.Properties.ofFullCopy(Blocks.EMERALD_ORE))}
-		.simpleItem()
-		.register()
-
-	val QUARTZ_ORE_DEPOSIT: BlockEntry<Block> = REGISTRATE
-		.block("quartz_ore_deposit") { Block(BlockBehaviour.Properties.ofFullCopy(Blocks.NETHER_QUARTZ_ORE))}
-		.simpleItem()
-		.register()
-
-	val NETHERITE_ORE_DEPOSIT: BlockEntry<Block> = REGISTRATE
-		.block("netherite_ore_deposit") {Block(BlockBehaviour.Properties.ofFullCopy(Blocks.ANCIENT_DEBRIS))}
-		.simpleItem()
-		.register()
-
-	val ZINC_ORE_DEPOSIT: BlockEntry<Block> = REGISTRATE
-		.block("zinc_ore_deposit") { Block(BlockBehaviour.Properties.ofFullCopy(AllBlocks.ZINC_ORE.get()))}
-		.simpleItem()
-		.register()
-
+	// Deposits
+	val IRON_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("iron_ore_deposit", Blocks.IRON_ORE)
+	val GOLD_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("gold_ore_deposit", Blocks.GOLD_ORE)
+	val COPPER_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("copper_ore_deposit", Blocks.COPPER_ORE)
+	val REDSTONE_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("redstone_ore_deposit", Blocks.REDSTONE_ORE)
+	val LAPIS_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("lapis_ore_deposit", Blocks.LAPIS_ORE)
+	val DIAMOND_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("diamond_ore_deposit", Blocks.DIAMOND_ORE)
+	val EMERALD_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("emerald_ore_deposit", Blocks.EMERALD_ORE)
+	val QUARTZ_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("quartz_ore_deposit", Blocks.NETHER_QUARTZ_ORE)
+	val NETHERITE_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("netherite_ore_deposit", Blocks.ANCIENT_DEBRIS)
+	val ZINC_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("zinc_ore_deposit", AllBlocks.ZINC_ORE.get())
 	//End Deposits
+
+	fun registerDeposit(blockName: String, block: Block): BlockEntry<Block> {
+		return REGISTRATE
+			.block(blockName) { Block(BlockBehaviour.Properties.ofFullCopy(block)) }
+			.simpleItem()
+			.register()
+	}
+
 	}
