@@ -8,10 +8,7 @@ import net.minecraft.core.HolderLookup
 import net.minecraft.core.RegistrySetBuilder
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.PackOutput
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature
-import net.minecraft.world.level.levelgen.placement.PlacedFeature
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider
-import net.neoforged.neoforge.common.world.BiomeModifier
 import net.neoforged.neoforge.registries.NeoForgeRegistries
 import java.util.concurrent.CompletableFuture
 
@@ -27,8 +24,8 @@ class DatapackProvider(
 ) {
 	companion object {
 		val BUILDER: RegistrySetBuilder = RegistrySetBuilder()
-			.add<ConfiguredFeature<*, *>>(Registries.CONFIGURED_FEATURE, ConfiguredFeatures::bootstrap)
-			.add<PlacedFeature>(Registries.PLACED_FEATURE, PlacedFeatures::bootstrap)
-			.add<BiomeModifier>(NeoForgeRegistries.Keys.BIOME_MODIFIERS, BiomeModifiers::bootstrap)
+			.add(Registries.CONFIGURED_FEATURE, ConfiguredFeatures::bootstrap)
+			.add(Registries.PLACED_FEATURE, PlacedFeatures::bootstrap)
+			.add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, BiomeModifiers::bootstrap)
 	}
 }

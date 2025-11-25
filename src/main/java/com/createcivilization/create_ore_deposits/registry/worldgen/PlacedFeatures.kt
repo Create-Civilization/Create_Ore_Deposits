@@ -1,6 +1,7 @@
 package com.createcivilization.create_ore_deposits.registry.worldgen
 
 import com.createcivilization.create_ore_deposits.CreateOreDeposits
+import com.createcivilization.create_ore_deposits.util.logI
 import net.minecraft.core.Holder
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.worldgen.BootstrapContext
@@ -30,7 +31,7 @@ class PlacedFeatures {
 
 			register(
 				context,
-				IRON_ORE_PLACED_KEY as ResourceKey<PlacedFeature>,
+				IRON_ORE_PLACED_KEY,
 				configuredFeatures.getOrThrow(ConfiguredFeatures.IRON_ORE_DEPOSIT_KEY),
 				OrePlacement.commonOrePlacement(
 					12,

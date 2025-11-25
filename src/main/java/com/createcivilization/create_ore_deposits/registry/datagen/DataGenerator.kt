@@ -10,8 +10,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent
 import java.util.concurrent.CompletableFuture
 
 @EventBusSubscriber(modid = CreateOreDeposits.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
-class DataGenerator {
-	// TODO:: FIX THIS, I have 0 CLUE why this REFUSES to run on Data. its RIDICULOUS.
+object DataGenerator {
 	@SubscribeEvent
 	fun gatherData(event: GatherDataEvent) {
 		logI("GENNING")
