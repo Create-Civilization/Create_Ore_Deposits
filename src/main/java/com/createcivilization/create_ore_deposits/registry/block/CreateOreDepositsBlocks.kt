@@ -1,38 +1,45 @@
 package com.createcivilization.create_ore_deposits.registry.block
 
-import com.createcivilization.create_ore_deposits.CreateOreDeposits
+import com.createcivilization.create_ore_deposits.CreateOreDeposits.REGISTRATE
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlock
-import com.createcivilization.create_ore_deposits.registry.item.deposits.DepositsRegistry
-import com.createcivilization.create_ore_deposits.util.KotlinDeferredRegister
-
+import com.simibubi.create.AllBlocks
+import com.simibubi.create.foundation.data.SharedProperties
 import com.tterrag.registrate.util.entry.BlockEntry
-
-import net.minecraft.core.registries.Registries
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockBehaviour
 
-import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
-
 object CreateOreDepositsBlocks {
 
-	@JvmField
-	internal val BLOCK_PROVIDER: KotlinDeferredRegister<Block> = KotlinDeferredRegister(
-		Registries.BLOCK,
-		CreateOreDeposits.MOD_ID
-	)
+	val EXAMPLE_DEPOSIT: BlockEntry<Block> = REGISTRATE.block("example_deposit", ::Block)
+		.initialProperties(SharedProperties::stone) // Specify your custom tab
+		.simpleItem()
+		.register()
 
-	@Suppress("ObjectPropertyName")
-	internal val _DRILL_BLOCK: BlockEntry<DepositDrillBlock> = CreateOreDeposits.REGISTRATE
+
+	val DRILL_BLOCK: BlockEntry<DepositDrillBlock> = REGISTRATE
 		.block("deposit_drill") { DepositDrillBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()) }
 		.simpleItem()
 		.register()
-	val DRILL_BLOCK: DepositDrillBlock get() = _DRILL_BLOCK.get()
 
-	init {
-		@Suppress("UnusedExpression") // Calls static initialiser
-		DepositsRegistry
+	// Deposits
+	val IRON_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("iron_ore_deposit", Blocks.IRON_ORE)
+	val GOLD_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("gold_ore_deposit", Blocks.GOLD_ORE)
+	val COPPER_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("copper_ore_deposit", Blocks.COPPER_ORE)
+//	val REDSTONE_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("redstone_ore_deposit", Blocks.REDSTONE_ORE)
+	val LAPIS_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("lapis_ore_deposit", Blocks.LAPIS_ORE)
+	val DIAMOND_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("diamond_ore_deposit", Blocks.DIAMOND_ORE)
+	val EMERALD_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("emerald_ore_deposit", Blocks.EMERALD_ORE)
+	val QUARTZ_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("quartz_ore_deposit", Blocks.NETHER_QUARTZ_ORE)
+	val NETHERITE_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("netherite_ore_deposit", Blocks.ANCIENT_DEBRIS)
+//	val ZINC_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("zinc_ore_deposit", AllBlocks.ZINC_ORE.get())
+	//End Deposits
 
-		BLOCK_PROVIDER.register(MOD_BUS)
+	fun registerDeposit(blockName: String, block: Block): BlockEntry<Block> {
+		return REGISTRATE
+			.block(blockName) { Block(BlockBehaviour.Properties.ofFullCopy(block)) }
+			.simpleItem()
+			.register()
 	}
-}
+
+	}
