@@ -32,6 +32,7 @@ import net.neoforged.neoforge.items.IItemHandler
 import net.neoforged.neoforge.items.ItemStackHandler
 
 import java.util.function.Predicate
+import kotlin.math.pow
 
 import kotlin.math.roundToInt
 
@@ -149,8 +150,20 @@ class DepositDrillBlockEntity(
 				.style(ChatFormatting.BLUE)
 				.forGoggles(tooltip)
 
+		//Temp Prob
+		val heat = calculateHeat(this.speed)
+		translate("tooltip.drill.heat", String.format("%.2f", heat))
+			.style(ChatFormatting.RED)
+			.forGoggles(tooltip)
+
 		return super.addToGoggleTooltip(tooltip, isPlayerSneaking)
 	}
+
+	fun calculateHeat(RPM: Float): Float {
+		if(RPM < 0) return 0f
+		return (0.25f*(1.013f).pow(RPM))
+	}
+
 
 	fun setLerpedOffset(value: Number) {
 		lerpedOffset.setValue(value.toDouble().coerceAtLeast(min))
