@@ -10,6 +10,7 @@
 	"create_ore_deposits.tooltip.drill.header": "Drill Information",
 	"create_ore_deposits.tooltip.drill.contains": "Item: %1$s x%2$s",
 	"create_ore_deposits.tooltip.drill.contains.lube": "Lube: %1$s x%2$s",
+	"create_ore_deposits.tooltip.drill.contains.coolant": "Coolant: %1$s x%2$s",
 
 	"create_ore_deposits.ponder.drill.intro.text_1": "This is a Drill. It Drills.",
 	"create_ore_deposits.ponder.drill.intro.text_2": "This is the deposit. This is what the Drill drills.",

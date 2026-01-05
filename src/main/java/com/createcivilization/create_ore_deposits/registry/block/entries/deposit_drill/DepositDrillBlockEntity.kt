@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
+import net.minecraft.world.level.material.Fluids
 import net.neoforged.neoforge.fluids.FluidStack
 
 import net.neoforged.neoforge.fluids.capability.IFluidHandler
@@ -58,13 +59,20 @@ class DepositDrillBlockEntity(
 	private var temperature: Float = 0f
 
 	private val itemHandler: ItemStackHandler = ItemStackHandler()
-	private val fluidHandler: FluidHandler = FluidHandler(
+	private val lubricantHandler: FluidHandler = FluidHandler(
 		1000,
 		mutableSetOf(
 			CreateOreDepositsFluids.LUBRICANT,
 			CreateOreDepositsFluids.LUBRICANT.source
 		)
 	) // Put lube here
+	private val coolantHandler: FluidHandler = FluidHandler(
+		1000,
+		mutableSetOf(
+			Fluids.WATER,
+			Fluids.FLOWING_WATER
+		)
+	)
 
 	override fun tick() {
 		super.tick()
@@ -94,7 +102,7 @@ class DepositDrillBlockEntity(
 		super.lazyTick()
 		setChanged()
 		sendData()
-		if (getMovementSpeed() != 0f) fluidHandler.drain(1, IFluidHandler.FluidAction.EXECUTE)
+		if (getMovementSpeed() != 0f) lubricantHandler.drain(1, IFluidHandler.FluidAction.EXECUTE)
 	}
 
 	override fun onBlockBroken(stateToBreak: BlockState) {
@@ -112,7 +120,7 @@ class DepositDrillBlockEntity(
 		return if (canMine) getTargetPos() else BlockPos.ZERO
 	}
 
-	override fun calculateStressApplied(): Float = if (fluidHandler.getFluidInTank(0).amount > 1) 512f / 2f else 512f
+	override fun calculateStressApplied(): Float = if (lubricantHandler.getFluidInTank(0).amount > 1) 512f / 2f else 512f
 
 	override fun read(compound: CompoundTag, registries: HolderLookup.Provider, clientPacket: Boolean) {
 		val nbt: CompoundTag = compound.getCompound("DepositDrill")
@@ -121,7 +129,7 @@ class DepositDrillBlockEntity(
 		temperature = nbt.getFloat("Temperature")
 		if (nbt.contains("LastBlock")) lastBlock = BuiltInRegistries.BLOCK.get(NBTHelper.readResourceLocation(nbt, "LastBlock"))
 		itemHandler.deserializeNBT(registries, nbt.getCompound("ItemHandler"))
-		fluidHandler.deserializeNBT(registries, nbt.getCompound("FluidHandler"))
+		lubricantHandler.deserializeNBT(registries, nbt.getCompound("FluidHandler"))
 
 		super.read(compound, registries, clientPacket)
 	}
@@ -132,7 +140,7 @@ class DepositDrillBlockEntity(
 		nbt.putFloat("Temperature", temperature)
 		if (lastBlock != null) NBTHelper.writeResourceLocation(nbt, "LastBlock", BuiltInRegistries.BLOCK.getKey(lastBlock!!))
 		nbt.put("ItemHandler", itemHandler.serializeNBT(registries))
-		nbt.put("FluidHandler", fluidHandler.serializeNBT(registries))
+		nbt.put("FluidHandler", lubricantHandler.serializeNBT(registries))
 
 		compound.put("DepositDrill", nbt)
 		super.write(compound, registries, clientPacket)
@@ -152,9 +160,15 @@ class DepositDrillBlockEntity(
 				.style(ChatFormatting.GREEN)
 				.forGoggles(tooltip)
 
-		val fluidInTank: FluidStack = fluidHandler.getFluidInTank(0)
-		if (!fluidInTank.isEmpty)
-			translate("tooltip.drill.contains.lube", Component.translatable(fluidInTank.descriptionId), fluidInTank.amount)
+		val fluidInLubricantTank: FluidStack = lubricantHandler.getFluidInTank(0)
+		if (!fluidInLubricantTank.isEmpty)
+			translate("tooltip.drill.contains.lube", Component.translatable(fluidInLubricantTank.descriptionId), fluidInLubricantTank.amount)
+				.style(ChatFormatting.GOLD)
+				.forGoggles(tooltip)
+
+		val fluidInCoolantTank: FluidStack = lubricantHandler.getFluidInTank(0)
+		if (!fluidInLubricantTank.isEmpty)
+			translate("tooltip.drill.contains.coolant", Component.translatable(fluidInCoolantTank.descriptionId), fluidInCoolantTank.amount)
 				.style(ChatFormatting.BLUE)
 				.forGoggles(tooltip)
 
@@ -277,6 +291,11 @@ class DepositDrillBlockEntity(
 
 	fun getFluidHandler(direction: Direction): FluidHandler? {
 		// Checks if the axis is the Y axis (up and down) and if its positive (just up) thus from the top
-		return if (direction.axis == Direction.Axis.Y && direction.axisDirection == Direction.AxisDirection.POSITIVE) fluidHandler else null
+		return if (direction.axis == Direction.Axis.Y && direction.axisDirection == Direction.AxisDirection.POSITIVE)
+			lubricantHandler
+		else if (direction == blockState.getValue(BlockStateProperties.HORIZONTAL_FACING).opposite)
+			coolantHandler
+		else
+			null
 	}
 }
