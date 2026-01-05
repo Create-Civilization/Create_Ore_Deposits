@@ -12,7 +12,6 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
 import net.minecraft.world.level.levelgen.placement.PlacementModifier
-import java.util.List
 
 
 class PlacedFeatures {
@@ -46,7 +45,7 @@ class PlacedFeatures {
 			configuration: Holder<ConfiguredFeature<*, *>>,
 			modifiers: MutableList<PlacementModifier>
 		) {
-			context.register(key, PlacedFeature(configuration, List.copyOf<PlacementModifier>(modifiers)))
+			context.register(key, PlacedFeature(configuration, listOf(*modifiers.toTypedArray())))
 		}
 	}
 }

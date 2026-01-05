@@ -6,12 +6,13 @@ import com.createcivilization.create_ore_deposits.registry.block.entries.deposit
 
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.EventBusSubscriber
+import net.neoforged.fml.event.IModBusEvent as ModBusEvent
 import net.neoforged.neoforge.capabilities.Capabilities
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent
 
 @Suppress("unused")
-@EventBusSubscriber(modid = CreateOreDeposits.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
-object CreateOreDepositsCapabilities {
+@EventBusSubscriber(modid = CreateOreDeposits.MOD_ID)
+object CreateOreDepositsCapabilities : ModBusEvent {
 
 	@SubscribeEvent
 	fun onRegisterCapabilities(event: RegisterCapabilitiesEvent) {
