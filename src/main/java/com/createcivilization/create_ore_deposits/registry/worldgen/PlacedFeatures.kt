@@ -1,12 +1,11 @@
 package com.createcivilization.create_ore_deposits.registry.worldgen
 
-import com.createcivilization.create_ore_deposits.CreateOreDeposits
+import com.createcivilization.create_ore_deposits.util.asResource
 
 import net.minecraft.core.Holder
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.worldgen.BootstrapContext
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.levelgen.VerticalAnchor
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement
@@ -21,7 +20,7 @@ object PlacedFeatures {
 
 	private fun registerKey(name: String): ResourceKey<PlacedFeature> = ResourceKey.create(
 		Registries.PLACED_FEATURE,
-		ResourceLocation.fromNamespaceAndPath(CreateOreDeposits.MOD_ID, name)
+		name.asResource()
 	)
 
 	fun bootstrap(context: BootstrapContext<PlacedFeature>) {

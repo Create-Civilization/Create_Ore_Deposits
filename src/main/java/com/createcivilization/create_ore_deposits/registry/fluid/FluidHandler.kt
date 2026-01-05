@@ -8,24 +8,23 @@ import net.minecraft.nbt.StringTag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.material.Fluid
 
-import net.neoforged.neoforge.common.util.INBTSerializable
+import net.neoforged.neoforge.common.util.INBTSerializable as NBTSerialisable
 import net.neoforged.neoforge.fluids.FluidStack
-import net.neoforged.neoforge.fluids.capability.IFluidHandler
+import net.neoforged.neoforge.fluids.capability.IFluidHandler as FluidHandler
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank
 
+// Delegate what?  Delegate why?!  WHY DID I NOT WRITE DOWN WHAT I MEANT?!
 // TODO: Delegate?
-class FluidHandler(capacity: Int, allowedFluids: MutableSet<Fluid>?) : IFluidHandler, INBTSerializable<CompoundTag> {
-
-	private val tank: FluidTank
+class FluidHandler(
+	capacity: Int,
 	private var allowedFluids: MutableSet<Fluid>?
+) : FluidHandler, NBTSerialisable<CompoundTag> {
 
-	init {
-		this.tank = FluidTank(capacity, ::isAllowed)
-		this.allowedFluids = allowedFluids
-	}
+	private val tank: FluidTank = FluidTank(capacity, ::isAllowed)
 
-	fun isAllowed(fluidStack: FluidStack): Boolean = this.isAllowed(fluidStack.fluid)
+	@Suppress("NOTHING_TO_INLINE")
+	inline fun isAllowed(fluidStack: FluidStack): Boolean = this.isAllowed(fluidStack.fluid)
 
 	fun isAllowed(fluid: Fluid?): Boolean = allowedFluids == null || allowedFluids!!.contains(fluid)
 
@@ -47,12 +46,9 @@ class FluidHandler(capacity: Int, allowedFluids: MutableSet<Fluid>?) : IFluidHan
 	override fun serializeNBT(provider: HolderLookup.Provider): CompoundTag {
 		val nbt = CompoundTag()
 		tank.writeToNBT(provider, nbt)
-		allowedFluids?.let { fluids ->
+		allowedFluids?.let { fluids: MutableSet<Fluid> ->
 			val fluidListTag = ListTag()
-			for (fluid in fluids) {
-				val id = BuiltInRegistries.FLUID.getKey(fluid).toString()
-				fluidListTag.add(StringTag.valueOf(id))
-			}
+			for (fluid: Fluid in fluids) fluidListTag += StringTag.valueOf(BuiltInRegistries.FLUID.getKey(fluid).toString())
 			nbt.put("AllowedFluids", fluidListTag)
 		}
 		return nbt
@@ -61,35 +57,10 @@ class FluidHandler(capacity: Int, allowedFluids: MutableSet<Fluid>?) : IFluidHan
 	override fun deserializeNBT(provider: HolderLookup.Provider, nbt: CompoundTag) {
 		tank.readFromNBT(provider, nbt)
 		allowedFluids = mutableSetOf()
-		val fluidListTag = nbt.getList("AllowedFluids", StringTag.TAG_STRING.toInt())
-		for (i in 0 until fluidListTag.size) {
-			val id = fluidListTag.getString(i)
-			val fluid = BuiltInRegistries.FLUID.get(ResourceLocation.parse(id))
-			allowedFluids?.add(fluid)
+		val fluidListTag: ListTag = nbt.getList("AllowedFluids", StringTag.TAG_STRING.toInt())
+		for (i: Int in 0..<fluidListTag.size) {
+			val id: String = fluidListTag.getString(i)
+			allowedFluids?.add(BuiltInRegistries.FLUID.get(ResourceLocation.parse(id)))
 		}
 	}
-
-//	override fun serializeNBT(provider: HolderLookup.Provider): CompoundTag {
-//		val nbt = CompoundTag()
-//		this.tank.writeToNBT(provider, nbt)
-//		if (allowedFluids != null) {
-//			nbt.putInt("size", allowedFluids!!.size)
-//			var i = 0
-//			for (fluid in allowedFluids) {
-//				nbt.putString((i++).toString(), BuiltInRegistries.FLUID.getKey(fluid).toString())
-//			}
-//		}
-//		return nbt
-//	}
-//
-//	override fun deserializeNBT(provider: HolderLookup.Provider, nbt: CompoundTag) {
-//		logI("compound: $nbt")
-//		this.tank.readFromNBT(provider, nbt)
-//		val size = nbt.getInt("size")
-//		val fluidList: MutableList<Fluid> = ArrayList()
-//		for (i in 0 until size) {
-//			fluidList.add(BuiltInRegistries.FLUID.get(ResourceLocation.parse(nbt.getString(i.toString()))))
-//		}
-//		this.allowedFluids = Set.copyOf(fluidList)
-//	}
 }

@@ -1,13 +1,12 @@
 package com.createcivilization.create_ore_deposits.registry.worldgen
 
-import com.createcivilization.create_ore_deposits.CreateOreDeposits
 import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlocks
+import com.createcivilization.create_ore_deposits.util.asResource
 
 import net.minecraft.core.Holder
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.worldgen.BootstrapContext
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.BlockTags
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature
 import net.minecraft.world.level.levelgen.feature.Feature
@@ -23,7 +22,7 @@ object ConfiguredFeatures {
 
 	fun registerKey(name: String): ResourceKey<ConfiguredFeature<*, *>> = ResourceKey.create(
 		Registries.CONFIGURED_FEATURE,
-		ResourceLocation.fromNamespaceAndPath(CreateOreDeposits.MOD_ID, name)
+		name.asResource()
 	)
 
 	fun <FC : FeatureConfiguration, F : Feature<FC>> register(

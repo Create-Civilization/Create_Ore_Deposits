@@ -1,12 +1,11 @@
 package com.createcivilization.create_ore_deposits.registry.worldgen
 
-import com.createcivilization.create_ore_deposits.CreateOreDeposits
+import com.createcivilization.create_ore_deposits.util.asResource
 
 import net.minecraft.core.HolderSet
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.worldgen.BootstrapContext
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.BiomeTags
 import net.minecraft.world.level.levelgen.GenerationStep
 import net.neoforged.neoforge.common.world.BiomeModifier
@@ -40,6 +39,6 @@ object BiomeModifiers {
 
 	private fun registerKey(name: String): ResourceKey<BiomeModifier> = ResourceKey.create(
 		NeoForgeRegistries.Keys.BIOME_MODIFIERS,
-		ResourceLocation.fromNamespaceAndPath(CreateOreDeposits.MOD_ID, name)
+		name.asResource()
 	)
 }

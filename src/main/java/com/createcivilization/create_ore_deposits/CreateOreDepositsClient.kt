@@ -3,7 +3,7 @@ package com.createcivilization.create_ore_deposits
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModels
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DrillBlockModel
 import com.createcivilization.create_ore_deposits.util.logI
-import com.createcivilization.create_ore_deposits.util.resource
+import com.createcivilization.create_ore_deposits.util.asResource
 
 import net.minecraft.client.model.geom.ModelLayerLocation
 
@@ -33,5 +33,5 @@ object CreateOreDepositsClient {
 		event.registerLayerDefinition(DRILL_LAYER, DrillBlockModel::createModel)
 	}
 
-	val DRILL_LAYER: ModelLayerLocation = ModelLayerLocation("drill".resource(), "main")
+	val DRILL_LAYER: ModelLayerLocation = ModelLayerLocation("drill".asResource(), "main")
 }

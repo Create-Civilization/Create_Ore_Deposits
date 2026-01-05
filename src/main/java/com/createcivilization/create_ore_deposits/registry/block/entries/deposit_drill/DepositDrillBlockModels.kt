@@ -1,6 +1,6 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill
 
-import com.createcivilization.create_ore_deposits.util.resource
+import com.createcivilization.create_ore_deposits.util.asResource
 
 import dev.engine_room.flywheel.lib.model.baked.PartialModel
 
@@ -19,7 +19,7 @@ object DepositDrillBlockModels {
 
 	@Suppress("SameParameterValue")
 	private fun get(originalLocation: String, targetLocation: String): SpriteShiftEntry =
-		SpriteShifter.get(originalLocation.resource(), targetLocation.resource())
+		SpriteShifter.get(originalLocation.asResource(), targetLocation.asResource())
 
-	private fun String.block(): PartialModel = PartialModel.of("block/$this".resource())
+	private fun String.block(): PartialModel = PartialModel.of("block/$this".asResource())
 }
