@@ -26,14 +26,15 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
+import net.neoforged.neoforge.fluids.FluidStack
 
 import net.neoforged.neoforge.fluids.capability.IFluidHandler
 import net.neoforged.neoforge.items.IItemHandler
 import net.neoforged.neoforge.items.ItemStackHandler
 
 import java.util.function.Predicate
-import kotlin.math.pow
 
+import kotlin.math.pow
 import kotlin.math.roundToInt
 
 // Minimum value for LerpedFloat to not get jumpy
@@ -68,11 +69,14 @@ class DepositDrillBlockEntity(
 	override fun tick() {
 		super.tick()
 
-		// Compiler inlining will optimize this don't worry.
-		val targetBlock = getTargetBlock()
-		val targetBlockIsAir = targetBlock == Blocks.AIR
+		// Java doesn't have constant folding save for static variables.
+		// The JVM Hotspot detection will _potentially_ fix it if it's causing any major latency at runtime and is being looped over many times.
+		// Courtesy of me learning how to make a compiled language and thus learning about the JVM's interpreter workings.
+		// - Mavity
+
+		// Compiler inlining will optimise this don't worry.
 		val movementSpeed = getMovementSpeed()
-		val canMove = targetBlockIsAir || movementSpeed < 0
+		val canMove = getTargetBlock() == Blocks.AIR || movementSpeed < 0
 
 		if (canMove) {
 			drillOffset = (movementSpeed + drillOffset).coerceAtLeast(0f)
@@ -108,11 +112,10 @@ class DepositDrillBlockEntity(
 		return if (canMine) getTargetPos() else BlockPos.ZERO
 	}
 
-	override fun calculateStressApplied(): Float =
-		if (fluidHandler.getFluidInTank(0).amount > 1) 512f / 2f else 512f
+	override fun calculateStressApplied(): Float = if (fluidHandler.getFluidInTank(0).amount > 1) 512f / 2f else 512f
 
 	override fun read(compound: CompoundTag, registries: HolderLookup.Provider, clientPacket: Boolean) {
-		val nbt = compound.getCompound("Deposit_Drill")
+		val nbt: CompoundTag = compound.getCompound("DepositDrill")
 
 		drillOffset = nbt.getFloat("DrillOffset")
 		temperature = nbt.getFloat("Temperature")
@@ -131,15 +134,15 @@ class DepositDrillBlockEntity(
 		nbt.put("ItemHandler", itemHandler.serializeNBT(registries))
 		nbt.put("FluidHandler", fluidHandler.serializeNBT(registries))
 
-		compound.put("Deposit_Drill", nbt)
+		compound.put("DepositDrill", nbt)
 		super.write(compound, registries, clientPacket)
 	}
 
 	override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
 		translate("tooltip.drill.header").forGoggles(tooltip)
 
-		val targetBlock = level?.getBlockState(getDrillTipPos())?.block!!
-		if (targetBlock != Blocks.AIR)
+		val targetBlock: Block? = level?.getBlockState(getDrillTipPos())?.block
+		if (targetBlock != null && targetBlock != Blocks.AIR)
 			translate("tooltip.drill.drilling", Component.translatable(targetBlock.descriptionId))
 				.style(ChatFormatting.GRAY)
 				.forGoggles(tooltip)
@@ -149,7 +152,7 @@ class DepositDrillBlockEntity(
 				.style(ChatFormatting.GREEN)
 				.forGoggles(tooltip)
 
-		val fluidInTank = fluidHandler.getFluidInTank(0)
+		val fluidInTank: FluidStack = fluidHandler.getFluidInTank(0)
 		if (!fluidInTank.isEmpty)
 			translate("tooltip.drill.contains.lube", Component.translatable(fluidInTank.descriptionId), fluidInTank.amount)
 				.style(ChatFormatting.BLUE)
