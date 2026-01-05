@@ -54,6 +54,7 @@ class DepositDrillBlockEntity(
 	private var drillOffset: Float = 0f
 	private var lerpedOffset: LerpedFloat = LerpedFloat.linear().startWithValue(min)
 	private var lastBlock: Block? = null
+	private var temperature: Float = 0f
 
 	private val itemHandler: ItemStackHandler = ItemStackHandler()
 	private val fluidHandler: FluidHandler = FluidHandler(
@@ -81,6 +82,8 @@ class DepositDrillBlockEntity(
 			lerpedOffset.forceNextSync()
 			setLerpedOffset(drillOffset.roundToInt())
 		}
+
+		updateTemperature()
 	}
 
 	override fun lazyTick() {
@@ -112,6 +115,7 @@ class DepositDrillBlockEntity(
 		val nbt = compound.getCompound("Deposit_Drill")
 
 		drillOffset = nbt.getFloat("DrillOffset")
+		temperature = nbt.getFloat("Temperature")
 		if (nbt.contains("LastBlock")) lastBlock = BuiltInRegistries.BLOCK.get(NBTHelper.readResourceLocation(nbt, "LastBlock"))
 		itemHandler.deserializeNBT(registries, nbt.getCompound("ItemHandler"))
 		fluidHandler.deserializeNBT(registries, nbt.getCompound("FluidHandler"))
@@ -122,6 +126,7 @@ class DepositDrillBlockEntity(
 	override fun write(compound: CompoundTag, registries: HolderLookup.Provider, clientPacket: Boolean) {
 		val nbt = CompoundTag()
 		nbt.putFloat("DrillOffset", drillOffset)
+		nbt.putFloat("Temperature", temperature)
 		if (lastBlock != null) NBTHelper.writeResourceLocation(nbt, "LastBlock", BuiltInRegistries.BLOCK.getKey(lastBlock!!))
 		nbt.put("ItemHandler", itemHandler.serializeNBT(registries))
 		nbt.put("FluidHandler", fluidHandler.serializeNBT(registries))
@@ -151,17 +156,27 @@ class DepositDrillBlockEntity(
 				.forGoggles(tooltip)
 
 		//Temp Prob
-		val heat = calculateHeat(this.speed)
-		translate("tooltip.drill.heat", String.format("%.2f", heat))
+		translate("tooltip.drill.heat", String.format("%.2f", temperature))
 			.style(ChatFormatting.RED)
 			.forGoggles(tooltip)
 
 		return super.addToGoggleTooltip(tooltip, isPlayerSneaking)
 	}
 
-	fun calculateHeat(RPM: Float): Float {
-		if(RPM < 0) return 0f
-		return (0.25f*(1.013f).pow(RPM))
+	fun updateTemperature() {
+		//TEMP VARIABLES
+		val blockHardness = 0.1f //Will be the current block its breaking and its hardness
+		val baseCooling = 0.03f //Will be a config for default cooling, NO COOLANT
+		val coolingFactor = 0.0f // Will be cooling factor of the coolant
+		val dissipation = baseCooling + coolingFactor
+
+		//Non temp
+		val rpm = if(this.speed < 0f) 0f else this.speed
+		val heating = blockHardness * rpm.pow(1.5f) * 0.05f
+		val cooling = dissipation * (temperature - 300f) * 0.05f
+
+		temperature += (heating - cooling)
+		temperature = if(temperature < 300f) 300f else temperature
 	}
 
 
