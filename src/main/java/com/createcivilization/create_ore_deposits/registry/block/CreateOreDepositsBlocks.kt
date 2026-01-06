@@ -2,6 +2,7 @@ package com.createcivilization.create_ore_deposits.registry.block
 
 import com.createcivilization.create_ore_deposits.CreateOreDeposits.REGISTRATE
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlock
+import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDepositsTags
 
 import com.simibubi.create.foundation.data.SharedProperties
 
@@ -45,5 +46,6 @@ object CreateOreDepositsBlocks {
 	): BlockEntry<Block> = REGISTRATE
 		.block(blockName) { Block(BlockBehaviour.Properties.ofFullCopy(block)) }
 		.simpleItem()
+		.tag(CreateOreDepositsTags.DEPOSIT)
 		.register()
 }
