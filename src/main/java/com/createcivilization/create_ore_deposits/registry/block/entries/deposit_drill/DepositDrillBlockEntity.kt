@@ -195,14 +195,17 @@ class DepositDrillBlockEntity(
 		val baseCooling = 0.03f //Will be a config for default cooling, NO COOLANT
 		val coolingFactor = 0.0f // Will be cooling factor of the coolant
 		val dissipation = baseCooling + coolingFactor
+		val baseTemperature = 300f
+		val dampening = 0.05f
+		val scale = 1.5f
 
 		//Non temp
 		val rpm = if(this.speed < 0f) 0f else this.speed
-		val heating = blockHardness * rpm.pow(1.5f) * 0.05f
-		val cooling = dissipation * (temperature - 300f) * 0.05f
+		val heating = blockHardness * rpm.pow(scale) * dampening
+		val cooling = dissipation * (temperature - baseTemperature) * dampening
 
 		temperature += (heating - cooling)
-		temperature = if(temperature < 300f) 300f else temperature
+		temperature = if(temperature < baseTemperature) baseTemperature else temperature
 	}
 
 

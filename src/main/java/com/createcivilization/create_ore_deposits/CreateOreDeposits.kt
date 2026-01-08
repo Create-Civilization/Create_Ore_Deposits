@@ -21,6 +21,7 @@ object CreateOreDeposits {
 
 	val REGISTRATE: CreateRegistrate = CreateRegistrate.create(MOD_ID)
 		.defaultCreativeTab(CreateOreDepositsTabs.BASE_CREATIVE_TAB.key!!)
+		.skipErrors(true) // Due to us not having all the textures, models, jsons, etc. yet, this avoids datagen crashing
 
 	init {
 		MOD_BUS.addListener(this::commonSetup)

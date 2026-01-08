@@ -10,14 +10,13 @@ plugins {
 group = mod_group_id
 version = mod_version
 
-base.archivesName = mod_id
-
-// Redundant.  See `jvmToolchain()` under the `kotlin` block.
-//java.toolchain.languageVersion = JavaLanguageVersion.of(21)
-
 kotlin {
 	jvmToolchain(21)
-	kotlinDaemonJvmArgs = Arrays.asList("-XX:+UseCompactObjectHeaders", "--enable-native-access=ALL-UNNAMED")
+	kotlinDaemonJvmArgs = Arrays.asList("--enable-native-access=ALL-UNNAMED") // Object headers is not available for java 21
+}
+
+base {
+	archivesName = mod_id
 }
 
 repositories {
@@ -58,6 +57,8 @@ neoForge {
 
 		data {
 			data()
+
+			programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
 		}
 
 		// This run config launches GameTestServer and runs all registered gametests, then exits.
@@ -95,6 +96,12 @@ neoForge {
 		}
 	}
 }
+
+tasks.processResources {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
 	implementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
