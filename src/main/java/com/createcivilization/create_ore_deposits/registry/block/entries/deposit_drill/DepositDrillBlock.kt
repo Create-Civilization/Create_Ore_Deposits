@@ -1,6 +1,7 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill
 
 import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlockEntities
+import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDepositsTags
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock
 import com.simibubi.create.foundation.block.IBE
 import net.minecraft.core.BlockPos
@@ -69,13 +70,15 @@ class DepositDrillBlock(properties: Properties) : HorizontalKineticBlock(propert
 				be.notifyUpdate()
 				return@withBlockEntityDo
 			}
-			if(drillTipHandler.getStackInSlot(0).isEmpty){
+			if(drillTipHandler.getStackInSlot(0).isEmpty && stack.tags.anyMatch { key -> CreateOreDepositsTags.DRILL_TIP == key }){
 				val newItemStack = ItemStack(stack.item, 1);
 				stack.consume(1, player)
 				drillTipHandler.insertItem(0, newItemStack, false)
 				be.notifyUpdate()
 				return@withBlockEntityDo
 			}
+			println(stack.tags.anyMatch { key -> CreateOreDepositsTags.DRILL_TIP == key })
+			println(stack.tags)
 		})
 
 		return ItemInteractionResult.SUCCESS

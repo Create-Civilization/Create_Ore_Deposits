@@ -19,6 +19,8 @@ import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -32,6 +34,7 @@ import net.neoforged.neoforge.fluids.FluidStack
 import net.neoforged.neoforge.fluids.capability.IFluidHandler
 import net.neoforged.neoforge.items.IItemHandler
 import net.neoforged.neoforge.items.ItemStackHandler
+import java.util.function.Consumer
 
 import java.util.function.Predicate
 
@@ -97,6 +100,7 @@ class DepositDrillBlockEntity(
 		}
 
 		updateTemperature()
+		damageTip(1)
 	}
 
 	override fun lazyTick() {
@@ -208,7 +212,6 @@ class DepositDrillBlockEntity(
 		temperature = if(temperature < baseTemperature) baseTemperature else temperature
 	}
 
-
 	fun setLerpedOffset(value: Number) {
 		lerpedOffset.setValue(value.toDouble().coerceAtLeast(min))
 	}
@@ -227,6 +230,20 @@ class DepositDrillBlockEntity(
 		val blockAtDrillTipIsADepositBlock = stateAtTip?.let(::isBlockStateADeposit) == true
 
 		return if (blockAtDrillTipIsADepositBlock) getFurthestDepositConnectedToDeposit(level!!, tip) else tip
+	}
+
+	private fun damageTip(damage: Int) {
+		val itemStack: ItemStack = drillTipHandler[0]
+
+		if(!itemStack.isEmpty && itemStack.tags.anyMatch { key -> CreateOreDepositsTags.DRILL_TIP == key }) {
+			val world = level
+			if(world is ServerLevel){
+				itemStack.hurtAndBreak(damage, world, null){
+					drillTipHandler.setStackInSlot(0, ItemStack.EMPTY)
+					notifyUpdate()
+				}
+			}
+		}
 	}
 
 	private fun isBlockStateADeposit(state: BlockState): Boolean =
