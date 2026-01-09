@@ -22,7 +22,7 @@ data object CreateOreDepositsClient {
 		MOD_BUS.addListener(this::onRegisterLayerDefinitions)
 	}
 
-	@Suppress("UnusedExpression") // Calls static initialiser
+	@Suppress("UnusedExpression") // Calls static initializer
 	fun clientInit(event: FMLClientSetupEvent) {
 		logI("In client init!")
 		DepositDrillBlockModels

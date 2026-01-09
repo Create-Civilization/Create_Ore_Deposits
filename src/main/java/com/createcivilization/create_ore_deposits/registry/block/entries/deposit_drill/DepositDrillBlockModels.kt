@@ -11,9 +11,12 @@ object DepositDrillBlockModels {
 
 	val DRILL_COIL: PartialModel = "drill/drill_coil".block()
 	val HOSE: PartialModel = "drill/rope".block()
-	val DRILL_MAGNET: PartialModel = "drill/pulley_drill".block()
+	val DRILL_MAGNET: PartialModel = "drill/tips/no_drill_head".block()
 	val HOSE_HALF: PartialModel = "drill/rope_half".block()
 	val HOSE_HALF_MAGNET: PartialModel = "drill/rope_half_drill".block()
+
+	//Drill_Alt_Tips
+	val DIAMOND_DRILL_TIP: PartialModel = "drill/tips/diamond_drill_tip".block()
 
 	val DRILL_PULLEY_COIL: SpriteShiftEntry = get("block/drill/hose_pulley_coil", "block/drill/hose_pulley_coil_scroll")
 
