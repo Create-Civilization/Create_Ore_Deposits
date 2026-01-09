@@ -8,14 +8,11 @@ import com.createcivilization.create_ore_deposits.registry.item.CreateOreDeposit
 import com.createcivilization.create_ore_deposits.registry.tab.CreateOreDepositsTabs
 import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDepositsTags
 import com.createcivilization.create_ore_deposits.util.logI
-
 import com.simibubi.create.foundation.data.CreateRegistrate
-
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
 import net.neoforged.neoforge.event.server.ServerStartingEvent
-
 import thedarkcolour.kotlinforforge.neoforge.forge.FORGE_BUS
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 
@@ -24,6 +21,7 @@ object CreateOreDeposits {
 
 	val REGISTRATE: CreateRegistrate = CreateRegistrate.create(MOD_ID)
 		.defaultCreativeTab(CreateOreDepositsTabs.BASE_CREATIVE_TAB.key!!)
+		.skipErrors(true) // Due to us not having all the textures, models, jsons, etc. yet, this avoids datagen crashing
 
 	init {
 		MOD_BUS.addListener(this::commonSetup)

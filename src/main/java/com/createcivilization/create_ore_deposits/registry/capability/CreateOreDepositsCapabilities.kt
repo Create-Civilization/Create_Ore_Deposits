@@ -10,7 +10,7 @@ import net.neoforged.neoforge.capabilities.Capabilities
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent
 
 @Suppress("unused")
-@EventBusSubscriber(modid = CreateOreDeposits.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = CreateOreDeposits.MOD_ID)
 object CreateOreDepositsCapabilities {
 
 	@SubscribeEvent

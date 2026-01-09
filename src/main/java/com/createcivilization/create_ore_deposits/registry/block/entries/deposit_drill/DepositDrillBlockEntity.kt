@@ -1,17 +1,14 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill
 
-import com.createcivilization.create_ore_deposits.util.translate
-import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDepositsTags
 import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
 import com.createcivilization.create_ore_deposits.registry.fluid.FluidHandler
-
+import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDepositsTags
+import com.createcivilization.create_ore_deposits.util.translate
 import com.simibubi.create.content.kinetics.base.BlockBreakingKineticBlockEntity
 import com.simibubi.create.foundation.utility.BlockHelper
 import com.simibubi.create.foundation.utility.ServerSpeedProvider
-
 import net.createmod.catnip.animation.LerpedFloat
 import net.createmod.catnip.nbt.NBTHelper
-
 import net.minecraft.ChatFormatting
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -19,6 +16,7 @@ import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -26,13 +24,13 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
-
+import net.minecraft.world.level.material.Fluids
+import net.neoforged.neoforge.fluids.FluidStack
 import net.neoforged.neoforge.fluids.capability.IFluidHandler
 import net.neoforged.neoforge.items.IItemHandler
 import net.neoforged.neoforge.items.ItemStackHandler
-
 import java.util.function.Predicate
-
+import kotlin.math.pow
 import kotlin.math.roundToInt
 
 // Minimum value for LerpedFloat to not get jumpy
@@ -53,24 +51,31 @@ class DepositDrillBlockEntity(
 	private var drillOffset: Float = 0f
 	private var lerpedOffset: LerpedFloat = LerpedFloat.linear().startWithValue(min)
 	private var lastBlock: Block? = null
+	private var temperature: Float = 0f
 
 	private val itemHandler: ItemStackHandler = ItemStackHandler()
-	private val fluidHandler: FluidHandler = FluidHandler(
+	private val drillTipHandler: ItemStackHandler = ItemStackHandler()
+	private val lubricantHandler: FluidHandler = FluidHandler(
 		1000,
 		mutableSetOf(
 			CreateOreDepositsFluids.LUBRICANT,
 			CreateOreDepositsFluids.LUBRICANT.source
 		)
-	) // Put lube here
+	)
+	private val coolantHandler: FluidHandler = FluidHandler(
+		1000,
+		mutableSetOf(
+			Fluids.WATER,
+			Fluids.FLOWING_WATER
+		)
+	)
 
 	override fun tick() {
 		super.tick()
 
-		// Compiler inlining will optimize this don't worry.
-		val targetBlock = getTargetBlock()
-		val targetBlockIsAir = targetBlock == Blocks.AIR
+		// Compiler inlining will optimise this don't worry.
 		val movementSpeed = getMovementSpeed()
-		val canMove = targetBlockIsAir || movementSpeed < 0
+		val canMove = getTargetBlock() == Blocks.AIR || movementSpeed < 0
 
 		if (canMove) {
 			drillOffset = (movementSpeed + drillOffset).coerceAtLeast(0f)
@@ -80,40 +85,77 @@ class DepositDrillBlockEntity(
 			lerpedOffset.forceNextSync()
 			setLerpedOffset(drillOffset.roundToInt())
 		}
+
+		updateTemperature()
+	}
+
+	// Due to this always being called IMMEDIATELY before adding to the break tick, this allows us to do something every break tick.
+	override fun getBreakSpeed(): Float {
+		onBreakTick()
+
+		return super.getBreakSpeed()
+	}
+
+	/**
+	 * Simulates block drops for deposits, allowing deposits to return drops every break tick
+	 */
+	fun onBreakTick() {
+		if (!canMine())
+			return
+		val blockState = getTargetBlockState() ?: return
+		if (!isBlockStateADeposit(blockState))
+			return
+		val serverLevel = level as? ServerLevel ?: return
+
+		for (stack in getSimulatedDrops(blockState, serverLevel, getTargetPos())) {
+			itemHandler.insertItem(0, stack, false)
+		}
+	}
+
+	fun getSimulatedDrops(state: BlockState, serverLevel: ServerLevel, pos: BlockPos) : List<ItemStack> {
+		return Block.getDrops(state, serverLevel, pos, null, null, ItemStack.EMPTY)
+	}
+
+	fun canMine(): Boolean {
+		val inventory = itemHandler[0]
+		val inventoryNotFull = inventory.count != itemHandler.getSlotLimit(0)
+		val targetBlockIsTheSameAsLastBlock = getTargetBlock() == lastBlock
+
+		return inventory.isEmpty || (inventoryNotFull && targetBlockIsTheSameAsLastBlock)
 	}
 
 	override fun lazyTick() {
 		super.lazyTick()
 		setChanged()
 		sendData()
-		if (getMovementSpeed() != 0f) fluidHandler.drain(1, IFluidHandler.FluidAction.EXECUTE)
+		if (getMovementSpeed() != 0f) lubricantHandler.drain(1, IFluidHandler.FluidAction.EXECUTE)
 	}
 
 	override fun onBlockBroken(stateToBreak: BlockState) {
 		lastBlock = getTargetBlock()
-		BlockHelper.destroyBlock(level, breakingPos, 1f) { drops: ItemStack -> itemHandler.insertItem(0, drops, false) }
+		BlockHelper.destroyBlock(level, breakingPos, 1f) { drops: ItemStack ->
+			// Since onBreakTick() already inserts deposit drops into the inventory, we skip them to not add twice on break
+			if (!isBlockStateADeposit(stateToBreak))
+				itemHandler.insertItem(0, drops, false)
+		}
 	}
 
 	override fun getBreakingPos(): BlockPos {
-		val inventory = itemHandler[0]
-		val inventoryNotFull = inventory.count != itemHandler.getSlotLimit(0)
-		val targetBlockIsTheSameAsLastBlock = getTargetBlock() == lastBlock
-
-		val canMine = inventory.isEmpty || (inventoryNotFull && targetBlockIsTheSameAsLastBlock)
-
-		return if (canMine) getTargetPos() else BlockPos.ZERO
+		return if (canMine()) getTargetPos() else BlockPos.ZERO
 	}
 
-	override fun calculateStressApplied(): Float =
-		if (fluidHandler.getFluidInTank(0).amount > 1) 512f / 2f else 512f
+	override fun calculateStressApplied(): Float = if (lubricantHandler.getFluidInTank(0).amount > 1) 512f / 2f else 512f
 
 	override fun read(compound: CompoundTag, registries: HolderLookup.Provider, clientPacket: Boolean) {
-		val nbt = compound.getCompound("Deposit_Drill")
+		val nbt: CompoundTag = compound.getCompound("DepositDrill")
 
 		drillOffset = nbt.getFloat("DrillOffset")
+		temperature = nbt.getFloat("Temperature")
 		if (nbt.contains("LastBlock")) lastBlock = BuiltInRegistries.BLOCK.get(NBTHelper.readResourceLocation(nbt, "LastBlock"))
 		itemHandler.deserializeNBT(registries, nbt.getCompound("ItemHandler"))
-		fluidHandler.deserializeNBT(registries, nbt.getCompound("FluidHandler"))
+		drillTipHandler.deserializeNBT(registries, nbt.getCompound("DrillTipHandler"))
+		lubricantHandler.deserializeNBT(registries, nbt.getCompound("Lubricant"))
+		coolantHandler.deserializeNBT(registries, nbt.getCompound("Coolant"))
 
 		super.read(compound, registries, clientPacket)
 	}
@@ -121,19 +163,22 @@ class DepositDrillBlockEntity(
 	override fun write(compound: CompoundTag, registries: HolderLookup.Provider, clientPacket: Boolean) {
 		val nbt = CompoundTag()
 		nbt.putFloat("DrillOffset", drillOffset)
+		nbt.putFloat("Temperature", temperature)
 		if (lastBlock != null) NBTHelper.writeResourceLocation(nbt, "LastBlock", BuiltInRegistries.BLOCK.getKey(lastBlock!!))
 		nbt.put("ItemHandler", itemHandler.serializeNBT(registries))
-		nbt.put("FluidHandler", fluidHandler.serializeNBT(registries))
+		nbt.put("DrillTipHandler", drillTipHandler.serializeNBT(registries))
+		nbt.put("Lubricant", lubricantHandler.serializeNBT(registries))
+		nbt.put("Coolant", coolantHandler.serializeNBT(registries))
 
-		compound.put("Deposit_Drill", nbt)
+		compound.put("DepositDrill", nbt)
 		super.write(compound, registries, clientPacket)
 	}
 
 	override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
 		translate("tooltip.drill.header").forGoggles(tooltip)
 
-		val targetBlock = level?.getBlockState(getDrillTipPos())?.block!!
-		if (targetBlock != Blocks.AIR)
+		val targetBlock: Block? = level?.getBlockState(getDrillTipPos())?.block
+		if (targetBlock != null && targetBlock != Blocks.AIR)
 			translate("tooltip.drill.drilling", Component.translatable(targetBlock.descriptionId))
 				.style(ChatFormatting.GRAY)
 				.forGoggles(tooltip)
@@ -143,13 +188,49 @@ class DepositDrillBlockEntity(
 				.style(ChatFormatting.GREEN)
 				.forGoggles(tooltip)
 
-		val fluidInTank = fluidHandler.getFluidInTank(0)
-		if (!fluidInTank.isEmpty)
-			translate("tooltip.drill.contains.lube", Component.translatable(fluidInTank.descriptionId), fluidInTank.amount)
+		val fluidInLubricantTank: FluidStack = lubricantHandler.getFluidInTank(0)
+		if (!fluidInLubricantTank.isEmpty)
+			translate("tooltip.drill.contains.lube", Component.translatable(fluidInLubricantTank.descriptionId), fluidInLubricantTank.amount)
+				.style(ChatFormatting.GOLD)
+				.forGoggles(tooltip)
+
+		val fluidInCoolantTank: FluidStack = lubricantHandler.getFluidInTank(0)
+		if (!fluidInLubricantTank.isEmpty)
+			translate("tooltip.drill.contains.coolant", Component.translatable(fluidInCoolantTank.descriptionId), fluidInCoolantTank.amount)
 				.style(ChatFormatting.BLUE)
 				.forGoggles(tooltip)
 
+		//Temp Prob
+
+		if (!drillTipHandler[0].isEmpty)
+			translate("tooltip.drill.tip.contains", Component.translatable(drillTipHandler[0].descriptionId))
+				.style(ChatFormatting.GREEN)
+				.forGoggles(tooltip)
+
+		translate("tooltip.drill.heat", String.format("%.2f", temperature))
+			.style(ChatFormatting.RED)
+			.forGoggles(tooltip)
+
 		return super.addToGoggleTooltip(tooltip, isPlayerSneaking)
+	}
+
+	fun updateTemperature() {
+		//TEMP VARIABLES
+		val blockHardness = 0.1f //Will be the current block its breaking and its hardness
+		val baseCooling = 0.03f //Will be a config for default cooling, NO COOLANT
+		val coolingFactor = 0.0f // Will be cooling factor of the coolant
+		val dissipation = baseCooling + coolingFactor
+		val baseTemperature = 300f
+		val dampening = 0.05f
+		val scale = 1.5f
+
+		//Non temp
+		val rpm = if(this.speed < 0f) 0f else this.speed
+		val heating = blockHardness * rpm.pow(scale) * dampening
+		val cooling = dissipation * (temperature - baseTemperature) * dampening
+
+		temperature += (heating - cooling)
+		temperature = if(temperature < baseTemperature) baseTemperature else temperature
 	}
 
 	fun setLerpedOffset(value: Number) {
@@ -244,8 +325,17 @@ class DepositDrillBlockEntity(
 		return if (direction == blockState.getValue(BlockStateProperties.HORIZONTAL_FACING).counterClockWise) itemHandler else null
 	}
 
+	fun getDrillTipItemHandler(): IItemHandler {
+		return drillTipHandler
+	}
+
 	fun getFluidHandler(direction: Direction): FluidHandler? {
 		// Checks if the axis is the Y axis (up and down) and if its positive (just up) thus from the top
-		return if (direction.axis == Direction.Axis.Y && direction.axisDirection == Direction.AxisDirection.POSITIVE) fluidHandler else null
+		return if (direction.axis == Direction.Axis.Y && direction.axisDirection == Direction.AxisDirection.POSITIVE)
+			lubricantHandler
+		else if (direction == blockState.getValue(BlockStateProperties.HORIZONTAL_FACING).opposite)
+			coolantHandler
+		else
+			null
 	}
 }
