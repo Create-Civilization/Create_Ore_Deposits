@@ -1,5 +1,6 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill
 
+import com.createcivilization.create_ore_deposits.config.Config
 import com.createcivilization.create_ore_deposits.util.translate
 import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDepositsTags
 import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
@@ -20,7 +21,6 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
-import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -31,10 +31,9 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.material.Fluids
 import net.neoforged.neoforge.fluids.FluidStack
 
-import net.neoforged.neoforge.fluids.capability.IFluidHandler
+import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction
 import net.neoforged.neoforge.items.IItemHandler
 import net.neoforged.neoforge.items.ItemStackHandler
-import java.util.function.Consumer
 
 import java.util.function.Predicate
 
@@ -80,15 +79,8 @@ class DepositDrillBlockEntity(
 
 	override fun tick() {
 		super.tick()
-
-		// Java doesn't have constant folding save for static variables.
-		// The JVM Hotspot detection will _potentially_ fix it if it's causing any major latency at runtime and is being looped over many times.
-		// Courtesy of me learning how to make a compiled language and thus learning about the JVM's interpreter workings.
-		// - Mavity
-
-		// Compiler inlining will optimise this don't worry.
-		val movementSpeed = getMovementSpeed()
-		val canMove = getTargetBlock() == Blocks.AIR || movementSpeed < 0
+		val movementSpeed: Float = getMovementSpeed()
+		val canMove: Boolean = getTargetBlock() == Blocks.AIR || movementSpeed < 0
 
 		if (canMove) {
 			drillOffset = (movementSpeed + drillOffset).coerceAtLeast(0f)
@@ -107,7 +99,7 @@ class DepositDrillBlockEntity(
 		super.lazyTick()
 		setChanged()
 		sendData()
-		if (getMovementSpeed() != 0f) lubricantHandler.drain(1, IFluidHandler.FluidAction.EXECUTE)
+		if (getMovementSpeed() != 0f) lubricantHandler.drain(1, FluidAction.EXECUTE)
 	}
 
 	override fun onBlockBroken(stateToBreak: BlockState) {
@@ -116,11 +108,11 @@ class DepositDrillBlockEntity(
 	}
 
 	override fun getBreakingPos(): BlockPos {
-		val inventory = itemHandler[0]
-		val inventoryNotFull = inventory.count != itemHandler.getSlotLimit(0)
-		val targetBlockIsTheSameAsLastBlock = getTargetBlock() == lastBlock
+		val inventory: ItemStack = itemHandler[0]
+		val inventoryNotFull: Boolean = inventory.count != itemHandler.getSlotLimit(0)
+		val targetBlockIsTheSameAsLastBlock: Boolean = getTargetBlock() == lastBlock
 
-		val canMine = inventory.isEmpty || (inventoryNotFull && targetBlockIsTheSameAsLastBlock)
+		val canMine: Boolean = inventory.isEmpty || (inventoryNotFull && targetBlockIsTheSameAsLastBlock)
 
 		return if (canMine) getTargetPos() else BlockPos.ZERO
 	}
@@ -194,22 +186,21 @@ class DepositDrillBlockEntity(
 	}
 
 	fun updateTemperature() {
-		//TEMP VARIABLES
-		val blockHardness = 0.1f //Will be the current block its breaking and its hardness
-		val baseCooling = 0.03f //Will be a config for default cooling, NO COOLANT
+		// TEMP VARIABLES
+		val blockHardness = 0.1f // Will be the current block its breaking and its hardness
 		val coolingFactor = 0.0f // Will be cooling factor of the coolant
-		val dissipation = baseCooling + coolingFactor
-		val baseTemperature = 300f
+		val dissipation: Float = Config.SERVER.baseCooling + coolingFactor
+		val baseTemperature: Float = Config.SERVER.baseTemperature
 		val dampening = 0.05f
 		val scale = 1.5f
 
-		//Non temp
-		val rpm = if(this.speed < 0f) 0f else this.speed
-		val heating = blockHardness * rpm.pow(scale) * dampening
-		val cooling = dissipation * (temperature - baseTemperature) * dampening
+		// Non temp
+		val rpm: Float = if (this.speed < 0f) 0f else this.speed
+		val heating: Float = blockHardness * rpm.pow(scale) * dampening
+		val cooling: Float = dissipation * (temperature - baseTemperature) * dampening
 
 		temperature += (heating - cooling)
-		temperature = if(temperature < baseTemperature) baseTemperature else temperature
+		temperature = if (temperature < baseTemperature) baseTemperature else temperature
 	}
 
 	fun setLerpedOffset(value: Number) {
@@ -224,30 +215,27 @@ class DepositDrillBlockEntity(
 	}
 
 	fun getTargetPos(): BlockPos {
-		val tip = getDrillTipPos()
-		val stateAtTip = level?.getBlockState(tip)
+		val tip: BlockPos = getDrillTipPos()
+		val stateAtTip: BlockState? = level?.getBlockState(tip)
 
-		val blockAtDrillTipIsADepositBlock = stateAtTip?.let(::isBlockStateADeposit) == true
+		val blockAtDrillTipIsADepositBlock: Boolean = stateAtTip?.let(::isBlockStateADeposit) == true
 
 		return if (blockAtDrillTipIsADepositBlock) getFurthestDepositConnectedToDeposit(level!!, tip) else tip
 	}
 
 	private fun damageTip(damage: Int) {
 		val itemStack: ItemStack = drillTipHandler[0]
-
-		if(!itemStack.isEmpty && itemStack.tags.anyMatch { key -> CreateOreDepositsTags.DRILL_TIP == key }) {
+		if (!itemStack.isEmpty && itemStack.tags.anyMatch(CreateOreDepositsTags.DRILL_TIP::equals)) {
 			val world = level
-			if(world is ServerLevel){
-				itemStack.hurtAndBreak(damage, world, null){
-					drillTipHandler.setStackInSlot(0, ItemStack.EMPTY)
-					notifyUpdate()
-				}
+			if (world !is ServerLevel) return
+			itemStack.hurtAndBreak(damage, world, null) {
+				drillTipHandler.setStackInSlot(0, ItemStack.EMPTY)
+				notifyUpdate()
 			}
 		}
 	}
 
-	private fun isBlockStateADeposit(state: BlockState): Boolean =
-		state.`is`(CreateOreDepositsTags.DEPOSIT)
+	private fun isBlockStateADeposit(state: BlockState): Boolean = state.`is`(CreateOreDepositsTags.DEPOSIT)
 
 	private fun getFurthestDepositConnectedToDeposit(
 		level: Level,
@@ -311,6 +299,7 @@ class DepositDrillBlockEntity(
 		return movementSpeed
 	}
 
+	// FIXME: Why is this unused?  What was it meant for?  - Mavity
 	private val facingAxis: Direction.Axis = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING).axis
 
 	fun getItemHandler(direction: Direction): IItemHandler? {
@@ -322,13 +311,10 @@ class DepositDrillBlockEntity(
 		return drillTipHandler;
 	}
 
-	fun getFluidHandler(direction: Direction): FluidHandler? {
-		// Checks if the axis is the Y axis (up and down) and if its positive (just up) thus from the top
-		return if (direction.axis == Direction.Axis.Y && direction.axisDirection == Direction.AxisDirection.POSITIVE)
-			lubricantHandler
-		else if (direction == blockState.getValue(BlockStateProperties.HORIZONTAL_FACING).opposite)
-			coolantHandler
-		else
-			null
+	// Checks if the axis is the Y axis (up and down) and if its positive (just up) thus from the top
+	fun getFluidHandler(direction: Direction): FluidHandler? = when {
+		direction.axis == Direction.Axis.Y && direction.axisDirection == Direction.AxisDirection.POSITIVE -> lubricantHandler
+		direction == blockState.getValue(BlockStateProperties.HORIZONTAL_FACING).opposite -> coolantHandler
+		else -> null
 	}
 }

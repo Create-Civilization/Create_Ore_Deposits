@@ -15,7 +15,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterLayerDef
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 
 @Mod(value = CreateOreDeposits.MOD_ID, dist = [Dist.CLIENT])
-object CreateOreDepositsClient {
+data object CreateOreDepositsClient {
 
 	init {
 		MOD_BUS.addListener(this::clientInit)

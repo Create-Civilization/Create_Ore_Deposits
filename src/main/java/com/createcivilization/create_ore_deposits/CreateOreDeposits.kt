@@ -1,6 +1,7 @@
 @file:Suppress("UnusedExpression") // Calling the objects implicitly invokes their initialisers
 package com.createcivilization.create_ore_deposits
 
+import com.createcivilization.create_ore_deposits.config.Config
 import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlockEntities
 import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlocks
 import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
@@ -8,16 +9,22 @@ import com.createcivilization.create_ore_deposits.registry.item.CreateOreDeposit
 import com.createcivilization.create_ore_deposits.registry.tab.CreateOreDepositsTabs
 import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDepositsTags
 import com.createcivilization.create_ore_deposits.util.logI
+
 import com.simibubi.create.foundation.data.CreateRegistrate
+
 import net.neoforged.bus.api.SubscribeEvent
+import net.neoforged.fml.ModContainer
 import net.neoforged.fml.common.Mod
+import net.neoforged.fml.config.ModConfig
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
 import net.neoforged.neoforge.event.server.ServerStartingEvent
+
 import thedarkcolour.kotlinforforge.neoforge.forge.FORGE_BUS
+import thedarkcolour.kotlinforforge.neoforge.forge.LOADING_CONTEXT
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 
 @Mod(CreateOreDeposits.MOD_ID)
-object CreateOreDeposits {
+data object CreateOreDeposits {
 
 	val REGISTRATE: CreateRegistrate = CreateRegistrate.create(MOD_ID)
 		.defaultCreativeTab(CreateOreDepositsTabs.BASE_CREATIVE_TAB.key!!)
@@ -25,6 +32,8 @@ object CreateOreDeposits {
 
 	init {
 		MOD_BUS.addListener(this::commonSetup)
+		val container: ModContainer = LOADING_CONTEXT.activeContainer!!
+		container.registerConfig(ModConfig.Type.SERVER, Config.serverSpec)
 
 		REGISTRATE.registerEventListeners(MOD_BUS)
 
