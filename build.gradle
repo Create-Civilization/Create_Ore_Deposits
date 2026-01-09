@@ -14,7 +14,7 @@ kotlin {
 	jvmToolchain(21)
 	// This line applies to the actual Kotlin compiler, not the code being compiled, but the code which makes up the compiler.
 	// Provides a CPU & Memory usage reduction & increases speed.
-	kotlinDaemonJvmArgs = Arrays.asList("-XX:+UseCompactObjectHeaders", "--enable-native-access=ALL-UNNAMED")
+	kotlinDaemonJvmArgs = Arrays.asList("--enable-native-access=ALL-UNNAMED")
 }
 
 base {
