@@ -33,13 +33,13 @@ object CreateOreDepositsBlocks {
 		.simpleItem()
 		.register()
 
+	// TEMP LOOT VALUES, CHANGE LATER.
 	// Deposits
 	val COAL_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("coal_ore_deposit", Blocks.COAL_ORE, Items.COAL, 3f, 0.8f)
 	val IRON_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("iron_ore_deposit", Blocks.IRON_ORE, Items.RAW_IRON, 0.8f)
 	val GOLD_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("gold_ore_deposit", Blocks.GOLD_ORE, Items.RAW_GOLD, 0.6f)
 	val COPPER_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("copper_ore_deposit", Blocks.COPPER_ORE, Items.RAW_COPPER, 0.8f)
 
-	// From what I remember, these were causing issues due to blockstates
 //	val REDSTONE_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("redstone_ore_deposit", Blocks.REDSTONE_ORE, Items.REDSTONE_ORE)
 	val LAPIS_ORE_DEPOSIT: BlockEntry<Block> = registerDepositGuaranteed("lapis_ore_deposit", Blocks.LAPIS_ORE, Items.LAPIS_LAZULI)
 	val DIAMOND_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("diamond_ore_deposit", Blocks.DIAMOND_ORE, Items.DIAMOND, 0.2f)

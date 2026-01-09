@@ -12,8 +12,6 @@ import net.minecraft.world.level.levelgen.placement.HeightRangePlacement
 import net.minecraft.world.level.levelgen.placement.PlacedFeature
 import net.minecraft.world.level.levelgen.placement.PlacementModifier
 
-// Note: You don't have to use 'companion object' under a class if there's no other members in the class;  Instead, just make the entire class an object.
-// - Mavity
 object PlacedFeatures {
 
 	val IRON_ORE_PLACED_KEY: ResourceKey<PlacedFeature> = registerKey("iron_ore_placed")
@@ -36,8 +34,6 @@ object PlacedFeatures {
 		)
 	}
 
-	// Note: If you're dealing w/ lists, you can lower from MutableList to List if you don't need to modify the contents.
-	// - Mavity
 	private fun register(
 		context: BootstrapContext<PlacedFeature>,
 		key: ResourceKey<PlacedFeature>,
