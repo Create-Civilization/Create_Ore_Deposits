@@ -12,7 +12,9 @@ version = mod_version
 
 kotlin {
 	jvmToolchain(21)
-	kotlinDaemonJvmArgs = Arrays.asList("--enable-native-access=ALL-UNNAMED") // Object headers is not available for java 21
+	// This line applies to the actual Kotlin compiler, not the code being compiled, but the code which makes up the compiler.
+	// Provides a CPU & Memory usage reduction & increases speed.
+	kotlinDaemonJvmArgs = Arrays.asList("-XX:+UseCompactObjectHeaders", "--enable-native-access=ALL-UNNAMED")
 }
 
 base {
