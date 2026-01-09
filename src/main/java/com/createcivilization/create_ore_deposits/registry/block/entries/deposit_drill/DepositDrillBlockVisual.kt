@@ -1,9 +1,9 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill
 
-import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModels.HOSE
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModels.DRILL_MAGNET
-import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModels.HOSE_HALF_MAGNET
+import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModels.HOSE
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModels.HOSE_HALF
+import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModels.HOSE_HALF_MAGNET
 
 import com.mojang.math.Axis
 import com.simibubi.create.AllPartialModels
@@ -28,6 +28,7 @@ import it.unimi.dsi.fastutil.bytes.ByteArrayList
 import it.unimi.dsi.fastutil.bytes.ByteList
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet
 import it.unimi.dsi.fastutil.longs.LongSet
+import net.createmod.catnip.animation.AnimationTickHolder
 import net.createmod.catnip.math.AngleHelper
 import net.createmod.catnip.render.SpriteShiftEntry
 import net.minecraft.client.Minecraft
@@ -48,6 +49,7 @@ import java.util.function.Function
 import kotlin.Boolean
 import kotlin.Float
 import kotlin.Int
+import kotlin.collections.indices
 import kotlin.math.max
 
 class DepositDrillBlockVisual(
@@ -66,6 +68,7 @@ class DepositDrillBlockVisual(
 	private val lightCache = LightCache()
 
 	private var offset = 0f
+	private var drillRotation = 0f
 
 	init {
 
@@ -86,7 +89,7 @@ class DepositDrillBlockVisual(
 		rope =
 			SmartRecycler<Boolean, TransformedInstance>(Function { b: Boolean -> if (b) this.halfRopeModel.createInstance() else this.ropeModel.createInstance() })
 
-		updateOffset(partialTick)
+		updateState(partialTick)
 		updateLight(partialTick)
 		animate()
 	}
@@ -131,7 +134,7 @@ class DepositDrillBlockVisual(
 	}
 
 	override fun beginFrame(ctx: DynamicVisual.Context) {
-		updateOffset(ctx.partialTick())
+		updateState(ctx.partialTick())
 		animate()
 	}
 
@@ -154,7 +157,10 @@ class DepositDrillBlockVisual(
 			.setChanged()
 		tip.setIdentityTransform()
 			.translate(visualPosition)
-			.translate(0f, -offset, 0f)
+			.translate(0f, -offset - 2/16f, 0f)
+			.center()
+			.rotateYDegrees(drillRotation)
+			.uncenter()
 			.light(lightCache.getPackedLight(max(0, Mth.floor(offset))))
 			.setChanged()
 
@@ -194,8 +200,9 @@ class DepositDrillBlockVisual(
 		lightCache.update()
 	}
 
-	private fun updateOffset(pt: Float) {
+	private fun updateState(pt: Float) {
 		offset = getOffset(pt)
+		drillRotation = (AnimationTickHolder.getRenderTime(blockEntity.getLevel()!!) * blockEntity.getSpeed() * 3f / 10 + offset) % 360
 		lightCache.setSize(Mth.ceil(offset) + 2)
 	}
 
