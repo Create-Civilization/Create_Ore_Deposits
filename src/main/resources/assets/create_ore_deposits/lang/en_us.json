@@ -13,6 +13,7 @@
 	"create_ore_deposits.tooltip.drill.header": "Drill Information",
 	"create_ore_deposits.tooltip.drill.drilling": "Block: %1$s",
 	"create_ore_deposits.tooltip.drill.contains": "Item: %1$s x%2$s",
+	"create_ore_deposits.tooltip.drill.tip.contains": "Drill Tip: %1$s",
 	"create_ore_deposits.tooltip.drill.contains.lube": "Lube: %1$s x%2$s",
 	"create_ore_deposits.tooltip.drill.contains.coolant": "Coolant: %1$s x%2$s",
 	"create_ore_deposits.tooltip.drill.heat": "Heat: %s K",

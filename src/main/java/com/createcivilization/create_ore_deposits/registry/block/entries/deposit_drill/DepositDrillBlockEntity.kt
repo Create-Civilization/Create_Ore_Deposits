@@ -59,6 +59,7 @@ class DepositDrillBlockEntity(
 	private var temperature: Float = 0f
 
 	private val itemHandler: ItemStackHandler = ItemStackHandler()
+	private val drillTipHandler: ItemStackHandler = ItemStackHandler()
 	private val lubricantHandler: FluidHandler = FluidHandler(
 		1000,
 		mutableSetOf(
@@ -129,6 +130,7 @@ class DepositDrillBlockEntity(
 		temperature = nbt.getFloat("Temperature")
 		if (nbt.contains("LastBlock")) lastBlock = BuiltInRegistries.BLOCK.get(NBTHelper.readResourceLocation(nbt, "LastBlock"))
 		itemHandler.deserializeNBT(registries, nbt.getCompound("ItemHandler"))
+		drillTipHandler.deserializeNBT(registries, nbt.getCompound("DrillTipHandler"))
 		lubricantHandler.deserializeNBT(registries, nbt.getCompound("FluidHandler"))
 
 		super.read(compound, registries, clientPacket)
@@ -140,6 +142,7 @@ class DepositDrillBlockEntity(
 		nbt.putFloat("Temperature", temperature)
 		if (lastBlock != null) NBTHelper.writeResourceLocation(nbt, "LastBlock", BuiltInRegistries.BLOCK.getKey(lastBlock!!))
 		nbt.put("ItemHandler", itemHandler.serializeNBT(registries))
+		nbt.put("DrillTipHandler", drillTipHandler.serializeNBT(registries))
 		nbt.put("FluidHandler", lubricantHandler.serializeNBT(registries))
 
 		compound.put("DepositDrill", nbt)
@@ -173,6 +176,12 @@ class DepositDrillBlockEntity(
 				.forGoggles(tooltip)
 
 		//Temp Prob
+
+		if (!drillTipHandler[0].isEmpty)
+			translate("tooltip.drill.tip.contains", Component.translatable(drillTipHandler[0].descriptionId))
+				.style(ChatFormatting.GREEN)
+				.forGoggles(tooltip)
+
 		translate("tooltip.drill.heat", String.format("%.2f", temperature))
 			.style(ChatFormatting.RED)
 			.forGoggles(tooltip)
@@ -290,6 +299,10 @@ class DepositDrillBlockEntity(
 	fun getItemHandler(direction: Direction): IItemHandler? {
 		//Grabs block state and checks if the right side of the block. If it is we can slap a funnel on it.
 		return if (direction == blockState.getValue(BlockStateProperties.HORIZONTAL_FACING).counterClockWise) itemHandler else null
+	}
+
+	fun getDrillTipItemHandler(): IItemHandler {
+		return drillTipHandler;
 	}
 
 	fun getFluidHandler(direction: Direction): FluidHandler? {

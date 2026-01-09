@@ -1,18 +1,25 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill
 
 import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlockEntities
-import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock
-import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock.HORIZONTAL_FACING
 import com.simibubi.create.foundation.block.IBE
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
+import net.minecraft.world.ItemInteractionResult
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 import net.minecraft.world.level.BlockGetter
+import net.minecraft.world.level.Level
 import net.minecraft.world.level.LevelReader
 import net.minecraft.world.level.block.RenderShape
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.phys.BlockHitResult
+import net.neoforged.neoforge.capabilities.Capabilities
+import net.neoforged.neoforge.items.IItemHandler
 import java.util.function.Function
 
 class DepositDrillBlock(properties: Properties) : HorizontalKineticBlock(properties), IBE<DepositDrillBlockEntity> {
@@ -38,7 +45,44 @@ class DepositDrillBlock(properties: Properties) : HorizontalKineticBlock(propert
 		if (!world.getBlockEntity(pos)!!.level!!.isClientSide) InteractionResult.SUCCESS
 		else super.onBlockEntityUse(world, pos, action)
 
-	// This code is required if you make it HorizontalKineticBlock
+	override fun useItemOn(
+		stack: ItemStack,
+		state: BlockState,
+		level: Level,
+		pos: BlockPos,
+		player: Player,
+		hand: InteractionHand,
+		hitResult: BlockHitResult
+	): ItemInteractionResult {
+
+		if(level.isClientSide)
+			return ItemInteractionResult.SUCCESS;
+
+		withBlockEntityDo(level, pos, {be ->
+			val drillTipHandler: IItemHandler = be.getDrillTipItemHandler()
+			if(player.mainHandItem.isEmpty){
+				if(drillTipHandler.getStackInSlot(0).isEmpty){
+					return@withBlockEntityDo
+				}
+				player.setItemInHand(InteractionHand.MAIN_HAND, drillTipHandler.getStackInSlot(0).copy())
+				drillTipHandler.extractItem(0, 1, false)
+				be.notifyUpdate()
+				return@withBlockEntityDo
+			}
+			if(drillTipHandler.getStackInSlot(0).isEmpty){
+				val newItemStack = ItemStack(stack.item, 1);
+				stack.consume(1, player)
+				drillTipHandler.insertItem(0, newItemStack, false)
+				be.notifyUpdate()
+				return@withBlockEntityDo
+			}
+		})
+
+		return ItemInteractionResult.SUCCESS
+	}
+
+
+		// This code is required if you make it HorizontalKineticBlock
 	// Switch Horizontal_axis to Horizontal_facing
 //	override fun getRotationAxis(blockState: BlockState): Direction.Axis {
 //		return (blockState.getValue(HORIZONTAL_FACING)).clockWise.axis
