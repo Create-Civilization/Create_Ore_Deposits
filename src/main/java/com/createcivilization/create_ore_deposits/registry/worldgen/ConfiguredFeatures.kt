@@ -15,7 +15,6 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest
 
-// See note in [PlacedFeatures].
 object ConfiguredFeatures {
 
 	val IRON_ORE_DEPOSIT_KEY: ResourceKey<ConfiguredFeature<*, *>> = registerKey("iron_ore_deposit")
