@@ -189,12 +189,12 @@ class DepositDrillBlockEntity(
 		// TEMP VARIABLES
 		val blockHardness = 0.1f // Will be the current block its breaking and its hardness
 		val coolingFactor = 0.0f // Will be cooling factor of the coolant
-		val dissipation: Float = Config.SERVER.baseCooling + coolingFactor
-		val baseTemperature: Float = Config.SERVER.baseTemperature
-		val dampening = 0.05f
-		val scale = 1.5f
 
 		// Non temp
+		val dissipation: Float = Config.SERVER.DEPOSIT_DRILL.baseCooling + coolingFactor
+		val baseTemperature: Float = Config.SERVER.DEPOSIT_DRILL.baseTemperature
+		val dampening = Config.SERVER.DEPOSIT_DRILL.dampening
+		val scale = Config.SERVER.DEPOSIT_DRILL.scale
 		val rpm: Float = if (this.speed < 0f) 0f else this.speed
 		val heating: Float = blockHardness * rpm.pow(scale) * dampening
 		val cooling: Float = dissipation * (temperature - baseTemperature) * dampening
