@@ -37,6 +37,8 @@ import net.minecraft.core.BlockPos.MutableBlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.SectionPos
 import net.minecraft.util.Mth
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 import net.minecraft.world.level.LightLayer
 import org.joml.Quaternionf
 import org.joml.Quaternionfc
@@ -55,6 +57,7 @@ class DepositDrillBlockVisual(
 ) : ShaftVisual<DepositDrillBlockEntity>(dispatcher, blockEntity, partialTick), SimpleDynamicVisual {
 	private val coil: ScrollInstance
 	private val magnet: TransformedInstance
+	private val tip: TransformedInstance
 	private val rope: SmartRecycler<Boolean, TransformedInstance>
 
 	val rotatingAbout: Direction = Direction.get(Direction.AxisDirection.POSITIVE, rotationAxis())
@@ -78,6 +81,8 @@ class DepositDrillBlockVisual(
 
 		magnet = magnetInstancer().createInstance()
 
+		tip = tipModel.createInstance()
+
 		rope =
 			SmartRecycler<Boolean, TransformedInstance>(Function { b: Boolean -> if (b) this.halfRopeModel.createInstance() else this.ropeModel.createInstance() })
 
@@ -94,11 +99,12 @@ class DepositDrillBlockVisual(
 	val ropeModel: Instancer<TransformedInstance> get() =
 		instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(HOSE))
 
-	val magnetModel: Instancer<TransformedInstance> get() {
-		val stack = blockEntity.getDrillTipItemHandler().getStackInSlot(0)
-		if(stack.isEmpty){
-			return instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(DRILL_MAGNET))
-		}
+	val magnetModel: Instancer<TransformedInstance> get() =
+		instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(DRILL_MAGNET))
+
+	val tipModel: Instancer<TransformedInstance> get() {
+		var stack = blockEntity.getDrillTipItemHandler().getStackInSlot(0)
+		if(stack.isEmpty) stack = ItemStack(Items.NETHERITE_BLOCK) // Placeholder item that should never render
 		val minecraft = Minecraft.getInstance()
 		val bakedModel: BakedModel = minecraft.itemRenderer.getModel(stack, null, null, 0)
 		val model : Model = BakedModelBuilder(bakedModel).build()
@@ -130,14 +136,23 @@ class DepositDrillBlockVisual(
 	}
 
 	private fun animate() {
+		val stack = blockEntity.getDrillTipItemHandler().getStackInSlot(0)
+
 		coil.offsetV = -offset
 		coil.setChanged()
 
 		magnet.setVisible(this.isRunning || offset == 0f)
+		tip.setVisible((this.isRunning || offset == 0f) && !stack.isEmpty)
 
 		magnetInstancer().stealInstance(magnet)
+		tipModel.stealInstance(tip)
 
 		magnet.setIdentityTransform()
+			.translate(visualPosition)
+			.translate(0f, -offset, 0f)
+			.light(lightCache.getPackedLight(max(0, Mth.floor(offset))))
+			.setChanged()
+		tip.setIdentityTransform()
 			.translate(visualPosition)
 			.translate(0f, -offset, 0f)
 			.light(lightCache.getPackedLight(max(0, Mth.floor(offset))))
