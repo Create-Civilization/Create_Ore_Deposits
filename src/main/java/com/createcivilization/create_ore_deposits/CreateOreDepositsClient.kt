@@ -15,14 +15,14 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterLayerDef
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 
 @Mod(value = CreateOreDeposits.MOD_ID, dist = [Dist.CLIENT])
-object CreateOreDepositsClient {
+data object CreateOreDepositsClient {
 
 	init {
 		MOD_BUS.addListener(this::clientInit)
 		MOD_BUS.addListener(this::onRegisterLayerDefinitions)
 	}
 
-	@Suppress("UnusedExpression") // Calls static initialiser
+	@Suppress("UnusedExpression") // Calls static initializer
 	fun clientInit(event: FMLClientSetupEvent) {
 		logI("In client init!")
 		DepositDrillBlockModels
