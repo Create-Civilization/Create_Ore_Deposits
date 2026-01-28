@@ -3,8 +3,15 @@ package com.createcivilization.create_ore_deposits.registry.block
 import com.createcivilization.create_ore_deposits.CreateOreDeposits.REGISTRATE
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlock
 import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDepositsTags
+import com.simibubi.create.AllTags
+import com.simibubi.create.api.behaviour.movement.MovementBehaviour.movementBehaviour
+import com.simibubi.create.api.stress.BlockStressValues
+import com.simibubi.create.content.kinetics.drill.DrillMovementBehaviour
+import com.simibubi.create.foundation.data.BlockStateGen
+import com.simibubi.create.foundation.data.ModelGen.customItemModel
 
 import com.simibubi.create.foundation.data.SharedProperties
+import com.simibubi.create.foundation.data.TagGen.axeOrPickaxe
 
 import com.tterrag.registrate.util.entry.BlockEntry
 import net.minecraft.world.item.Item
@@ -13,6 +20,7 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockBehaviour
+import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.storage.loot.LootPool
 import net.minecraft.world.level.storage.loot.LootTable
 import net.minecraft.world.level.storage.loot.entries.LootItem
@@ -26,11 +34,15 @@ object CreateOreDepositsBlocks {
 		.simpleItem()
 		.register()
 
-	val DRILL_BLOCK: BlockEntry<DepositDrillBlock> = REGISTRATE
-		.block("deposit_drill") {
-			DepositDrillBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion())
-		}
-		.simpleItem()
+
+	val DRILL_BLOCK: BlockEntry<DepositDrillBlock> = REGISTRATE.block("deposit_drill", ::DepositDrillBlock)
+		.initialProperties(SharedProperties::stone)
+		.properties { it.mapColor(MapColor.PODZOL).noOcclusion() }
+		.transform(axeOrPickaxe())
+		.onRegister(movementBehaviour(DrillMovementBehaviour()))
+		.onRegister { b -> BlockStressValues.IMPACTS.register(b) { 4.0 } }
+		.item()
+		.transform(customItemModel())
 		.register()
 
 	// TEMP LOOT VALUES, CHANGE LATER.
