@@ -2,12 +2,12 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"3": "create:block/pump",
+		"3": "create_ore_deposits:block/drill/pump",
 		"4": "create:block/axis",
 		"5": "create:block/axis_top",
 		"6": "create_ore_deposits:block/drill/drill_pulley",
-		"7": "create_ore_deposits:block/drill/drill_pulley_coil",
-		"particle": "create:block/fluid_tank_inner"
+		"7": "create:block/hose_pulley_coil",
+		"particle": "create_ore_deposits:block/drill/fluid_tank_inner"
 	},
 	"elements": [
 		{

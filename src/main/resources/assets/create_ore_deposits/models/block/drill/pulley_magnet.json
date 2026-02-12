@@ -2,7 +2,7 @@
 	"format_version": "1.21.11",
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "create:block/hose",
+		"0": "create_ore_deposits:block/drill/hose",
 		"particle": "create:block/fluid_tank_inner"
 	},
 	"elements": [

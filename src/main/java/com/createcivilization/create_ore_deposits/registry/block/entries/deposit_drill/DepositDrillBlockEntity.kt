@@ -11,6 +11,7 @@ import com.simibubi.create.foundation.utility.ServerSpeedProvider
 import net.createmod.catnip.animation.LerpedFloat
 import net.createmod.catnip.nbt.NBTHelper
 import net.minecraft.ChatFormatting
+import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup
@@ -18,6 +19,7 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.entity.vehicle.Minecart
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -87,7 +89,7 @@ class DepositDrillBlockEntity(
 		}
 
 		updateTemperature()
-		damageTip(1)
+		damageTip()
 	}
 
 	// Due to this always being called IMMEDIATELY before adding to the break tick, this allows us to do something every break tick.
@@ -206,10 +208,32 @@ class DepositDrillBlockEntity(
 
 		//Temp Prob
 
-		if (!drillTipHandler[0].isEmpty)
-			translate("tooltip.drill.tip.contains", Component.translatable(drillTipHandler[0].descriptionId))
+		if (!drillTipHandler[0].isEmpty) {
+			val tipStack = drillTipHandler[0]
+			translate("tooltip.drill.tip.contains", Component.translatable(tipStack.descriptionId))
 				.style(ChatFormatting.GREEN)
 				.forGoggles(tooltip)
+
+			// Show durability if item is damageable
+			if (tipStack.isDamageableItem) {
+				val maxDurability = tipStack.maxDamage
+				val currentDamage = tipStack.damageValue
+				val remainingDurability = maxDurability - currentDamage
+				val durabilityPercent = (remainingDurability.toFloat() / maxDurability * 100).roundToInt()
+
+				val durabilityColor = when {
+					durabilityPercent > 66 -> ChatFormatting.GREEN
+					durabilityPercent > 33 -> ChatFormatting.YELLOW
+					durabilityPercent > 10 -> ChatFormatting.GOLD
+					else -> ChatFormatting.RED
+				}
+
+				translate("tooltip.drill.tip.durability", remainingDurability, maxDurability, durabilityPercent)
+					.style(durabilityColor)
+					.forGoggles(tooltip)
+			}
+		}
+
 
 		translate("tooltip.drill.heat", String.format("%.2f", temperature))
 			.style(ChatFormatting.RED)
@@ -256,15 +280,22 @@ class DepositDrillBlockEntity(
 		return if (blockAtDrillTipIsADepositBlock) getFurthestDepositConnectedToDeposit(level!!, tip) else tip
 	}
 
-	private fun damageTip(damage: Int) {
+	private fun damageTip() {
 		val itemStack: ItemStack = drillTipHandler[0]
-		if (!itemStack.isEmpty && itemStack.tags.anyMatch(CreateOreDepositsTags.DRILL_TIP::equals)) {
-			val world = level
-			if (world !is ServerLevel) return
-			itemStack.hurtAndBreak(damage, world, null) {
-				drillTipHandler.setStackInSlot(0, ItemStack.EMPTY)
-				notifyUpdate()
-			}
+		if (itemStack.isEmpty || !itemStack.tags.anyMatch(CreateOreDepositsTags.DRILL_TIP::equals)) return
+
+		val baseTemp = Config.SERVER.DEPOSIT_DRILL.baseTemperature
+		val excessTemp = (temperature - baseTemp).coerceAtLeast(0f) / 100f
+
+		val damage = ((1f + excessTemp.pow(2)).coerceAtMost(4f)).roundToInt()
+		//Minecraft.getInstance().player?.sendSystemMessage(Component.literal(damage.toString()))
+		if (damage < 1) return
+
+		val world = level
+		if (world !is ServerLevel) return
+		itemStack.hurtAndBreak(damage, world, null) {
+			drillTipHandler.setStackInSlot(0, ItemStack.EMPTY)
+			notifyUpdate()
 		}
 	}
 
