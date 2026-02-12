@@ -119,8 +119,13 @@ class DepositDrillBlockEntity(
 
 	fun canMine(): Boolean {
 		val inventory = itemHandler[0]
+		val drillTipInventory = drillTipHandler[0]
 		val inventoryNotFull = inventory.count != itemHandler.getSlotLimit(0)
 		val targetBlockIsTheSameAsLastBlock = getTargetBlock() == lastBlock
+
+		if(drillTipInventory.isEmpty){
+			return false
+		}
 
 		return inventory.isEmpty || (inventoryNotFull && targetBlockIsTheSameAsLastBlock)
 	}

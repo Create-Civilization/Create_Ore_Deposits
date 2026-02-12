@@ -15,11 +15,6 @@ object DepositDrillBlockModels {
 	val HOSE_HALF: PartialModel = "drill/rope_half".block()
 	val HOSE_HALF_MAGNET: PartialModel = "drill/pulley_half_magnet".block()
 
-	//Drill_Alt_Tips
-	val DIAMOND_DRILL_TIP: PartialModel = "drill/tips/diamond_drill_tip".block()
-
-	val DRILL_PULLEY_COIL: SpriteShiftEntry = get("block/drill/hose_pulley_coil", "block/drill/hose_pulley_coil_scroll")
-
 	@Suppress("SameParameterValue")
 	private fun get(originalLocation: String, targetLocation: String): SpriteShiftEntry =
 		SpriteShifter.get(originalLocation.asResource(), targetLocation.asResource())
