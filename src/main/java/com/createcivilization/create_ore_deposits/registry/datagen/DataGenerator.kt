@@ -23,5 +23,7 @@ object DataGenerator {
 		val lookupProvider: CompletableFuture<HolderLookup.Provider> = event.lookupProvider
 
 		generator.addProvider(event.includeServer(), DatapackProvider(packOutput, lookupProvider))
+		generator.addProvider(event.includeServer(), DataMapProvider(packOutput, lookupProvider))
+
 	}
 }

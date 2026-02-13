@@ -1,6 +1,9 @@
 package com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill
 
 import com.createcivilization.create_ore_deposits.config.Config
+import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepositsDataMaps
+import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepositsDataMaps.COOLING_FACTOR_DATA
+import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepositsDataMaps.HARDNESS_DATA
 import com.createcivilization.create_ore_deposits.util.translate
 import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDepositsTags
 import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
@@ -19,7 +22,6 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
-import net.minecraft.world.entity.vehicle.Minecart
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -200,8 +202,8 @@ class DepositDrillBlockEntity(
 				.style(ChatFormatting.GOLD)
 				.forGoggles(tooltip)
 
-		val fluidInCoolantTank: FluidStack = lubricantHandler.getFluidInTank(0)
-		if (!fluidInLubricantTank.isEmpty)
+		val fluidInCoolantTank: FluidStack = coolantHandler.getFluidInTank(0)
+		if (!fluidInCoolantTank.isEmpty)
 			translate("tooltip.drill.contains.coolant", Component.translatable(fluidInCoolantTank.descriptionId), fluidInCoolantTank.amount)
 				.style(ChatFormatting.BLUE)
 				.forGoggles(tooltip)
@@ -243,9 +245,16 @@ class DepositDrillBlockEntity(
 	}
 
 	fun updateTemperature() {
-		// TEMP VARIABLES
-		val blockHardness = 0.1f // Will be the current block its breaking and its hardness
-		val coolingFactor = 0.0f // Will be cooling factor of the coolant
+		val hardnessData: CreateOreDepositsDataMaps.HardnessData? = getTargetBlockState()?.blockHolder?.getData(HARDNESS_DATA)
+		val coolingFactorData: CreateOreDepositsDataMaps.CoolingFactorData? = coolantHandler.getFluidInTank(1).fluidHolder.getData(COOLING_FACTOR_DATA)
+
+
+
+		var blockHardness = 0.1f
+		var coolingFactor = 0.0f
+
+		if(hardnessData != null) blockHardness = hardnessData.hardness
+		if(coolingFactorData != null) coolingFactor = coolingFactorData.coolingFactor
 
 		// Non temp
 		val dissipation: Float = Config.SERVER.DEPOSIT_DRILL.baseCooling + coolingFactor
