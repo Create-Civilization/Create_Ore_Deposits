@@ -1,4 +1,5 @@
 {
+	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
@@ -98,7 +99,7 @@
 			}
 		},
 		{
-			"name": "Fluid Input",
+			"name": "Lube Input",
 			"from": [2, 14, 3],
 			"to": [14, 16, 13],
 			"rotation": {"angle": 0, "axis": "y", "origin": [14, 14, 2]},
@@ -106,6 +107,18 @@
 				"north": {"uv": [1, 8, 7, 9], "texture": "#6"},
 				"south": {"uv": [1, 8, 7, 9], "texture": "#6"},
 				"up": {"uv": [9, 9.5, 15, 14.5], "texture": "#6"}
+			}
+		},
+		{
+			"name": "Coolant Input",
+			"from": [2, 3, 14],
+			"to": [14, 13, 16],
+			"rotation": {"angle": 0, "axis": "x", "origin": [14, 3, 13]},
+			"faces": {
+				"north": {"uv": [1, 8, 7, 9], "texture": "#6"},
+				"south": {"uv": [9, 9.5, 15, 14.5], "texture": "#6"},
+				"up": {"uv": [1, 8, 7, 9], "texture": "#6"},
+				"down": {"uv": [1, 8, 7, 9], "texture": "#6"}
 			}
 		},
 		{
@@ -181,19 +194,19 @@
 			"name": "Casing",
 			"origin": [14, 0, 2],
 			"color": 0,
-			"children": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+			"children": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 		},
 		{
 			"name": "Hose Coil",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"children": [10, 11]
+			"children": [11, 12]
 		},
 		{
 			"name": "Shaft",
 			"origin": [8, 8, 8],
 			"color": 0,
-			"children": [12]
+			"children": [13]
 		}
 	]
 }
