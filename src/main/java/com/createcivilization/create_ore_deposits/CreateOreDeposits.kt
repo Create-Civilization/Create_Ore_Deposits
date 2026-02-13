@@ -4,6 +4,7 @@ package com.createcivilization.create_ore_deposits
 import com.createcivilization.create_ore_deposits.config.Config
 import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlockEntities
 import com.createcivilization.create_ore_deposits.registry.block.CreateOreDepositsBlocks
+import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepositsDataMaps
 import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
 import com.createcivilization.create_ore_deposits.registry.item.CreateOreDepositsItems
 import com.createcivilization.create_ore_deposits.registry.tab.CreateOreDepositsTabs
@@ -18,6 +19,7 @@ import net.neoforged.fml.common.Mod
 import net.neoforged.fml.config.ModConfig
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
 import net.neoforged.neoforge.event.server.ServerStartingEvent
+import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent
 
 import thedarkcolour.kotlinforforge.neoforge.forge.FORGE_BUS
 import thedarkcolour.kotlinforforge.neoforge.forge.LOADING_CONTEXT
@@ -32,6 +34,8 @@ data object CreateOreDeposits {
 
 	init {
 		MOD_BUS.addListener(this::commonSetup)
+		MOD_BUS.addListener(this::registerDataMapTypes)
+
 		val container: ModContainer = LOADING_CONTEXT.activeContainer!!
 		container.registerConfig(ModConfig.Type.SERVER, Config.serverSpec)
 
@@ -43,12 +47,18 @@ data object CreateOreDeposits {
 		CreateOreDepositsBlockEntities
 		CreateOreDepositsFluids
 		CreateOreDepositsTags
+		CreateOreDepositsDataMaps
 
 		CreateOreDepositsTabs.register(MOD_BUS)
 	}
 
 	private fun commonSetup(event: FMLCommonSetupEvent) {
 		// Some common setup code
+	}
+
+	private fun registerDataMapTypes(event: RegisterDataMapTypesEvent) {
+		event.register(CreateOreDepositsDataMaps.HARDNESS_DATA)
+		event.register(CreateOreDepositsDataMaps.COOLING_FACTOR_DATA)
 	}
 
 	@SubscribeEvent
