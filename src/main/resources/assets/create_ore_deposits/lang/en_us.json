@@ -1,6 +1,9 @@
 {
+	"itemGroup.create_ore_deposits.base": "Create Ore Deposits",
+
 	"block.create_ore_deposits.example_deposit": "Example Ore Deposit",
 	"block.create_ore_deposits.deposit_tester_block": "Deposit Tester",
+	"block.create_ore_deposits.deposit_drill": "Deposit Drill",
 
 	"item.create_ore_deposits.test": "Test Item",
 	"item.create_ore_deposits.example_deposit": "Example Ore Deposit",

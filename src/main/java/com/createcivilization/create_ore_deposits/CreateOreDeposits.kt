@@ -12,6 +12,10 @@ import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDeposits
 import com.createcivilization.create_ore_deposits.util.logI
 
 import com.simibubi.create.foundation.data.CreateRegistrate
+import com.simibubi.create.foundation.item.ItemDescription
+import com.simibubi.create.foundation.item.KineticStats
+import com.simibubi.create.foundation.item.TooltipModifier
+import net.createmod.catnip.lang.FontHelper
 
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.ModContainer
@@ -30,6 +34,8 @@ data object CreateOreDeposits {
 
 	val REGISTRATE: CreateRegistrate = CreateRegistrate.create(MOD_ID)
 		.defaultCreativeTab(CreateOreDepositsTabs.BASE_CREATIVE_TAB.key!!)
+		.setTooltipModifierFactory { item -> ItemDescription.Modifier(item, FontHelper.Palette.STANDARD_CREATE)
+			.andThen(TooltipModifier.mapNull(KineticStats.create(item))) }
 		.skipErrors(true) // Due to us not having all the textures, models, jsons, etc. yet, this avoids datagen crashing
 
 	init {
