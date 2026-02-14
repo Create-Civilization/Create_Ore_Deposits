@@ -16,20 +16,20 @@ data object Config {
 		class DepositDrill(builder: ModConfigSpec.Builder) {
 
 			@PublishedApi
-			internal val _baseCooling: ModConfigSpec.DoubleValue = builder.defineInRange("baseCooling", 0.03, 0.0, Double.MAX_VALUE)
+			internal val _baseCooling: ModConfigSpec.DoubleValue = builder.defineInRange("baseCooling", 0.001, 0.0, Double.MAX_VALUE)
 			inline val baseCooling: Float get() = _baseCooling.get().toFloat()
 
 			@PublishedApi
 			internal val _baseTemperature: ModConfigSpec.DoubleValue =
-				builder.defineInRange("baseTemperature", 300.0, -Double.MAX_VALUE, Double.MAX_VALUE)
+				builder.defineInRange("baseTemperature", 293.0, -Double.MAX_VALUE, Double.MAX_VALUE)
 			inline val baseTemperature: Float get() = _baseTemperature.get().toFloat()
 
 			@PublishedApi
-			internal val _dampening: ModConfigSpec.DoubleValue = builder.defineInRange("dampening", 0.05, 0.0, Double.MAX_VALUE)
+			internal val _dampening: ModConfigSpec.DoubleValue = builder.defineInRange("dampening", 0.008, 0.0, Double.MAX_VALUE)
 			inline val dampening: Float get() = _dampening.get().toFloat()
 
 			@PublishedApi
-			internal val _scale: ModConfigSpec.DoubleValue = builder.defineInRange("scale", 1.5, 0.0, Double.MAX_VALUE)
+			internal val _scale: ModConfigSpec.DoubleValue = builder.defineInRange("scale", 1.0, 0.0, Double.MAX_VALUE)
 			inline val scale: Float get() = _scale.get().toFloat()
 		}
 	}

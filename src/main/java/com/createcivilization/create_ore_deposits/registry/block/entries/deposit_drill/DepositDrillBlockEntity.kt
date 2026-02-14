@@ -153,9 +153,14 @@ class DepositDrillBlockEntity(
 	override fun getBreakingPos(): BlockPos = if (canMine()) getTargetPos() else BlockPos.ZERO
 
 	override fun calculateStressApplied(): Float {
-		val stressImpact: Float = 512f * (getBlockHardness(getTargetBlockState()) / 1f) * (1 - getLubricantFactor())
-		return stressImpact
+		val lubeFactor = getLubricantFactor().coerceIn(0f, 1f)
+		val baseStress = 512f * getBlockHardness(getTargetBlockState())
+
+		val stressMultiplier = 0.5f + 0.5f * (1f - lubeFactor).pow(0.5f)
+
+		return baseStress * stressMultiplier
 	}
+
 
 	override fun read(compound: CompoundTag, registries: HolderLookup.Provider, clientPacket: Boolean) {
 		val nbt: CompoundTag = compound.getCompound("DepositDrill")
@@ -269,17 +274,17 @@ class DepositDrillBlockEntity(
 		val blockHardness = getBlockHardness(getTargetBlockState())
 		val coolingFactor = getCoolingFactor()
 
-		// Non temp
-		val dissipation: Float = Config.SERVER.DEPOSIT_DRILL.baseCooling + coolingFactor
+		val baseCooling = Config.SERVER.DEPOSIT_DRILL.baseCooling
 		val baseTemperature: Float = Config.SERVER.DEPOSIT_DRILL.baseTemperature
 		val dampening = Config.SERVER.DEPOSIT_DRILL.dampening
 		val scale = Config.SERVER.DEPOSIT_DRILL.scale
 		val rpm: Float = if (this.speed < 0f) 0f else this.speed
-		val heating: Float = blockHardness * rpm.pow(scale) * dampening
-		val cooling: Float = dissipation * (temperature - baseTemperature) * dampening
 
-		temperature += (heating - cooling)
-		temperature = if (temperature < baseTemperature) baseTemperature else temperature
+		val heating = blockHardness * rpm.pow(scale) * dampening
+		val effectiveCooling = baseCooling + (coolingFactor * 50f)
+		val cooling = effectiveCooling * (temperature - baseTemperature) * dampening
+
+		temperature = (temperature + heating - cooling).coerceAtLeast(baseTemperature)
 	}
 
 	fun setLerpedOffset(value: Number) {
@@ -303,14 +308,19 @@ class DepositDrillBlockEntity(
 	}
 
 	private fun damageTip() {
-		val itemStack: ItemStack = drillTipHandler[0]
+		val itemStack = drillTipHandler[0]
 		if (itemStack.isEmpty || !itemStack.tags.anyMatch(CreateOreDepositsTags.DRILL_TIP::equals)) return
 
-		val baseTemp = Config.SERVER.DEPOSIT_DRILL.baseTemperature
-		val excessTemp = (temperature - baseTemp).coerceAtLeast(0f) / 100f
+		val baseTemp = Config.SERVER.DEPOSIT_DRILL.baseTemperature // ~293K
+		val excessTemp = (temperature - baseTemp).coerceAtLeast(0f)
 
-		val damage = ((1f + excessTemp.pow(2)).coerceAtMost(4f)).roundToInt()
-		//Minecraft.getInstance().player?.sendSystemMessage(Component.literal(damage.toString()))
+		val damage = when {
+			excessTemp < 20f -> 0  // Safe: < 313K
+			excessTemp < 50f -> 1  // Caution: 313-343K
+			excessTemp < 100f -> ((excessTemp - 50f) / 25f).toInt() + 1 // Danger: 343-393K
+			else -> ((excessTemp - 100f) / 20f + 3f).toInt().coerceAtMost(8) // Critical: > 393K
+		}
+
 		if (damage < 1) return
 
 		val world = level
@@ -320,6 +330,7 @@ class DepositDrillBlockEntity(
 			notifyUpdate()
 		}
 	}
+
 
 	private fun isBlockStateADeposit(state: BlockState): Boolean = state.`is`(CreateOreDepositsTags.DEPOSIT)
 
