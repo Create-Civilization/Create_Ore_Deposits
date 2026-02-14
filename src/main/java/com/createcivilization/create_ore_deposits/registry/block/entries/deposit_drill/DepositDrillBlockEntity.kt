@@ -4,17 +4,17 @@ import com.createcivilization.create_ore_deposits.config.Config
 import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepositsDataMaps
 import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepositsDataMaps.COOLING_FACTOR_DATA
 import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepositsDataMaps.HARDNESS_DATA
-import com.createcivilization.create_ore_deposits.util.translate
-import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDepositsTags
+import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepositsDataMaps.LUBRICANT_FACTOR_DATA
 import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
 import com.createcivilization.create_ore_deposits.registry.fluid.FluidHandler
+import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDepositsTags
+import com.createcivilization.create_ore_deposits.util.translate
 import com.simibubi.create.content.kinetics.base.BlockBreakingKineticBlockEntity
 import com.simibubi.create.foundation.utility.BlockHelper
 import com.simibubi.create.foundation.utility.ServerSpeedProvider
 import net.createmod.catnip.animation.LerpedFloat
 import net.createmod.catnip.nbt.NBTHelper
 import net.minecraft.ChatFormatting
-import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup
@@ -63,8 +63,8 @@ class DepositDrillBlockEntity(
 	private val lubricantHandler: FluidHandler = FluidHandler(
 		1000,
 		mutableSetOf(
-			CreateOreDepositsFluids.LUBRICANT,
-			CreateOreDepositsFluids.LUBRICANT.source
+			CreateOreDepositsFluids.LUBRICANT.get(),
+			CreateOreDepositsFluids.LUBRICANT.get().source
 		)
 	)
 	private val coolantHandler: FluidHandler = FluidHandler(
@@ -152,7 +152,10 @@ class DepositDrillBlockEntity(
 
 	override fun getBreakingPos(): BlockPos = if (canMine()) getTargetPos() else BlockPos.ZERO
 
-	override fun calculateStressApplied(): Float = if (lubricantHandler.getFluidInTank(0).amount > 1) 512f / 2f else 512f
+	override fun calculateStressApplied(): Float {
+		val stressImpact: Float = 512f * (getBlockHardness(getTargetBlockState()) / 1f) * (1 - getLubricantFactor())
+		return stressImpact
+	}
 
 	override fun read(compound: CompoundTag, registries: HolderLookup.Provider, clientPacket: Boolean) {
 		val nbt: CompoundTag = compound.getCompound("DepositDrill")
@@ -244,17 +247,27 @@ class DepositDrillBlockEntity(
 		return super.addToGoggleTooltip(tooltip, isPlayerSneaking)
 	}
 
+	fun getBlockHardness(blockState: BlockState?): Float {
+		val hardnessData: CreateOreDepositsDataMaps.HardnessData =
+			blockState?.blockHolder?.getData(HARDNESS_DATA) ?: return 0.0f
+		return hardnessData.hardness
+	}
+
+	fun getLubricantFactor(): Float {
+		val lubricantFactorData: CreateOreDepositsDataMaps.LubricantFactorData =
+			lubricantHandler.getFluidInTank(1).fluidHolder.getData(LUBRICANT_FACTOR_DATA) ?: return 0.0f
+		return lubricantFactorData.lubeFactor
+	}
+
+	fun getCoolingFactor(): Float {
+		val coolingFactorData: CreateOreDepositsDataMaps.CoolingFactorData =
+			coolantHandler.getFluidInTank(1).fluidHolder.getData(COOLING_FACTOR_DATA) ?: return 0.0f
+		return coolingFactorData.coolingFactor
+	}
+
 	fun updateTemperature() {
-		val hardnessData: CreateOreDepositsDataMaps.HardnessData? = getTargetBlockState()?.blockHolder?.getData(HARDNESS_DATA)
-		val coolingFactorData: CreateOreDepositsDataMaps.CoolingFactorData? = coolantHandler.getFluidInTank(1).fluidHolder.getData(COOLING_FACTOR_DATA)
-
-
-
-		var blockHardness = 0.1f
-		var coolingFactor = 0.0f
-
-		if(hardnessData != null) blockHardness = hardnessData.hardness
-		if(coolingFactorData != null) coolingFactor = coolingFactorData.coolingFactor
+		val blockHardness = getBlockHardness(getTargetBlockState())
+		val coolingFactor = getCoolingFactor()
 
 		// Non temp
 		val dissipation: Float = Config.SERVER.DEPOSIT_DRILL.baseCooling + coolingFactor
