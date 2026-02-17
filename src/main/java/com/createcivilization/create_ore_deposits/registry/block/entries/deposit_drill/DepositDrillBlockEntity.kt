@@ -3,7 +3,7 @@ package com.createcivilization.create_ore_deposits.registry.block.entries.deposi
 import com.createcivilization.create_ore_deposits.config.Config
 import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepositsDataMaps
 import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepositsDataMaps.COOLING_FACTOR_DATA
-import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepositsDataMaps.HARDNESS_DATA
+import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepositsDataMaps.DEPOSIT_DATA
 import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepositsDataMaps.LUBRICANT_FACTOR_DATA
 import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
 import com.createcivilization.create_ore_deposits.registry.fluid.FluidHandler
@@ -35,8 +35,6 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction
 import net.neoforged.neoforge.items.IItemHandler
 import net.neoforged.neoforge.items.ItemStackHandler
 import java.util.function.Predicate
-import kotlin.math.absoluteValue
-import kotlin.math.pow
 import kotlin.math.roundToInt
 
 // Minimum value for LerpedFloat to not get jumpy
@@ -58,6 +56,10 @@ class DepositDrillBlockEntity(
 	private var lerpedOffset: LerpedFloat = LerpedFloat.linear().startWithValue(min)
 	private var lastBlock: Block? = null
 	private var temperature: Float = Config.SERVER.DEPOSIT_DRILL.baseTemperature
+	private var maxAttempts: Int = 0
+	private var remainingAttempts: Int = 0
+	private var drillTickCounter: Int = 0
+	private var currentDepositPos: BlockPos? = null
 
 	private val itemHandler: ItemStackHandler = ItemStackHandler()
 	private val drillTipHandler: ItemStackHandler = ItemStackHandler()
@@ -106,16 +108,45 @@ class DepositDrillBlockEntity(
 	 * Simulates block drops for deposits, allowing deposits to return drops every break tick
 	 */
 	fun onBreakTick() {
-		if (!canMine())
-			return
+		if (!canMine()) return
+		val targetPos = getTargetPos()
 		val blockState = getTargetBlockState() ?: return
-		if (!isBlockStateADeposit(blockState))
-			return
-		val serverLevel = level as? ServerLevel ?: return
+		if (!isBlockStateADeposit(blockState)) return
 
-		for (stack in getSimulatedDrops(blockState, serverLevel, getTargetPos())) {
-			itemHandler.insertItem(0, stack, false)
+		//Is deposit
+
+		if(currentDepositPos != targetPos) {
+			currentDepositPos = targetPos
+			maxAttempts = blockState.blockHolder.getData(DEPOSIT_DATA)?.maxAttempts ?: 0
+			remainingAttempts = maxAttempts
+			drillTickCounter = 0
 		}
+
+		if(remainingAttempts <= 0) return
+
+		drillTickCounter++
+		val extractInterval = calculateExtractionInterval();
+
+		if(drillTickCounter >= extractInterval){
+			drillTickCounter = 0
+			remainingAttempts--
+			val serverLevel = level as? ServerLevel ?: return
+			for (stack in getSimulatedDrops(blockState, serverLevel, getTargetPos())) {
+				itemHandler.insertItem(0, stack, false)
+			}
+
+			//Update Destory Progess.
+
+			if (remainingAttempts <= 0) {
+				level?.destroyBlockProgress(blockPos.hashCode(), targetPos, -1)
+				level?.setBlock(targetPos, Blocks.AIR.defaultBlockState(), 3)
+				currentDepositPos = null
+			}
+		}
+	}
+
+	fun calculateExtractionInterval(): Int{
+		return 1280 - (this.speed * 4).roundToInt()
 	}
 
 	fun getSimulatedDrops(state: BlockState, serverLevel: ServerLevel, pos: BlockPos) : List<ItemStack> {
@@ -275,8 +306,8 @@ class DepositDrillBlockEntity(
 	}
 
 	fun getBlockHardness(blockState: BlockState?): Float {
-		val hardnessData: CreateOreDepositsDataMaps.HardnessData =
-			blockState?.blockHolder?.getData(HARDNESS_DATA) ?: return 0.0f
+		val hardnessData: CreateOreDepositsDataMaps.DepositData =
+			blockState?.blockHolder?.getData(DEPOSIT_DATA) ?: return 0.0f
 		return hardnessData.hardness
 	}
 

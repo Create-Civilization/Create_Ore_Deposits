@@ -5,7 +5,6 @@ import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepo
 import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
 import net.minecraft.core.HolderLookup
 import net.minecraft.data.PackOutput
-import net.minecraft.tags.BlockTags
 import net.minecraft.tags.FluidTags
 import net.neoforged.neoforge.common.data.DataMapProvider
 import java.util.concurrent.CompletableFuture
@@ -16,8 +15,8 @@ class DataMapProvider(
 ) : DataMapProvider(packOutput, lookupProvider) {
 
 	override fun gather(provider: HolderLookup.Provider) {
-		builder(CreateOreDepositsDataMaps.HARDNESS_DATA)
-			.add(CreateOreDepositsBlocks.EXAMPLE_DEPOSIT.key, CreateOreDepositsDataMaps.HardnessData(5f), false)
+		builder(CreateOreDepositsDataMaps.DEPOSIT_DATA)
+			.add(CreateOreDepositsBlocks.EXAMPLE_DEPOSIT.key, CreateOreDepositsDataMaps.DepositData(5f), false)
 
 
 		builder(CreateOreDepositsDataMaps.COOLING_FACTOR_DATA)

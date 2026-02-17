@@ -1,7 +1,6 @@
 package com.createcivilization.create_ore_deposits.registry.datamap
 
 import com.createcivilization.create_ore_deposits.CreateOreDeposits
-import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepositsDataMaps.LubricantFactorData
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.registries.Registries
@@ -12,12 +11,13 @@ import net.neoforged.neoforge.registries.datamaps.DataMapType
 
 object CreateOreDepositsDataMaps {
 
-	data class HardnessData(val hardness: Float) {
+	data class DepositData(val maxAttempts: Int, val hardness: Float) {
 		companion object {
-			val CODEC: Codec<HardnessData> = RecordCodecBuilder.create { instance ->
+			val CODEC: Codec<DepositData> = RecordCodecBuilder.create { instance ->
 				instance.group(
-					Codec.FLOAT.fieldOf("hardness").forGetter(HardnessData::hardness)
-				).apply(instance, ::HardnessData)
+					Codec.INT.fieldOf("maxAttempts").forGetter(DepositData::maxAttempts),
+					Codec.FLOAT.fieldOf("hardness").forGetter(DepositData::hardness)
+				).apply(instance, ::DepositData)
 			}
 		}
 	}
@@ -42,11 +42,11 @@ object CreateOreDepositsDataMaps {
 		}
 	}
 
-	val HARDNESS_DATA: DataMapType<Block?, HardnessData?> =
+	val DEPOSIT_DATA: DataMapType<Block?, DepositData?> =
 		DataMapType.builder(
-			ResourceLocation.fromNamespaceAndPath(CreateOreDeposits.MOD_ID, "hardness_data"),
+			ResourceLocation.fromNamespaceAndPath(CreateOreDeposits.MOD_ID, "deposit_data"),
 			Registries.BLOCK,
-			HardnessData.CODEC
+			DepositData.CODEC
 		).build()
 
 	val COOLING_FACTOR_DATA: DataMapType<Fluid, CoolingFactorData> =
