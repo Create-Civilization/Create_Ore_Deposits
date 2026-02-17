@@ -16,13 +16,13 @@ class DataMapProvider(
 
 	override fun gather(provider: HolderLookup.Provider) {
 		builder(CreateOreDepositsDataMaps.DEPOSIT_DATA)
-			.add(CreateOreDepositsBlocks.EXAMPLE_DEPOSIT.key, CreateOreDepositsDataMaps.DepositData(5f), false)
+			.add(CreateOreDepositsBlocks.EXAMPLE_DEPOSIT, CreateOreDepositsDataMaps.DepositData(10, 1f), false)
 
 
 		builder(CreateOreDepositsDataMaps.COOLING_FACTOR_DATA)
 			.add(FluidTags.WATER, CreateOreDepositsDataMaps.CoolingFactorData(1f), false)
 
 		builder(CreateOreDepositsDataMaps.LUBRICANT_FACTOR_DATA)
-			.add(CreateOreDepositsFluids.LUBRICANT.key, CreateOreDepositsDataMaps.LubricantFactorData(1f), false)
+			.add(CreateOreDepositsFluids.LUBRICANT, CreateOreDepositsDataMaps.LubricantFactorData(1f), false)
 	}
 }

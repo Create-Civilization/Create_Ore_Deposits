@@ -29,12 +29,6 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue
 
 object CreateOreDepositsBlocks {
 
-	val EXAMPLE_DEPOSIT: BlockEntry<Block> = REGISTRATE.block("example_deposit", ::Block)
-		.initialProperties(SharedProperties::stone) // Specify your custom tab
-		.simpleItem()
-		.register()
-
-
 	val DRILL_BLOCK: BlockEntry<DepositDrillBlock> = REGISTRATE.block("deposit_drill", ::DepositDrillBlock)
 		.initialProperties(SharedProperties::stone)
 		.properties { it.mapColor(MapColor.PODZOL).noOcclusion() }
@@ -47,6 +41,7 @@ object CreateOreDepositsBlocks {
 
 	// TEMP LOOT VALUES, CHANGE LATER.
 	// Deposits
+	val EXAMPLE_DEPOSIT: BlockEntry<Block> = registerDepositGuaranteed("example_deposit", Blocks.STONE, Items.NETHERITE_BLOCK)
 	val COAL_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("coal_ore_deposit", Blocks.COAL_ORE, Items.COAL, 3f, 0.8f)
 	val IRON_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("iron_ore_deposit", Blocks.IRON_ORE, Items.RAW_IRON, 0.8f)
 	val GOLD_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("gold_ore_deposit", Blocks.GOLD_ORE, Items.RAW_GOLD, 0.6f)

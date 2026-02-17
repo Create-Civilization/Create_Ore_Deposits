@@ -15,11 +15,13 @@ import com.simibubi.create.foundation.utility.ServerSpeedProvider
 import net.createmod.catnip.animation.LerpedFloat
 import net.createmod.catnip.nbt.NBTHelper
 import net.minecraft.ChatFormatting
+import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtUtils
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.item.ItemStack
@@ -94,13 +96,17 @@ class DepositDrillBlockEntity(
 		}
 
 		updateTemperature()
+		onBreakTick()
 		damageTip()
+	}
+
+	override fun canBreak(stateToBreak: BlockState, blockHardness: Float): Boolean {
+		if (isBlockStateADeposit(stateToBreak)) return false
+		return super.canBreak(stateToBreak, blockHardness)
 	}
 
 	// Due to this always being called IMMEDIATELY before adding to the break tick, this allows us to do something every break tick.
 	override fun getBreakSpeed(): Float {
-		onBreakTick()
-
 		return super.getBreakSpeed()
 	}
 
@@ -108,6 +114,7 @@ class DepositDrillBlockEntity(
 	 * Simulates block drops for deposits, allowing deposits to return drops every break tick
 	 */
 	fun onBreakTick() {
+		if (level?.isClientSide != false) return
 		if (!canMine()) return
 		val targetPos = getTargetPos()
 		val blockState = getTargetBlockState() ?: return
@@ -116,6 +123,7 @@ class DepositDrillBlockEntity(
 		//Is deposit
 
 		if(currentDepositPos != targetPos) {
+			clearDestroyProgress()
 			currentDepositPos = targetPos
 			maxAttempts = blockState.blockHolder.getData(DEPOSIT_DATA)?.maxAttempts ?: 0
 			remainingAttempts = maxAttempts
@@ -136,6 +144,7 @@ class DepositDrillBlockEntity(
 			}
 
 			//Update Destory Progess.
+			updateDestroyProgress(targetPos)
 
 			if (remainingAttempts <= 0) {
 				level?.destroyBlockProgress(blockPos.hashCode(), targetPos, -1)
@@ -145,8 +154,21 @@ class DepositDrillBlockEntity(
 		}
 	}
 
+	fun clearDestroyProgress() {
+		currentDepositPos?.let { pos ->
+			level?.destroyBlockProgress(blockPos.hashCode(), pos, -1)
+		}
+	}
+
+	fun updateDestroyProgress(targetPos: BlockPos) {
+		if (maxAttempts <= 0) return
+		val attemptsUsed = maxAttempts - remainingAttempts
+		val stage = ((attemptsUsed.toFloat() / maxAttempts) * 10f).toInt().coerceIn(0, 9)
+		level?.destroyBlockProgress(blockPos.hashCode(), targetPos, stage)
+	}
+
 	fun calculateExtractionInterval(): Int{
-		return 1280 - (this.speed * 4).roundToInt()
+		return 1025 - (this.speed * 4).roundToInt()
 	}
 
 	fun getSimulatedDrops(state: BlockState, serverLevel: ServerLevel, pos: BlockPos) : List<ItemStack> {
@@ -191,6 +213,7 @@ class DepositDrillBlockEntity(
 		//Lubricant level is int between 0 and 3
 
 		val lubricantFactor = getLubricantFactor()
+		Minecraft.getInstance().player?.sendSystemMessage(Component.literal(lubricantFactor.toString()))
 		val hardness = getBlockHardness(getTargetBlockState())
 
 		val su = 128 * (4 - lubricantFactor) * hardness
@@ -202,9 +225,13 @@ class DepositDrillBlockEntity(
 	override fun read(compound: CompoundTag, registries: HolderLookup.Provider, clientPacket: Boolean) {
 		val nbt: CompoundTag = compound.getCompound("DepositDrill")
 
+		maxAttempts = nbt.getInt("MaxAttempts")
+		remainingAttempts = nbt.getInt("RemainingAttempts")
+		drillTickCounter = nbt.getInt("DrillTickCount")
 		drillOffset = nbt.getFloat("DrillOffset")
 		temperature = nbt.getFloat("Temperature")
 		if (nbt.contains("LastBlock")) lastBlock = BuiltInRegistries.BLOCK.get(NBTHelper.readResourceLocation(nbt, "LastBlock"))
+		if (nbt.contains("CurrentDepositPos")) currentDepositPos = NBTHelper.readBlockPos(nbt, "CurrentDepositPos")
 		itemHandler.deserializeNBT(registries, nbt.getCompound("ItemHandler"))
 		drillTipHandler.deserializeNBT(registries, nbt.getCompound("DrillTipHandler"))
 		lubricantHandler.deserializeNBT(registries, nbt.getCompound("Lubricant"))
@@ -215,9 +242,14 @@ class DepositDrillBlockEntity(
 
 	override fun write(compound: CompoundTag, registries: HolderLookup.Provider, clientPacket: Boolean) {
 		val nbt = CompoundTag()
+		nbt.putInt("MaxAttempts", maxAttempts)
+		nbt.putInt("RemainingAttempts", remainingAttempts)
+		nbt.putInt("DrillTickCount", drillTickCounter)
 		nbt.putFloat("DrillOffset", drillOffset)
 		nbt.putFloat("Temperature", temperature)
+
 		if (lastBlock != null) NBTHelper.writeResourceLocation(nbt, "LastBlock", BuiltInRegistries.BLOCK.getKey(lastBlock!!))
+		currentDepositPos?.let { nbt.put("CurrentDepositPos", NbtUtils.writeBlockPos(it)) }
 		nbt.put("ItemHandler", itemHandler.serializeNBT(registries))
 		nbt.put("DrillTipHandler", drillTipHandler.serializeNBT(registries))
 		nbt.put("Lubricant", lubricantHandler.serializeNBT(registries))
@@ -312,8 +344,7 @@ class DepositDrillBlockEntity(
 	}
 
 	fun getLubricantFactor(): Float {
-		val lubricantFactorData: CreateOreDepositsDataMaps.LubricantFactorData =
-			lubricantHandler.getFluidInTank(1).fluidHolder.getData(LUBRICANT_FACTOR_DATA) ?: return 0.0f
+		val lubricantFactorData: CreateOreDepositsDataMaps.LubricantFactorData = lubricantHandler.getFluidInTank(1).fluidHolder.getData(LUBRICANT_FACTOR_DATA) ?: return 0.0f
 		return lubricantFactorData.lubeFactor
 	}
 
