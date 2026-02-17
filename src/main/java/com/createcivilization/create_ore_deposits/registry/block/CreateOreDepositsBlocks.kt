@@ -40,7 +40,7 @@ object CreateOreDepositsBlocks {
 		.properties { it.mapColor(MapColor.PODZOL).noOcclusion() }
 		.transform(axeOrPickaxe())
 		.onRegister(movementBehaviour(DrillMovementBehaviour()))
-		.onRegister { b -> BlockStressValues.IMPACTS.register(b) { 4.0 } }
+		.onRegister { b -> BlockStressValues.IMPACTS.register(b) {100.0} }
 		.item()
 		.transform(customItemModel())
 		.register()

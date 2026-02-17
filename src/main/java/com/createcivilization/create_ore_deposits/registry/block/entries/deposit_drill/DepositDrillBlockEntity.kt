@@ -35,6 +35,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction
 import net.neoforged.neoforge.items.IItemHandler
 import net.neoforged.neoforge.items.ItemStackHandler
 import java.util.function.Predicate
+import kotlin.math.absoluteValue
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
@@ -56,7 +57,7 @@ class DepositDrillBlockEntity(
 	private var drillOffset: Float = 0f
 	private var lerpedOffset: LerpedFloat = LerpedFloat.linear().startWithValue(min)
 	private var lastBlock: Block? = null
-	private var temperature: Float = 0f
+	private var temperature: Float = Config.SERVER.DEPOSIT_DRILL.baseTemperature
 
 	private val itemHandler: ItemStackHandler = ItemStackHandler()
 	private val drillTipHandler: ItemStackHandler = ItemStackHandler()
@@ -153,12 +154,17 @@ class DepositDrillBlockEntity(
 	override fun getBreakingPos(): BlockPos = if (canMine()) getTargetPos() else BlockPos.ZERO
 
 	override fun calculateStressApplied(): Float {
-		val lubeFactor = getLubricantFactor().coerceIn(0f, 1f)
-		val baseStress = 512f * getBlockHardness(getTargetBlockState())
 
-		val stressMultiplier = 0.5f + 0.5f * (1f - lubeFactor).pow(0.5f)
+		// su = rpm * 128 * (4 - lubeQuality) * hardness
+		//Hardness is an int between 1 and 10
+		//Lubricant level is int between 0 and 3
 
-		return baseStress * stressMultiplier
+		val lubricantFactor = getLubricantFactor()
+		val hardness = getBlockHardness(getTargetBlockState())
+
+		val su = 128 * (4 - lubricantFactor) * hardness
+
+		return su
 	}
 
 
@@ -194,27 +200,43 @@ class DepositDrillBlockEntity(
 		translate("tooltip.drill.header").forGoggles(tooltip)
 
 		val targetBlock: Block? = level?.getBlockState(getDrillTipPos())?.block
-		if (targetBlock != null && targetBlock != Blocks.AIR)
+		if (targetBlock != null && targetBlock != Blocks.AIR) {
 			translate("tooltip.drill.drilling", Component.translatable(targetBlock.descriptionId))
 				.style(ChatFormatting.GRAY)
 				.forGoggles(tooltip)
+		}
 
-		if (!itemHandler[0].isEmpty)
-			translate("tooltip.drill.contains", Component.translatable(itemHandler[0].descriptionId), itemHandler[0].count)
+		if (!itemHandler[0].isEmpty) {
+			translate(
+				"tooltip.drill.contains",
+				Component.translatable(itemHandler[0].descriptionId),
+				itemHandler[0].count
+			)
 				.style(ChatFormatting.GREEN)
 				.forGoggles(tooltip)
+		}
 
 		val fluidInLubricantTank: FluidStack = lubricantHandler.getFluidInTank(0)
-		if (!fluidInLubricantTank.isEmpty)
-			translate("tooltip.drill.contains.lube", Component.translatable(fluidInLubricantTank.descriptionId), fluidInLubricantTank.amount)
+		if (!fluidInLubricantTank.isEmpty) {
+			translate(
+				"tooltip.drill.contains.lube",
+				Component.translatable(fluidInLubricantTank.descriptionId),
+				fluidInLubricantTank.amount
+			)
 				.style(ChatFormatting.GOLD)
 				.forGoggles(tooltip)
+		}
 
 		val fluidInCoolantTank: FluidStack = coolantHandler.getFluidInTank(0)
-		if (!fluidInCoolantTank.isEmpty)
-			translate("tooltip.drill.contains.coolant", Component.translatable(fluidInCoolantTank.descriptionId), fluidInCoolantTank.amount)
+		if (!fluidInCoolantTank.isEmpty) {
+			translate(
+				"tooltip.drill.contains.coolant",
+				Component.translatable(fluidInCoolantTank.descriptionId),
+				fluidInCoolantTank.amount
+			)
 				.style(ChatFormatting.BLUE)
 				.forGoggles(tooltip)
+		}
 
 		//Temp Prob
 
@@ -271,20 +293,28 @@ class DepositDrillBlockEntity(
 	}
 
 	fun updateTemperature() {
-		val blockHardness = getBlockHardness(getTargetBlockState())
 		val coolingFactor = getCoolingFactor()
+		val lubricantFactor = getLubricantFactor()
 
 		val baseCooling = Config.SERVER.DEPOSIT_DRILL.baseCooling
-		val baseTemperature: Float = Config.SERVER.DEPOSIT_DRILL.baseTemperature
-		val dampening = Config.SERVER.DEPOSIT_DRILL.dampening
-		val scale = Config.SERVER.DEPOSIT_DRILL.scale
-		val rpm: Float = if (this.speed < 0f) 0f else this.speed
+		val baseTemperature = Config.SERVER.DEPOSIT_DRILL.baseTemperature
 
-		val heating = blockHardness * rpm.pow(scale) * dampening
-		val effectiveCooling = baseCooling + (coolingFactor * 50f)
-		val cooling = effectiveCooling * (temperature - baseTemperature) * dampening
+		val targetState = getTargetBlockState()
+		val isMining = targetState != null && isBlockStateADeposit(targetState) && canMine() && speed > 0
 
-		temperature = (temperature + heating - cooling).coerceAtLeast(baseTemperature)
+		val heatGen = if (isMining) {
+			speed * getBlockHardness(targetState)
+		} else {
+			0.0f
+		}
+
+		val dissipation = (baseCooling + lubricantFactor + coolingFactor).coerceAtLeast(0.1f)
+
+		val equilibriumTemp = baseTemperature + (heatGen / dissipation)
+
+		val approachRate = (0.02f * dissipation).coerceIn(0.01f, 1.0f)
+
+		temperature += (equilibriumTemp - temperature) * approachRate
 	}
 
 	fun setLerpedOffset(value: Number) {
@@ -397,6 +427,7 @@ class DepositDrillBlockEntity(
 	}
 
 	// FIXME: Why is this unused?  What was it meant for?  - Mavity
+	// Ngl, 0 clue - McArctic
 	private val facingAxis: Direction.Axis = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING).axis
 
 	fun getItemHandler(direction: Direction): IItemHandler? {
