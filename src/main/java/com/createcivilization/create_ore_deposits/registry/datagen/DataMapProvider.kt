@@ -23,6 +23,6 @@ class DataMapProvider(
 			.add(FluidTags.WATER, CreateOreDepositsDataMaps.CoolingFactorData(1f), false)
 
 		builder(CreateOreDepositsDataMaps.LUBRICANT_FACTOR_DATA)
-			.add(CreateOreDepositsFluids.LUBRICANT, CreateOreDepositsDataMaps.LubricantFactorData(1f), false)
+			.add(CreateOreDepositsFluids.LUBRICANT.get().source.builtInRegistryHolder(), CreateOreDepositsDataMaps.LubricantFactorData(1f), false)
 	}
 }

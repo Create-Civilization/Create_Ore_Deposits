@@ -349,9 +349,11 @@ class DepositDrillBlockEntity(
 	}
 
 	fun getCoolingFactor(): Float {
-		val coolingFactorData: CreateOreDepositsDataMaps.CoolingFactorData =
-			coolantHandler.getFluidInTank(1).fluidHolder.getData(COOLING_FACTOR_DATA) ?: return 0.0f
-		return coolingFactorData.coolingFactor
+		val fluidInTank = lubricantHandler.getFluidInTank(0)
+		val fluidHolder = fluidInTank.fluidHolder
+		val data = fluidHolder.getData(LUBRICANT_FACTOR_DATA)
+		val coolingFactor = data?.lubeFactor
+		return coolingFactor ?: 0.0f
 	}
 
 	fun updateTemperature() {

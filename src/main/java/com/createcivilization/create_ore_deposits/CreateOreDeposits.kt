@@ -65,6 +65,7 @@ data object CreateOreDeposits {
 	private fun registerDataMapTypes(event: RegisterDataMapTypesEvent) {
 		event.register(CreateOreDepositsDataMaps.DEPOSIT_DATA)
 		event.register(CreateOreDepositsDataMaps.COOLING_FACTOR_DATA)
+		event.register(CreateOreDepositsDataMaps.LUBRICANT_FACTOR_DATA)
 	}
 
 	@SubscribeEvent
