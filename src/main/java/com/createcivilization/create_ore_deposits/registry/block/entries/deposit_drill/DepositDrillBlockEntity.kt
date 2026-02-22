@@ -2,7 +2,6 @@ package com.createcivilization.create_ore_deposits.registry.block.entries.deposi
 
 import com.createcivilization.create_ore_deposits.config.Config
 import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepositsDataMaps
-import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepositsDataMaps.COOLING_FACTOR_DATA
 import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepositsDataMaps.DEPOSIT_DATA
 import com.createcivilization.create_ore_deposits.registry.datamap.CreateOreDepositsDataMaps.LUBRICANT_FACTOR_DATA
 import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDepositsFluids
@@ -10,6 +9,7 @@ import com.createcivilization.create_ore_deposits.registry.fluid.FluidHandler
 import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDepositsTags
 import com.createcivilization.create_ore_deposits.util.translate
 import com.simibubi.create.content.kinetics.base.BlockBreakingKineticBlockEntity
+import com.simibubi.create.foundation.item.TooltipHelper
 import com.simibubi.create.foundation.utility.BlockHelper
 import com.simibubi.create.foundation.utility.ServerSpeedProvider
 import net.createmod.catnip.animation.LerpedFloat
@@ -24,6 +24,7 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtUtils
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.entity.vehicle.Minecart
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -32,7 +33,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.material.Fluids
-import net.neoforged.neoforge.fluids.FluidStack
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction
 import net.neoforged.neoforge.items.IItemHandler
 import net.neoforged.neoforge.items.ItemStackHandler
@@ -118,7 +118,10 @@ class DepositDrillBlockEntity(
 		if (!canMine()) return
 		val targetPos = getTargetPos()
 		val blockState = getTargetBlockState() ?: return
-		if (!isBlockStateADeposit(blockState)) return
+		if (!isBlockStateADeposit(blockState)) {
+			currentDepositPos = null
+			return
+		}
 
 		//Is deposit
 
@@ -213,7 +216,6 @@ class DepositDrillBlockEntity(
 		//Lubricant level is int between 0 and 3
 
 		val lubricantFactor = getLubricantFactor()
-		Minecraft.getInstance().player?.sendSystemMessage(Component.literal(lubricantFactor.toString()))
 		val hardness = getBlockHardness(getTargetBlockState())
 
 		val su = 128 * (4 - lubricantFactor) * hardness
@@ -260,86 +262,13 @@ class DepositDrillBlockEntity(
 	}
 
 	override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
-		translate("tooltip.drill.header").forGoggles(tooltip)
-
-		val targetBlock: Block? = level?.getBlockState(getDrillTipPos())?.block
-		if (targetBlock != null && targetBlock != Blocks.AIR) {
-			translate("tooltip.drill.drilling", Component.translatable(targetBlock.descriptionId))
-				.style(ChatFormatting.GRAY)
-				.forGoggles(tooltip)
-		}
-
-		if (!itemHandler[0].isEmpty) {
-			translate(
-				"tooltip.drill.contains",
-				Component.translatable(itemHandler[0].descriptionId),
-				itemHandler[0].count
-			)
-				.style(ChatFormatting.GREEN)
-				.forGoggles(tooltip)
-		}
-
-		val fluidInLubricantTank: FluidStack = lubricantHandler.getFluidInTank(0)
-		if (!fluidInLubricantTank.isEmpty) {
-			translate(
-				"tooltip.drill.contains.lube",
-				Component.translatable(fluidInLubricantTank.descriptionId),
-				fluidInLubricantTank.amount
-			)
-				.style(ChatFormatting.GOLD)
-				.forGoggles(tooltip)
-		}
-
-		val fluidInCoolantTank: FluidStack = coolantHandler.getFluidInTank(0)
-		if (!fluidInCoolantTank.isEmpty) {
-			translate(
-				"tooltip.drill.contains.coolant",
-				Component.translatable(fluidInCoolantTank.descriptionId),
-				fluidInCoolantTank.amount
-			)
-				.style(ChatFormatting.BLUE)
-				.forGoggles(tooltip)
-		}
-
-		//Temp Prob
-
-		if (!drillTipHandler[0].isEmpty) {
-			val tipStack = drillTipHandler[0]
-			translate("tooltip.drill.tip.contains", Component.translatable(tipStack.descriptionId))
-				.style(ChatFormatting.GREEN)
-				.forGoggles(tooltip)
-
-			// Show durability if item is damageable
-			if (tipStack.isDamageableItem) {
-				val maxDurability = tipStack.maxDamage
-				val currentDamage = tipStack.damageValue
-				val remainingDurability = maxDurability - currentDamage
-				val durabilityPercent = (remainingDurability.toFloat() / maxDurability * 100).roundToInt()
-
-				val durabilityColor = when {
-					durabilityPercent > 66 -> ChatFormatting.GREEN
-					durabilityPercent > 33 -> ChatFormatting.YELLOW
-					durabilityPercent > 10 -> ChatFormatting.GOLD
-					else -> ChatFormatting.RED
-				}
-
-				translate("tooltip.drill.tip.durability", remainingDurability, maxDurability, durabilityPercent)
-					.style(durabilityColor)
-					.forGoggles(tooltip)
-			}
-		}
-
-
-		translate("tooltip.drill.heat", String.format("%.2f", temperature))
-			.style(ChatFormatting.RED)
-			.forGoggles(tooltip)
 
 		return super.addToGoggleTooltip(tooltip, isPlayerSneaking)
 	}
 
 	fun getBlockHardness(blockState: BlockState?): Float {
 		val hardnessData: CreateOreDepositsDataMaps.DepositData =
-			blockState?.blockHolder?.getData(DEPOSIT_DATA) ?: return 0.0f
+			blockState?.blockHolder?.getData(DEPOSIT_DATA) ?: return 1.0f
 		return hardnessData.hardness
 	}
 
@@ -426,50 +355,38 @@ class DepositDrillBlockEntity(
 	}
 
 
-	private fun isBlockStateADeposit(state: BlockState): Boolean = state.`is`(CreateOreDepositsTags.DEPOSIT)
+	private fun isBlockStateADeposit(state: BlockState?): Boolean = state?.`is`(CreateOreDepositsTags.DEPOSIT) ?: false
 
 	private fun getFurthestDepositConnectedToDeposit(
 		level: Level,
 		startingDepositPos: BlockPos
 	): BlockPos {
 		val startingDepositState = level.getBlockState(startingDepositPos)
-		val connectedBlocks = getConnectedBlocksWithFilter(level, startingDepositPos, startingDepositState::equals)
-
-		return connectedBlocks.maxByOrNull { blockPos ->
-			startingDepositPos.distSqr(blockPos)
-		} ?: startingDepositPos // fallback if list is empty
+		return getConnectedBlocksFurthest(level, startingDepositPos, startingDepositState::equals)
 	}
 
-	private fun getConnectedBlocksWithFilter(
+	private fun getConnectedBlocksFurthest(
 		level: Level,
 		startingDepositPos: BlockPos,
 		filter: Predicate<BlockState>
-	): List<BlockPos> {
-		val connected = mutableListOf<BlockPos>()
-		val visited = mutableListOf<BlockPos>()
+	): BlockPos {
+		val visited = mutableSetOf(startingDepositPos)
 		val queue = ArrayDeque<BlockPos>()
-
 		queue += startingDepositPos
-		visited += startingDepositPos
+		var last = startingDepositPos
+
+		val offsets = listOf(
+			BlockPos(1, 0, 0), BlockPos(-1, 0, 0),
+			BlockPos(0, 1, 0), BlockPos(0, -1, 0),
+			BlockPos(0, 0, 1), BlockPos(0, 0, -1)
+		)
 
 		while (queue.isNotEmpty()) {
 			val current = queue.removeFirst()
+			last = current
 
-			if (!filter.test(level.getBlockState(current))) continue
-
-			connected.add(current)
-
-			val offsets = setOf(
-				BlockPos(1, 0, 0),
-				BlockPos(-1, 0, 0),
-				BlockPos(0, 1, 0),
-				BlockPos(0, -1, 0),
-				BlockPos(0, 0, 1),
-				BlockPos(0, 0, -1)
-			)
-			val neighbors = offsets.map { pos -> current.offset(pos) }
-
-			for (neighbor in neighbors) {
+			for (offset in offsets) {
+				val neighbor = current.offset(offset)
 				if (neighbor !in visited && filter.test(level.getBlockState(neighbor))) {
 					visited.add(neighbor)
 					queue.add(neighbor)
@@ -477,7 +394,7 @@ class DepositDrillBlockEntity(
 			}
 		}
 
-		return connected
+		return last
 	}
 
 	fun getDrillTipPos(): BlockPos = blockPos.offset(0, (-lerpedOffset.value.toInt() - 1), 0)

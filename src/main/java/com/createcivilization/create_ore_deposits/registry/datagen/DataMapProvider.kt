@@ -17,6 +17,7 @@ class DataMapProvider(
 	override fun gather(provider: HolderLookup.Provider) {
 		builder(CreateOreDepositsDataMaps.DEPOSIT_DATA)
 			.add(CreateOreDepositsBlocks.EXAMPLE_DEPOSIT, CreateOreDepositsDataMaps.DepositData(10, 1f), false)
+			.add(CreateOreDepositsBlocks.DIAMOND_ORE_DEPOSIT, CreateOreDepositsDataMaps.DepositData(50, 5f), false)
 
 
 		builder(CreateOreDepositsDataMaps.COOLING_FACTOR_DATA)
