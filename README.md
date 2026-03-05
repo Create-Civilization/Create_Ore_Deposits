@@ -1,4 +1,4 @@
-# ⛏Create: Ore Deposits
+# Create: Ore Deposits
 
 **An addon for the [Create](https://modrinth.com/mod/create) mod**
 
