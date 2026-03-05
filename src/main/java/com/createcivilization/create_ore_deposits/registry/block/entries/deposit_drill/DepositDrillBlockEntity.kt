@@ -94,7 +94,10 @@ class DepositDrillBlockEntity(
 		super.lazyTick()
 		setChanged()
 		sendData()
-		if (getMovementSpeed() != 0f) lubricantHandler.drain(1, FluidAction.EXECUTE)
+		if (getMovementSpeed() != 0f) {
+			lubricantHandler.drain(1, FluidAction.EXECUTE)
+			coolantHandler.drain(1, FluidAction.EXECUTE)
+		}
 	}
 
 	override fun canBreak(stateToBreak: BlockState, blockHardness: Float): Boolean {

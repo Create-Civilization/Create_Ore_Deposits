@@ -25,7 +25,7 @@ This mod aims to add drills and deposits to allow for a more fair way to get lar
 ### Fluids
 - [ ] Tiered lubricants
 - [ ] Tiered coolants
-- [ ] Coolant being used during drilling
+- [x] Coolant being used during drilling
 
 ### Refinement
 - [ ] Unprocessed ore items
