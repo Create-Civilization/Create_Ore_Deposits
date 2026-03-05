@@ -240,9 +240,7 @@ class DepositDrillBlockEntity(
 	}
 
 	fun getBlockHardness(blockState: BlockState?): Float {
-		val hardnessData: CreateOreDepositsDataMaps.HardnessData =
-			blockState?.blockHolder?.getData(HARDNESS_DATA) ?: return 1.0f
-		return hardnessData.hardness
+		return blockState?.blockHolder?.getData(DEPOSIT_DATA)?.hardness ?: 1.0f
 	}
 
 	fun getLubricantFactor(): Float {
