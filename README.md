@@ -13,10 +13,11 @@ This mod aims to add drills and deposits to allow for a more fair way to get lar
 ## TODO
 
 ### Drill System
-- [ ] Heat tooltip
-- [ ] Tip type tooltip
-- [ ] Lubricant tooltip
-- [ ] Coolant tooltip
+- [x] Heat tooltip
+- [x] Tip type tooltip
+- [x] Tip durability tooltip
+- [x] Lubricant tooltip
+- [x] Coolant tooltip
 - [ ] Temperature affects tip durability
 - [ ] Deposits require matching tip type
 - [ ] Crafting recipes for drills and tips
@@ -24,6 +25,7 @@ This mod aims to add drills and deposits to allow for a more fair way to get lar
 ### Fluids
 - [ ] Tiered lubricants
 - [ ] Tiered coolants
+- [ ] Coolant being used during drilling
 
 ### Refinement
 - [ ] Unprocessed ore items

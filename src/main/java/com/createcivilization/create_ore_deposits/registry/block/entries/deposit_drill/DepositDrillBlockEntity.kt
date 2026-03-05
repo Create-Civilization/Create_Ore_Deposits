@@ -194,6 +194,8 @@ class DepositDrillBlockEntity(
 		level?.destroyBlockProgress(blockPos.hashCode(), targetPos, stage)
 	}
 
+
+	//TODO: Issue where temps are jumping around in the tooltip.
 	fun updateTemperature() {
 		val baseCooling = Config.SERVER.DEPOSIT_DRILL.baseCooling
 		val baseTemperature = Config.SERVER.DEPOSIT_DRILL.baseTemperature
@@ -370,6 +372,7 @@ class DepositDrillBlockEntity(
 	override fun addToGoggleTooltip(tooltip: MutableList<Component>, isPlayerSneaking: Boolean): Boolean {
 		translate("tooltip.drill.header").forGoggles(tooltip)
 
+		// Currently Drilling
 		val targetBlock = getTargetBlockState()?.block
 		if (targetBlock != null && targetBlock != Blocks.AIR) {
 			translate("tooltip.drill.drilling", Component.translatable(targetBlock.descriptionId))
@@ -377,6 +380,7 @@ class DepositDrillBlockEntity(
 				.forGoggles(tooltip)
 		}
 
+		// Breaking Progress
 		if (isDeposit(getTargetBlockState())) {
 			val attemptsUsed = maxAttempts - remainingAttempts
 			val stage = ((attemptsUsed.toFloat() / maxAttempts) * 10f).toInt().coerceIn(0, 10)
@@ -385,6 +389,49 @@ class DepositDrillBlockEntity(
 				.add(Component.literal(bar))
 				.forGoggles(tooltip)
 		}
+
+		// Drill Tip
+		val tipHandler = getDrillTipItemHandler()
+		if (!tipHandler.getStackInSlot(0).isEmpty) {
+			val tipStack: ItemStack = tipHandler.getStackInSlot(0)
+
+			translate("tooltip.drill.tip.contains", Component.translatable(tipStack.item.descriptionId))
+				.style(ChatFormatting.GREEN)
+				.forGoggles(tooltip)
+
+			if (tipStack.maxDamage > 0) {
+				val currentDurability = tipStack.maxDamage - tipStack.damageValue
+				val percentage = (currentDurability * 100) / tipStack.maxDamage
+				translate("tooltip.drill.tip.durability", currentDurability, tipStack.maxDamage, percentage)
+					.style(ChatFormatting.YELLOW)
+					.forGoggles(tooltip)
+			}
+		}
+
+		// Lubricant
+		val lubeInTank = lubricantHandler.getFluidInTank(0)
+		if (!lubeInTank.isEmpty) {
+			translate("tooltip.drill.contains.lube",
+				Component.translatable(lubeInTank.descriptionId),
+				lubeInTank.amount)
+				.style(ChatFormatting.GOLD)
+				.forGoggles(tooltip)
+		}
+
+		// Coolant
+		val coolantInTank = coolantHandler.getFluidInTank(0)
+		if (!coolantInTank.isEmpty) {
+			translate("tooltip.drill.contains.coolant",
+				Component.translatable(coolantInTank.descriptionId),
+				coolantInTank.amount)
+				.style(ChatFormatting.AQUA)
+				.forGoggles(tooltip)
+		}
+
+		// Heat
+		translate("tooltip.drill.heat", temperature.toInt())
+			.style(ChatFormatting.RED)
+			.forGoggles(tooltip)
 
 		return super.addToGoggleTooltip(tooltip, isPlayerSneaking)
 	}
