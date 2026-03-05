@@ -13,7 +13,9 @@ object CreateOreDepositsFluids {
 		.fluid("lubricant", "block/fluid/lubricant_still".asResource(), "block/fluid/lubricant_flow".asResource())
 		.properties { it.viscosity(1500).density(500) }
 		.fluidProperties { it.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(3).explosionResistance(100f) }
+		.source { BaseFlowingFluid.Source(it) }
 		.register()
+
 
 	val SLAG: FluidEntry<BaseFlowingFluid.Flowing> = CreateOreDeposits.REGISTRATE
 		.fluid("slag", "block/fluid/slag_still".asResource(), "block/fluid/slag_flow".asResource())

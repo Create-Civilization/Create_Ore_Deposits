@@ -23,14 +23,6 @@ data object Config {
 			internal val _baseTemperature: ModConfigSpec.DoubleValue =
 				builder.defineInRange("baseTemperature", 293.0, -Double.MAX_VALUE, Double.MAX_VALUE)
 			inline val baseTemperature: Float get() = _baseTemperature.get().toFloat()
-
-			@PublishedApi
-			internal val _dampening: ModConfigSpec.DoubleValue = builder.defineInRange("dampening", 0.008, 0.0, Double.MAX_VALUE)
-			inline val dampening: Float get() = _dampening.get().toFloat()
-
-			@PublishedApi
-			internal val _scale: ModConfigSpec.DoubleValue = builder.defineInRange("scale", 1.0, 0.0, Double.MAX_VALUE)
-			inline val scale: Float get() = _scale.get().toFloat()
 		}
 	}
 

@@ -8,7 +8,7 @@ import net.minecraft.world.item.Item
 object CreateOreDepositsItems {
 
 	val DIAMOND_DRILL_TIP: ItemEntry<Item> = REGISTRATE.item("diamond_drill_tip", ::Item)
-		.properties {it.durability(2000).stacksTo(1).setNoRepair()}
+		.properties {it.durability(20000).stacksTo(1).setNoRepair()}
 		.tag(CreateOreDepositsTags.DRILL_TIP)
 		.defaultModel()
 		.register()
