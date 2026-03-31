@@ -225,6 +225,7 @@ class DepositDrillBlockVisual(
 		coil.delete()
 		magnet.delete()
 		rope.delete()
+		tip.delete()
 	}
 
 	private inner class LightCache {
