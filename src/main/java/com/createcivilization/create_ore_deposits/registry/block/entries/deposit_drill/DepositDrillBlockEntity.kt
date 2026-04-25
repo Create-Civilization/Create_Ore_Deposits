@@ -166,11 +166,10 @@ class DepositDrillBlockEntity(
 		val inventory: ItemStack = itemHandler.getStackInSlot(0)
 		if (inventory.isEmpty) return true
 
-		val notFull: Boolean = inventory.count != itemHandler.getSlotLimit(0)
 		// Previously this check also had ' && getTargetBlock() == lastBlock'.
 		// I couldn't find a reason for it, and the drill seems to work fine without it (plus it fixes the drill being unable to mine dirt).
 		// If anything is broken in future, this may be the cause.
-		return notFull
+		return inventory.count != itemHandler.getSlotLimit(0)
 	}
 
 	fun calculateExtractionInterval(): Int = 1025 - (speed * 4).roundToInt()

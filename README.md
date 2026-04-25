@@ -1,6 +1,6 @@
 # Create: Ore Deposits
 
-**An addon for the [Create](https://modrinth.com/mod/create) mod**
+**An addon for [the Create mod](https://modrinth.com/mod/create).**
 
 This mod aims to add drills and deposits to allow for a more fair way to get large quantities of materials.
 
@@ -13,28 +13,28 @@ This mod aims to add drills and deposits to allow for a more fair way to get lar
 ## TODO
 
 ### Drill System
-- [x] Heat tooltip
-- [x] Tip type tooltip
-- [x] Tip durability tooltip
-- [x] Lubricant tooltip
-- [x] Coolant tooltip
-- [ ] Temperature affects tip durability
-- [ ] Deposits require matching tip type
-- [ ] Crafting recipes for drills and tips
+- [x] Heat tooltip.
+- [x] Tip type tooltip.
+- [x] Tip durability tooltip.
+- [x] Lubricant tooltip.
+- [x] Coolant tooltip.
+- [ ] Temperature affects tip durability.
+- [ ] Deposits require matching tip type.
+- [ ] Crafting recipes for drills and tips.
 
 ### Fluids
-- [ ] Tiered lubricants
-- [ ] Tiered coolants
-- [x] Coolant being used during drilling
+- [ ] Tiered lubricants.
+- [ ] Tiered coolants.
+- [x] Coolant being used during drilling.
 
 ### Refinement
-- [ ] Unprocessed ore items
-- [ ] Refining recipe tree
+- [ ] Unprocessed ore items.
+- [ ] Refining recipe tree.
 
 ### World & Polish
-- [ ] Worldgen for ore deposits
-- [ ] Textures & models
-- [ ] Ponder scenes
+- [ ] World generation for ore deposits.
+- [ ] Textures & models.
+- [ ] Ponder scenes.
 
 ---
 
