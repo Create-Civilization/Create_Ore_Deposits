@@ -1,10 +1,9 @@
 package com.createcivilization.create_ore_deposits.registry.datamap
 
-import com.createcivilization.create_ore_deposits.CreateOreDeposits
+import com.createcivilization.create_ore_deposits.util.asResource
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.material.Fluid
 import net.neoforged.neoforge.registries.datamaps.DataMapType
@@ -44,14 +43,14 @@ object CreateOreDepositsDataMaps {
 
 	val DEPOSIT_DATA: DataMapType<Block?, DepositData?> =
 		DataMapType.builder(
-			ResourceLocation.fromNamespaceAndPath(CreateOreDeposits.MOD_ID, "deposit_data"),
+			"deposit_data".asResource(),
 			Registries.BLOCK,
 			DepositData.CODEC
 		).build()
 
 	val COOLING_FACTOR_DATA: DataMapType<Fluid, CoolingFactorData> =
 		DataMapType.builder(
-			ResourceLocation.fromNamespaceAndPath(CreateOreDeposits.MOD_ID, "cooling_factor_data"),
+			"cooling_factor_data".asResource(),
 			Registries.FLUID,
 			CoolingFactorData.CODEC
 		).build()
@@ -59,7 +58,7 @@ object CreateOreDepositsDataMaps {
 
 	val LUBRICANT_FACTOR_DATA: DataMapType<Fluid, LubricantFactorData> =
 		DataMapType.builder(
-			ResourceLocation.fromNamespaceAndPath(CreateOreDeposits.MOD_ID, "lubricant_factor_data"),
+			"lubricant_factor_data".asResource(),
 			Registries.FLUID,
 			LubricantFactorData.CODEC
 		).build()
