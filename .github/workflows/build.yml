@@ -14,7 +14,7 @@ jobs:
 
         steps:
             - name: Checkout Repo
-              uses: actions/checkout@v6.0.2
+              uses: actions/checkout@v6
 
             - name: Setup JDK
               uses: actions/setup-java@v5
@@ -23,7 +23,7 @@ jobs:
                   java-version: '21'
 
             - name: Setup Gradle
-              uses: gradle/actions/setup-gradle@v6.1.0
+              uses: gradle/actions/setup-gradle@v6
               with:
                   cache-read-only: false
 
@@ -35,7 +35,7 @@ jobs:
               run: chmod +x gradlew && ./gradlew build
 
             - name: Upload
-              uses: actions/upload-artifact@v7.0.1
+              uses: actions/upload-artifact@v7
               if: success()
               with:
                   name: create_ore_deposits-${{ steps.version.outputs.MOD_VERSION }}
