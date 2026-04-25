@@ -14,31 +14,28 @@ jobs:
 
         steps:
             - name: Checkout Repo
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6.0.2
 
-            - name: Set up JDK
-              uses: actions/setup-java@v4
+            - name: Setup JDK
+              uses: actions/setup-java@v5
               with:
-                  distribution: 'temurin'
+                  distribution: 'jetbrains'
                   java-version: '21'
 
-            - name: Setup The Elephant
-              uses: gradle/actions/setup-gradle@v3
+            - name: Setup Gradle
+              uses: gradle/actions/setup-gradle@v6.1.0
               with:
                   cache-read-only: false
 
-            - name: Grant Execute Perms
-              run: chmod +x gradlew
-
-            - name: Get version
+            - name: Get Version
               id: version
               run: echo "MOD_VERSION=$(grep 'mod_version' gradle.properties | cut -d'=' -f2)" >> $GITHUB_OUTPUT
 
-            - name: Build with Elephant
-              run: ./gradlew build
+            - name: Build
+              run: chmod +x gradlew && ./gradlew build
 
-            - name: Upload Build Artifacts
-              uses: actions/upload-artifact@v4
+            - name: Upload
+              uses: actions/upload-artifact@v7.0.1
               if: success()
               with:
                   name: create_ore_deposits-${{ steps.version.outputs.MOD_VERSION }}
