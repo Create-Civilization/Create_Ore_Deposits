@@ -32,10 +32,14 @@ import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 @Mod(CreateOreDeposits.MOD_ID)
 data object CreateOreDeposits {
 
-	val REGISTRATE: CreateRegistrate = CreateRegistrate.create(MOD_ID)
+	@JvmField
+	val REGISTRATE: CreateRegistrate = CreateRegistrate
+		.create(MOD_ID)
 		.defaultCreativeTab(CreateOreDepositsTabs.BASE_CREATIVE_TAB.key!!)
-		.setTooltipModifierFactory { item -> ItemDescription.Modifier(item, FontHelper.Palette.STANDARD_CREATE)
-			.andThen(TooltipModifier.mapNull(KineticStats.create(item))) }
+		.setTooltipModifierFactory { item ->
+			ItemDescription.Modifier(item, FontHelper.Palette.STANDARD_CREATE)
+				.andThen(TooltipModifier.mapNull(KineticStats.create(item)))
+		}
 		.skipErrors(true) // Due to us not having all the textures, models, jsons, etc. yet, this avoids datagen crashing
 
 	init {

@@ -12,8 +12,9 @@ import net.neoforged.neoforge.common.world.BiomeModifier
 import net.neoforged.neoforge.common.world.BiomeModifiers
 import net.neoforged.neoforge.registries.NeoForgeRegistries
 
-object BiomeModifiers {
+data object BiomeModifiers {
 
+	@JvmField
 	val ADD_IRON_ORE_DEPOSIT: ResourceKey<BiomeModifier> = registerKey("add_iron_ore_deposit")
 
 	fun bootstrap(context: BootstrapContext<BiomeModifier>) {

@@ -10,8 +10,9 @@ import com.tterrag.registrate.util.nullness.NonNullFunction
 
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer
 
-object CreateOreDepositsBlockEntities {
+data object CreateOreDepositsBlockEntities {
 
+	@JvmField
 	val DEPOSIT_DRILL: BlockEntityEntry<DepositDrillBlockEntity> = REGISTRATE
 		.blockEntity("deposit_drill_entity", ::DepositDrillBlockEntity)
 		.visual { SimpleBlockEntityVisualizer.Factory(::DepositDrillBlockVisual) }

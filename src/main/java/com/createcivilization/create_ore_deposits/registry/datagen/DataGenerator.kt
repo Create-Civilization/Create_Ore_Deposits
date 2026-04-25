@@ -11,8 +11,9 @@ import net.neoforged.neoforge.data.event.GatherDataEvent
 
 import java.util.concurrent.CompletableFuture
 
+@Suppress("unused")
 @EventBusSubscriber(modid = CreateOreDeposits.MOD_ID)
-object DataGenerator {
+data object DataGenerator {
 
 	@SubscribeEvent
 	fun gatherData(event: GatherDataEvent) {
@@ -24,6 +25,5 @@ object DataGenerator {
 
 		generator.addProvider(event.includeServer(), DatapackProvider(packOutput, lookupProvider))
 		generator.addProvider(event.includeServer(), DataMapProvider(packOutput, lookupProvider))
-
 	}
 }

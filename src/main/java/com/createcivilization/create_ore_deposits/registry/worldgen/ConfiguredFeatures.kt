@@ -15,8 +15,9 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest
 
-object ConfiguredFeatures {
+data object ConfiguredFeatures {
 
+	@JvmField
 	val IRON_ORE_DEPOSIT_KEY: ResourceKey<ConfiguredFeature<*, *>> = registerKey("iron_ore_deposit")
 
 	fun registerKey(name: String): ResourceKey<ConfiguredFeature<*, *>> = ResourceKey.create(
@@ -37,7 +38,6 @@ object ConfiguredFeatures {
 			OreConfiguration.target(stoneReplaceables, CreateOreDepositsBlocks.IRON_ORE_DEPOSIT.defaultState)
 		)
 
-		val veinSize = 9
-		register(context, IRON_ORE_DEPOSIT_KEY, Feature.ORE, OreConfiguration(oreConfiguration, veinSize))
+		register(context, IRON_ORE_DEPOSIT_KEY, Feature.ORE, OreConfiguration(oreConfiguration, 9))
 	}
 }

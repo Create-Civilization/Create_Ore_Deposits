@@ -11,7 +11,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent
 
 @Suppress("unused")
 @EventBusSubscriber(modid = CreateOreDeposits.MOD_ID)
-object CreateOreDepositsCapabilities {
+data object CreateOreDepositsCapabilities {
 
 	@SubscribeEvent
 	fun onRegisterCapabilities(event: RegisterCapabilitiesEvent) {

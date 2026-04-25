@@ -3,15 +3,14 @@ package com.createcivilization.create_ore_deposits.registry.block
 import com.createcivilization.create_ore_deposits.CreateOreDeposits.REGISTRATE
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlock
 import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDepositsTags
-import com.simibubi.create.AllTags
 import com.simibubi.create.api.behaviour.movement.MovementBehaviour.movementBehaviour
 import com.simibubi.create.api.stress.BlockStressValues
 import com.simibubi.create.content.kinetics.drill.DrillMovementBehaviour
-import com.simibubi.create.foundation.data.BlockStateGen
 import com.simibubi.create.foundation.data.ModelGen.customItemModel
 
 import com.simibubi.create.foundation.data.SharedProperties
 import com.simibubi.create.foundation.data.TagGen.axeOrPickaxe
+import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables
 
 import com.tterrag.registrate.util.entry.BlockEntry
 import net.minecraft.world.item.Item
@@ -27,14 +26,15 @@ import net.minecraft.world.level.storage.loot.entries.LootItem
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue
 
-object CreateOreDepositsBlocks {
+data object CreateOreDepositsBlocks {
 
+	@JvmField
 	val DRILL_BLOCK: BlockEntry<DepositDrillBlock> = REGISTRATE.block("deposit_drill", ::DepositDrillBlock)
 		.initialProperties(SharedProperties::stone)
 		.properties { it.mapColor(MapColor.PODZOL).noOcclusion() }
 		.transform(axeOrPickaxe())
 		.onRegister(movementBehaviour(DrillMovementBehaviour()))
-		.onRegister { b -> BlockStressValues.IMPACTS.register(b) { 100.0 } }
+		.onRegister { block -> BlockStressValues.IMPACTS.register(block) { 100.0 } }
 		.item()
 		.transform(customItemModel())
 		.register()
@@ -79,17 +79,19 @@ object CreateOreDepositsBlocks {
 		.block(blockName) { Block(BlockBehaviour.Properties.ofFullCopy(block)) }
 		.simpleItem()
 		.tag(CreateOreDepositsTags.DEPOSIT)
-		.loot({ lootTables, depositBlock -> lootTables.add(
-			depositBlock,
-			LootTable.lootTable()
-				.withPool(
-					LootPool.lootPool()
-						.setRolls(ConstantValue.exactly(rolls))
-						.add(
-							LootItem.lootTableItem(ore)
-								.`when`(LootItemRandomChanceCondition.randomChance(chance))
-						)
-				)
-		)})
+		.loot { lootTables: RegistrateBlockLootTables, depositBlock: Block ->
+			lootTables.add(
+				depositBlock,
+				LootTable.lootTable()
+					.withPool(
+						LootPool.lootPool()
+							.setRolls(ConstantValue.exactly(rolls))
+							.add(
+								LootItem.lootTableItem(ore)
+									.`when`(LootItemRandomChanceCondition.randomChance(chance))
+							)
+					)
+			)
+		}
 		.register()
 }

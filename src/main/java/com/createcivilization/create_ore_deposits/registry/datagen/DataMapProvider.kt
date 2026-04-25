@@ -19,7 +19,6 @@ class DataMapProvider(
 			.add(CreateOreDepositsBlocks.EXAMPLE_DEPOSIT, CreateOreDepositsDataMaps.DepositData(10, 1f), false)
 			.add(CreateOreDepositsBlocks.DIAMOND_ORE_DEPOSIT, CreateOreDepositsDataMaps.DepositData(50, 5f), false)
 
-
 		builder(CreateOreDepositsDataMaps.COOLING_FACTOR_DATA)
 			.add(FluidTags.WATER, CreateOreDepositsDataMaps.CoolingFactorData(1f), false)
 

@@ -23,6 +23,7 @@ class DatapackProvider(
 	BUILDER,
 	setOf(CreateOreDeposits.MOD_ID)
 ) {
+
 	companion object {
 		val BUILDER: RegistrySetBuilder = RegistrySetBuilder()
 			.add(Registries.CONFIGURED_FEATURE, ConfiguredFeatures::bootstrap)

@@ -7,7 +7,7 @@ import dev.engine_room.flywheel.lib.model.baked.PartialModel
 import net.createmod.catnip.render.SpriteShiftEntry
 import net.createmod.catnip.render.SpriteShifter
 
-object DepositDrillBlockModels {
+data object DepositDrillBlockModels {
 
 	val DRILL_COIL: PartialModel = "drill/drill_coil".block()
 	val HOSE: PartialModel = "drill/rope".block()

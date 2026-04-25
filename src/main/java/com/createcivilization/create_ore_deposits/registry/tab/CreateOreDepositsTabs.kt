@@ -11,15 +11,16 @@ import net.neoforged.bus.api.IEventBus
 import net.neoforged.neoforge.registries.DeferredHolder
 import net.neoforged.neoforge.registries.DeferredRegister
 
-object CreateOreDepositsTabs {
+data object CreateOreDepositsTabs {
 
-	val REGISTER: DeferredRegister<CreativeModeTab> = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID)
+	private val REGISTER: DeferredRegister<CreativeModeTab> = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID)
 
+	@JvmField
 	val BASE_CREATIVE_TAB: DeferredHolder<CreativeModeTab, CreativeModeTab> = REGISTER.register("base") { _ ->
 		CreativeModeTab.builder()
 			.title(Component.translatable("itemGroup.${MOD_ID}.base"))
 			.withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
-			.icon { CreateOreDepositsBlocks.DRILL_BLOCK.asStack() }
+			.icon(CreateOreDepositsBlocks.DRILL_BLOCK::asStack)
 			.build()
 	}
 

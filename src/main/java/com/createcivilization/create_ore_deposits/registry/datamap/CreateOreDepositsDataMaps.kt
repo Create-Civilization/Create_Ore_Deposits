@@ -14,7 +14,7 @@ object CreateOreDepositsDataMaps {
 		companion object {
 			val CODEC: Codec<DepositData> = RecordCodecBuilder.create { instance ->
 				instance.group(
-					Codec.INT.fieldOf("maxAttempts").forGetter(DepositData::maxAttempts),
+					Codec.INT.fieldOf("max_attempts").forGetter(DepositData::maxAttempts),
 					Codec.FLOAT.fieldOf("hardness").forGetter(DepositData::hardness)
 				).apply(instance, ::DepositData)
 			}

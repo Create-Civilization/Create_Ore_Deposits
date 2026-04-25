@@ -2,7 +2,7 @@ package com.createcivilization.create_ore_deposits.registry.worldgen
 
 import net.minecraft.world.level.levelgen.placement.*
 
-object OrePlacement {
+data object OrePlacement {
 
 	fun orePlacement(
 		countPlacement: PlacementModifier,

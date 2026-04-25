@@ -43,9 +43,7 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.level.LightLayer
 import org.joml.Quaternionf
 import org.joml.Quaternionfc
-import java.lang.Byte
 import java.util.function.Consumer
-import java.util.function.Function
 import kotlin.Boolean
 import kotlin.Float
 import kotlin.Int
@@ -57,6 +55,7 @@ class DepositDrillBlockVisual(
 	blockEntity: DepositDrillBlockEntity,
 	partialTick: Float
 ) : ShaftVisual<DepositDrillBlockEntity>(dispatcher, blockEntity, partialTick), SimpleDynamicVisual {
+
 	private val coil: ScrollInstance
 	private val magnet: TransformedInstance
 	private val tip: TransformedInstance
@@ -71,23 +70,21 @@ class DepositDrillBlockVisual(
 	private var drillRotation = 0f
 
 	init {
-
-		val blockStateAngle = AngleHelper.horizontalAngle(rotatingAbout)
+		val blockStateAngle: Float = AngleHelper.horizontalAngle(rotatingAbout)
 		val rotation: Quaternionfc = Quaternionf().rotationY(Mth.DEG_TO_RAD * blockStateAngle)
 
-		coil = this.coilModel.createInstance()
+		this.coil = this.coilModel.createInstance()
 			.rotation(rotation)
 			.position(visualPosition)
 			.setSpriteShift(this.coilAnimation)
 
-		coil.setChanged()
+		this.coil.setChanged()
 
-		magnet = magnetInstancer().createInstance()
+		this.magnet = magnetInstancer().createInstance()
 
-		tip = tipModel.createInstance()
+		this.tip = this.tipModel.createInstance()
 
-		rope =
-			SmartRecycler<Boolean, TransformedInstance>(Function { b: Boolean -> if (b) this.halfRopeModel.createInstance() else this.ropeModel.createInstance() })
+		this.rope = SmartRecycler<Boolean, TransformedInstance> { b: Boolean -> if (b) this.halfRopeModel.createInstance() else this.ropeModel.createInstance() }
 
 		updateState(partialTick)
 		updateLight(partialTick)
@@ -96,7 +93,7 @@ class DepositDrillBlockVisual(
 
 	override fun setSectionCollector(sectionCollector: SectionTrackedVisual.SectionCollector?) {
 		super.setSectionCollector(sectionCollector)
-		lightCache.updateSections()
+		this.lightCache.updateSections()
 	}
 
 	val ropeModel: Instancer<TransformedInstance> get() =
@@ -106,11 +103,10 @@ class DepositDrillBlockVisual(
 		instancerProvider().instancer(InstanceTypes.TRANSFORMED, Models.partial(DRILL_MAGNET))
 
 	val tipModel: Instancer<TransformedInstance> get() {
-		var stack = blockEntity.getDrillTipItemHandler().getStackInSlot(0)
-		if(stack.isEmpty) stack = ItemStack(Items.NETHERITE_BLOCK) // Placeholder item that should never render
-		val minecraft = Minecraft.getInstance()
-		val bakedModel: BakedModel = minecraft.itemRenderer.getModel(stack, null, null, 0)
-		val model : Model = BakedModelBuilder(bakedModel).build()
+		var stack: ItemStack = this.blockEntity.getDrillTipItemHandler().getStackInSlot(0)
+		if (stack.isEmpty) stack = ItemStack(Items.NETHERITE_BLOCK) // Placeholder item that should never render
+		val bakedModel: BakedModel = Minecraft.getInstance().itemRenderer.getModel(stack, null, null, 0)
+		val model: Model = BakedModelBuilder(bakedModel).build()
 		return instancerProvider().instancer(InstanceTypes.TRANSFORMED, model)
 	}
 
@@ -129,9 +125,7 @@ class DepositDrillBlockVisual(
 
 	val coilAnimation: SpriteShiftEntry get() = AllSpriteShifts.HOSE_PULLEY_COIL
 
-	private fun magnetInstancer(): Instancer<TransformedInstance> {
-		return if (offset > .25f) this.magnetModel else this.halfMagnetModel
-	}
+	private fun magnetInstancer(): Instancer<TransformedInstance> = if (offset > .25f) this.magnetModel else this.halfMagnetModel
 
 	override fun beginFrame(ctx: DynamicVisual.Context) {
 		updateState(ctx.partialTick())
@@ -139,7 +133,7 @@ class DepositDrillBlockVisual(
 	}
 
 	private fun animate() {
-		val stack = blockEntity.getDrillTipItemHandler().getStackInSlot(0)
+		val stack: ItemStack = blockEntity.getDrillTipItemHandler().getStackInSlot(0)
 
 		coil.offsetV = -offset
 		coil.setChanged()
@@ -167,8 +161,9 @@ class DepositDrillBlockVisual(
 		rope.resetCount()
 
 		if (shouldRenderHalfRope()) {
-			val f = offset % 1
-			val halfRopeNudge = if (f > .75f) f - 1 else f
+			// what does 'f' represent ?
+			val f: Float = offset % 1
+			val halfRopeNudge: Float = if (f > .75f) f - 1 else f
 
 			rope.get(true)!!.setIdentityTransform()
 				.translate(visualPosition)
@@ -178,7 +173,7 @@ class DepositDrillBlockVisual(
 		}
 
 		if (this.isRunning) {
-			val neededRopeCount = this.neededRopeCount
+			val neededRopeCount: Int = this.neededRopeCount
 
 			for (i in 0..<neededRopeCount) {
 				rope.get(false)!!
@@ -239,14 +234,13 @@ class DepositDrillBlockVisual(
 				data.size(size)
 				update()
 
-				val sectionCount =
-					MoreMath.ceilingDiv(size + 15 - pos.y + pos.y / 4 * 4, SectionPos.SECTION_SIZE)
+				val sectionCount: Int = MoreMath.ceilingDiv(size + 15 - pos.y + pos.y / 4 * 4, SectionPos.SECTION_SIZE)
 				if (sectionCount != this.sectionCount) {
 					this.sectionCount = sectionCount
 					sections.clear()
-					val sectionX = SectionPos.blockToSectionCoord(pos.x)
-					val sectionY = SectionPos.blockToSectionCoord(pos.y)
-					val sectionZ = SectionPos.blockToSectionCoord(pos.z)
+					val sectionX: Int = SectionPos.blockToSectionCoord(pos.x)
+					val sectionY: Int = SectionPos.blockToSectionCoord(pos.y)
+					val sectionZ: Int = SectionPos.blockToSectionCoord(pos.z)
 					for (i in 0..<sectionCount) {
 						sections.add(SectionPos.asLong(sectionX, sectionY - i, sectionZ))
 					}
@@ -265,11 +259,11 @@ class DepositDrillBlockVisual(
 		fun update() {
 			mutablePos.set(pos)
 
-			for (i in data.indices) {
-				val blockLight = level.getBrightness(LightLayer.BLOCK, mutablePos)
-				val skyLight = level.getBrightness(LightLayer.SKY, mutablePos)
-				val light = ((skyLight and 0xF) shl 4) or (blockLight and 0xF)
-				data.set(i, light.toByte())
+			for (index: Int in data.indices) {
+				val blockLight: Int = level.getBrightness(LightLayer.BLOCK, mutablePos)
+				val skyLight: Int = level.getBrightness(LightLayer.SKY, mutablePos)
+				val light: Int = ((skyLight and 0xF) shl 4) or (blockLight and 0xF)
+				data.set(index, light.toByte())
 				mutablePos.move(Direction.DOWN)
 			}
 		}
@@ -279,9 +273,9 @@ class DepositDrillBlockVisual(
 				return 0
 			}
 
-			val light = Byte.toUnsignedInt(data.getByte(offset))
-			val blockLight = light and 0xF
-			val skyLight = (light ushr 4) and 0xF
+			val light: Int = java.lang.Byte.toUnsignedInt(data.getByte(offset))
+			val blockLight: Int = light and 0xF
+			val skyLight: Int = (light ushr 4) and 0xF
 			return LightTexture.pack(blockLight, skyLight)
 		}
 	}

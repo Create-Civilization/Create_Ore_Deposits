@@ -58,7 +58,7 @@ class FluidHandler(
 		tank.readFromNBT(provider, nbt)
 		allowedFluids = mutableSetOf()
 		val fluidListTag: ListTag = nbt.getList("AllowedFluids", StringTag.TAG_STRING.toInt())
-		for (i: Int in 0..<fluidListTag.size) {
+		for (i: Int in fluidListTag.indices) {
 			val id: String = fluidListTag.getString(i)
 			allowedFluids?.add(BuiltInRegistries.FLUID.get(ResourceLocation.parse(id)))
 		}

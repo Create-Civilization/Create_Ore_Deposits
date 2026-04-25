@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.world.level.Level
 import net.minecraft.world.level.LevelAccessor
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
@@ -29,47 +30,50 @@ import kotlin.math.floor
 class DepositDrillBlockRenderer(
 	context: BlockEntityRendererProvider.Context
 ) : KineticBlockEntityRenderer<DepositDrillBlockEntity>(context) {
+
 	override fun shouldRenderOffScreen(drillBlockEntity: DepositDrillBlockEntity): Boolean {
 		return true
 	}
 
 	override fun renderSafe(
-		be: DepositDrillBlockEntity, partialTicks: Float, ms: PoseStack, buffer: MultiBufferSource,
+		be: DepositDrillBlockEntity,
+		partialTicks: Float,
+		ms: PoseStack,
+		buffer: MultiBufferSource,
 		light: Int, overlay: Int
 	) {
 		if (VisualizationManager.supportsVisualization(be.getLevel())) return
 
 		super.renderSafe(be, partialTicks, ms, buffer, light, overlay)
-		val offset = getOffset(be, partialTicks)
-		val running = isRunning(be)
+		val offset: Float = getOffset(be, partialTicks)
+		val running: Boolean = isRunning(be)
 
-		val vb = buffer.getBuffer(RenderType.solid())
-		scrollCoil(
-			getRotatedCoil(be),
-			this.coilShift, offset, 1f
-		)
+		val vb: VertexConsumer = buffer.getBuffer(RenderType.solid())
+		scrollCoil(getRotatedCoil(be), this.coilShift, offset, 1f)
 			.light<SuperByteBuffer>(light)
 			.renderInto(ms, vb)
 
-		val world = be.getLevel()
-		val blockState = be.blockState
-		val pos = be.blockPos
+		val world: Level? = be.getLevel()
+		val blockState: BlockState = be.blockState
+		val pos: BlockPos = be.blockPos
 
-		val halfMagnet = CachedBuffers.partial(this.halfMagnet, blockState)
+		val halfMagnet: SuperByteBuffer? = CachedBuffers.partial(this.halfMagnet, blockState)
 		val halfRope = CachedBuffers.partial(this.halfRope, blockState)
 		val magnet = renderMagnet(be)
 		val rope = renderRope(be)
 
-		if (running || offset == 0f) renderAt(
-			world!!,
-			(if (offset > .25f) magnet else halfMagnet)!!,
-			offset,
-			pos,
-			ms,
-			vb
-		)
+		if (running || offset == 0f) {
+			renderAt(
+				world!!,
+				(if (offset > .25f) magnet else halfMagnet)!!,
+				offset,
+				pos,
+				ms,
+				vb
+			)
+		}
 
-		val f = offset % 1
+		val f: Float = offset % 1
 		if (offset > .75f && (f !in .25f.. .75f)) renderAt(
 			world!!,
 			halfRope,
@@ -91,46 +95,40 @@ class DepositDrillBlockRenderer(
 	fun getShaftAxis(be: DepositDrillBlockEntity): Direction.Axis =
 		be.blockState.getValue(BlockStateProperties.HORIZONTAL_FACING).clockWise.axis
 
-	private val halfMagnet = HOSE
-	private val halfRope = HOSE_HALF
+	private val halfMagnet: PartialModel = HOSE
+	private val halfRope: PartialModel = HOSE_HALF
 	val coil: PartialModel get() = AllPartialModels.HOSE_COIL
 
 	val coilShift: SpriteShiftEntry get() = AllSpriteShifts.HOSE_PULLEY_COIL
 
-	fun renderRope(be: DepositDrillBlockEntity): SuperByteBuffer =
-		CachedBuffers.partial(HOSE, be.blockState)
+	fun renderRope(be: DepositDrillBlockEntity): SuperByteBuffer = CachedBuffers.partial(HOSE, be.blockState)
 
-	fun renderMagnet(be: DepositDrillBlockEntity): SuperByteBuffer =
-		CachedBuffers.partial(DRILL_MAGNET, be.blockState)
+	fun renderMagnet(be: DepositDrillBlockEntity): SuperByteBuffer = CachedBuffers.partial(DRILL_MAGNET, be.blockState)
 
 	fun getOffset(be: DepositDrillBlockEntity, partialTicks: Float): Float = be.getInterpolatedOffset(partialTicks)
 
-	//TODO: Implement actual is running logic
+	// TODO: Implement actual is running logic
 	fun isRunning(be: DepositDrillBlockEntity): Boolean = true
 
-	override fun getRenderedBlockState(be: DepositDrillBlockEntity): BlockState {
-		return shaft(getShaftAxis(be))
-	}
+	override fun getRenderedBlockState(be: DepositDrillBlockEntity): BlockState = shaft(getShaftAxis(be))
 
-	fun getRotatedCoil(be: DepositDrillBlockEntity): SuperByteBuffer {
-		val blockState = be.blockState
-		return CachedBuffers.partialFacing(
-			this.coil, blockState,
-			Direction.get(Direction.AxisDirection.POSITIVE, getShaftAxis(be))
-		)
-	}
+	fun getRotatedCoil(be: DepositDrillBlockEntity): SuperByteBuffer = CachedBuffers.partialFacing(
+		this.coil,
+		be.blockState,
+		Direction.get(Direction.AxisDirection.POSITIVE, getShaftAxis(be))
+	)
 
-	override fun getViewDistance(): Int {
-		return AllConfigs.server().kinetics.maxRopeLength.get()
-	}
+	override fun getViewDistance(): Int = AllConfigs.server().kinetics.maxRopeLength.get()
 
 	companion object {
+
 		fun renderAt(
-			world: LevelAccessor, partial: SuperByteBuffer, offset: Float, pulleyPos: BlockPos,
+			world: LevelAccessor,
+			partial: SuperByteBuffer, offset: Float, pulleyPos: BlockPos,
 			ms: PoseStack, buffer: VertexConsumer
 		) {
-			val actualPos = pulleyPos.below(offset.toInt())
-			val light = LevelRenderer.getLightColor(world, world.getBlockState(actualPos), actualPos)
+			val actualPos: BlockPos = pulleyPos.below(offset.toInt())
+			val light: Int = LevelRenderer.getLightColor(world, world.getBlockState(actualPos), actualPos)
 			partial.translate(0f, -offset, 0f)
 				.light<SuperByteBuffer>(light)
 				.renderInto(ms, buffer)
@@ -142,15 +140,12 @@ class DepositDrillBlockRenderer(
 			offset: Float,
 			speedModifier: Float
 		): SuperByteBuffer {
-			var offset = offset
+			var offset: Float = offset
 			if (offset == 0f) return sbb
-			val spriteSize = (coilShift.getTarget()
-				.v1
-				- coilShift.getTarget()
-				.v0)
+			val spriteSize: Float = (coilShift.getTarget().v1 - coilShift.getTarget().v0)
 			offset *= speedModifier / 2
 			val coilScroll = -(offset + 3 / 16f) - floor(((offset + 3 / 16f) * -2).toDouble()) / 2
-			return sbb.shiftUVScrolling<SuperByteBuffer>(coilShift, coilScroll.toFloat() * spriteSize)
+			return sbb.shiftUVScrolling(coilShift, coilScroll.toFloat() * spriteSize)
 		}
 	}
 }
