@@ -34,7 +34,7 @@ object CreateOreDepositsBlocks {
 		.properties { it.mapColor(MapColor.PODZOL).noOcclusion() }
 		.transform(axeOrPickaxe())
 		.onRegister(movementBehaviour(DrillMovementBehaviour()))
-		.onRegister { b -> BlockStressValues.IMPACTS.register(b) {100.0} }
+		.onRegister { b -> BlockStressValues.IMPACTS.register(b) { 100.0 } }
 		.item()
 		.transform(customItemModel())
 		.register()
@@ -57,17 +57,24 @@ object CreateOreDepositsBlocks {
 	//End Deposits
 
 	fun registerDepositGuaranteed(
-		blockName: String, block: Block, ore: Item
-	): BlockEntry<Block> =
-		registerDepositSingleRoll(blockName, block, ore, 1f)
+		blockName: String,
+		block: Block,
+		ore: Item,
+	): BlockEntry<Block> = registerDepositSingleRoll(blockName, block, ore, 1f)
 
 	fun registerDepositSingleRoll(
-		blockName: String, block: Block, ore: Item, chance: Float
-	): BlockEntry<Block> =
-		registerDeposit(blockName, block, ore, 1f, chance)
+		blockName: String,
+		block: Block,
+		ore: Item,
+		chance: Float,
+	): BlockEntry<Block> = registerDeposit(blockName, block, ore, 1f, chance)
 
 	fun registerDeposit(
-		blockName: String, block: Block, ore: Item, rolls: Float, chance: Float
+		blockName: String,
+		block: Block,
+		ore: Item,
+		rolls: Float,
+		chance: Float,
 	): BlockEntry<Block> = REGISTRATE
 		.block(blockName) { Block(BlockBehaviour.Properties.ofFullCopy(block)) }
 		.simpleItem()

@@ -30,8 +30,12 @@ class DepositDrillBlock(properties: Properties) : HorizontalKineticBlock(propert
 
 	override fun getRenderShape(pState: BlockState): RenderShape = RenderShape.MODEL
 
-	override fun hasShaftTowards(world: LevelReader, pos: BlockPos, state: BlockState, face: Direction): Boolean =
-		face == state.getValue(HORIZONTAL_FACING).clockWise
+	override fun hasShaftTowards(
+		world: LevelReader,
+		pos: BlockPos,
+		state: BlockState,
+		face: Direction
+	): Boolean = face == state.getValue(HORIZONTAL_FACING).clockWise
 
 	override fun getRotationAxis(state: BlockState): Direction.Axis =
 		state.getValue(HORIZONTAL_FACING).clockWise.axis
@@ -54,10 +58,9 @@ class DepositDrillBlock(properties: Properties) : HorizontalKineticBlock(propert
 		hitResult: BlockHitResult
 	): ItemInteractionResult {
 
-		if (level.isClientSide)
-			return ItemInteractionResult.SUCCESS
+		if (level.isClientSide) return ItemInteractionResult.SUCCESS
 
-		withBlockEntityDo(level, pos, { be ->
+		withBlockEntityDo(level, pos) { be ->
 			val drillTipHandler: IItemHandler = be.getDrillTipItemHandler()
 			if (player.mainHandItem.isEmpty) {
 				if (drillTipHandler.getStackInSlot(0).isEmpty) {
@@ -69,14 +72,14 @@ class DepositDrillBlock(properties: Properties) : HorizontalKineticBlock(propert
 				return@withBlockEntityDo
 			}
 
-			if(drillTipHandler.getStackInSlot(0).isEmpty && stack.tags.anyMatch { key -> CreateOreDepositsTags.DRILL_TIP == key }){
+			if (drillTipHandler.getStackInSlot(0).isEmpty && stack.tags.anyMatch(CreateOreDepositsTags.DRILL_TIP::equals)) {
 				val newItemStack = ItemStack(stack.item, 1)
 				stack.consume(1, player)
 				drillTipHandler.insertItem(0, newItemStack, false)
 				be.notifyUpdate()
 				return@withBlockEntityDo
 			}
-		})
+		}
 
 		return ItemInteractionResult.SUCCESS
 	}

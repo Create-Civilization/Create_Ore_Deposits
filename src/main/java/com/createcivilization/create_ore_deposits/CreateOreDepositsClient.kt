@@ -1,7 +1,7 @@
 package com.createcivilization.create_ore_deposits
 
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModels
-import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DrillBlockModel
+import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModel
 import com.createcivilization.create_ore_deposits.util.logI
 import com.createcivilization.create_ore_deposits.util.asResource
 
@@ -22,7 +22,7 @@ data object CreateOreDepositsClient {
 		MOD_BUS.addListener(this::onRegisterLayerDefinitions)
 	}
 
-	@Suppress("UnusedExpression") // Calls static initializer
+	@Suppress("UnusedExpression") // Calls static initialiser
 	fun clientInit(event: FMLClientSetupEvent) {
 		logI("In client init!")
 		DepositDrillBlockModels
@@ -30,8 +30,9 @@ data object CreateOreDepositsClient {
 	}
 
 	fun onRegisterLayerDefinitions(event: RegisterLayerDefinitions) {
-		event.registerLayerDefinition(DRILL_LAYER, DrillBlockModel::createModel)
+		event.registerLayerDefinition(DRILL_LAYER, DepositDrillBlockModel::createModel)
 	}
 
+	@JvmField
 	val DRILL_LAYER: ModelLayerLocation = ModelLayerLocation("drill".asResource(), "main")
 }

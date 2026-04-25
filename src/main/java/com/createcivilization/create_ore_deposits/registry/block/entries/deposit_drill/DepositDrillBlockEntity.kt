@@ -159,6 +159,7 @@ class DepositDrillBlockEntity(
 		}
 	}
 
+	// FIXME: the drill is stopped by... dirt?!
 	fun canMine(): Boolean {
 		val tip: ItemStack = drillTipHandler.getStackInSlot(0)
 		if (tip.isEmpty) return false

@@ -12,7 +12,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition
 import net.minecraft.client.model.geom.builders.MeshDefinition
 import net.minecraft.client.renderer.RenderType
 
-class DrillBlockModel(root: ModelPart) : Model(RenderType::entityCutoutNoCull) {
+class DepositDrillBlockModel(root: ModelPart) : Model(RenderType::entityCutoutNoCull) {
 
 	val main: ModelPart = root.getChild("main")
 
