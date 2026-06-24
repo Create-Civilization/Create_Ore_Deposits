@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern": [
+		"ISI",
+		"BCB",
+		"ISI"
+	],
+	"key": {
+		"I": { "item": "minecraft:iron_ingot" },
+		"S": { "item": "create:shaft" },
+		"B": { "item": "create:brass_casing" },
+		"C": { "item": "create:cogwheel" }
+	},
+	"result": {
+		"id": "create_ore_deposits:deposit_drill",
+		"count": 1
+	}
+}

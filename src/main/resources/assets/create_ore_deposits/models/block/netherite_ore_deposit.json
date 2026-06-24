@@ -1,0 +1,7 @@
+{
+	"parent": "minecraft:block/cube_column",
+	"textures": {
+		"end": "create_ore_deposits:block/netherite_ore_deposit_top",
+		"side": "create_ore_deposits:block/netherite_ore_deposit_side"
+	}
+}

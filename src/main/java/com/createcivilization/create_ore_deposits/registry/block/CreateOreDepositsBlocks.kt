@@ -18,6 +18,7 @@ import net.minecraft.world.item.Items
 
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.storage.loot.LootPool
@@ -52,7 +53,7 @@ data object CreateOreDepositsBlocks {
 	val DIAMOND_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("diamond_ore_deposit", Blocks.DIAMOND_ORE, Items.DIAMOND, 0.2f)
 	val EMERALD_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("emerald_ore_deposit", Blocks.EMERALD_ORE, Items.EMERALD, 0.1f)
 	val QUARTZ_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("quartz_ore_deposit", Blocks.NETHER_QUARTZ_ORE, Items.QUARTZ, 2f, 0.9f)
-	val NETHERITE_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("netherite_ore_deposit", Blocks.ANCIENT_DEBRIS, Items.NETHERITE_SCRAP, 1f)
+	val NETHERITE_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("netherite_ore_deposit", Blocks.ANCIENT_DEBRIS, Items.NETHERITE_SCRAP, 1f, true)
 //	val ZINC_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("zinc_ore_deposit", AllBlocks.ZINC_ORE.get(), AllItems.RAW_ZINC)
 	//End Deposits
 
@@ -60,14 +61,16 @@ data object CreateOreDepositsBlocks {
 		blockName: String,
 		block: Block,
 		ore: Item,
-	): BlockEntry<Block> = registerDepositSingleRoll(blockName, block, ore, 1f)
+		isRotatedPillar: Boolean = false,
+	): BlockEntry<Block> = registerDepositSingleRoll(blockName, block, ore, 1f, isRotatedPillar)
 
 	fun registerDepositSingleRoll(
 		blockName: String,
 		block: Block,
 		ore: Item,
 		chance: Float,
-	): BlockEntry<Block> = registerDeposit(blockName, block, ore, 1f, chance)
+		isRotatedPillar: Boolean = false,
+	): BlockEntry<Block> = registerDeposit(blockName, block, ore, 1f, chance, isRotatedPillar)
 
 	fun registerDeposit(
 		blockName: String,
@@ -75,8 +78,15 @@ data object CreateOreDepositsBlocks {
 		ore: Item,
 		rolls: Float,
 		chance: Float,
+		isRotatedPillar: Boolean = false,
 	): BlockEntry<Block> = REGISTRATE
-		.block(blockName) { Block(BlockBehaviour.Properties.ofFullCopy(block)) }
+		.block(blockName) { 
+			if (isRotatedPillar) {
+				RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(block))
+			} else {
+				Block(BlockBehaviour.Properties.ofFullCopy(block))
+			}
+		}
 		.simpleItem()
 		.tag(CreateOreDepositsTags.DEPOSIT)
 		.loot { lootTables: RegistrateBlockLootTables, depositBlock: Block ->
