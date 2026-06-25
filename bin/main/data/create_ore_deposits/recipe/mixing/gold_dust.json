@@ -1,0 +1,19 @@
+{
+	"type": "create:mixing",
+	"heat_requirement": "superheated",
+	"ingredients": [
+		{
+			"item": "create_ore_deposits:gold_dust"
+		}
+	],
+	"results": [
+		{
+			"amount": 50,
+			"id": "create_ore_deposits:molten_gold"
+		},
+		{
+			"amount": 10,
+			"id": "create_ore_deposits:slag"
+		}
+	]
+}

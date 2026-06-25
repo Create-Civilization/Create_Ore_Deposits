@@ -1,0 +1,38 @@
+package com.createcivilization.create_ore_deposits
+
+import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModels
+import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModel
+import com.createcivilization.create_ore_deposits.util.logI
+import com.createcivilization.create_ore_deposits.util.asResource
+
+import net.minecraft.client.model.geom.ModelLayerLocation
+
+import net.neoforged.api.distmarker.Dist
+import net.neoforged.fml.common.Mod
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
+import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterLayerDefinitions
+
+import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
+
+@Mod(value = CreateOreDeposits.MOD_ID, dist = [Dist.CLIENT])
+data object CreateOreDepositsClient {
+
+	init {
+		MOD_BUS.addListener(this::clientInit)
+		MOD_BUS.addListener(this::onRegisterLayerDefinitions)
+	}
+
+	@Suppress("UnusedExpression") // Calls static initialiser
+	fun clientInit(event: FMLClientSetupEvent) {
+		logI("In client init!")
+		DepositDrillBlockModels
+//		PonderIndex.addPlugin(CODPonderPlugin())
+	}
+
+	fun onRegisterLayerDefinitions(event: RegisterLayerDefinitions) {
+		event.registerLayerDefinition(DRILL_LAYER, DepositDrillBlockModel::createModel)
+	}
+
+	@JvmField
+	val DRILL_LAYER: ModelLayerLocation = ModelLayerLocation("drill".asResource(), "main")
+}

@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "com.createcivilization.create_ore_deposits.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"refmap": "create_ore_deposits.refmap.json",
+	"mixins": [],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

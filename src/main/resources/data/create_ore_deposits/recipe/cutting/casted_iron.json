@@ -1,0 +1,16 @@
+{
+	"type": "create:cutting",
+	"ingredients": [
+		{
+			"item": "create_ore_deposits:casted_iron"
+		}
+	],
+	"results": [
+		{
+			"id": "minecraft:iron_ingot"
+		},
+		{
+			"id": "create_ore_deposits:cast"
+		}
+	]
+}

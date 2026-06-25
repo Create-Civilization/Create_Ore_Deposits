@@ -1,0 +1,18 @@
+{
+	"type": "create:mixing",
+	"heat_requirement": "none",
+	"ingredients": [
+		{
+			"item": "create_ore_deposits:copper_ore_powder"
+		},
+		{
+			"item": "create_ore_deposits:zinc_powder"
+		}
+	],
+	"results": [
+		{
+			"item": "create_ore_deposits:copper_dust",
+			"count": 2
+		}
+	]
+}

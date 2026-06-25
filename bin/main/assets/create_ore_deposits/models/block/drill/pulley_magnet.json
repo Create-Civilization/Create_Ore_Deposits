@@ -1,0 +1,59 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "create_ore_deposits:block/drill/hose",
+		"particle": "create:block/fluid_tank_inner"
+	},
+	"elements": [
+		{
+			"name": "Pipe",
+			"from": [5.95, 10, 5.95],
+			"to": [10.05, 16, 10.05],
+			"rotation": {"angle": 0, "axis": "y", "origin": [6, 2, 6]},
+			"faces": {
+				"north": {"uv": [12, 8, 16, 14], "texture": "#0"},
+				"east": {"uv": [12, 8, 16, 14], "texture": "#0"},
+				"south": {"uv": [12, 8, 16, 14], "texture": "#0"},
+				"west": {"uv": [12, 8, 16, 14], "texture": "#0"},
+				"up": {"uv": [12, 1, 16, 5], "texture": "#0"}
+			}
+		},
+		{
+			"name": "Head 1",
+			"from": [5.5, 8, 5.5],
+			"to": [10.5, 10, 10.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [6, 8, 5]},
+			"faces": {
+				"north": {"uv": [7, 2, 9, 7], "rotation": 90, "texture": "#0"},
+				"east": {"uv": [7, 2, 9, 7], "rotation": 90, "texture": "#0"},
+				"south": {"uv": [7, 2, 9, 7], "rotation": 90, "texture": "#0"},
+				"west": {"uv": [7, 2, 9, 7], "rotation": 90, "texture": "#0"},
+				"up": {"uv": [0, 9, 7, 16], "texture": "#0"},
+				"down": {"uv": [0, 2, 7, 9], "texture": "#0"}
+			}
+		},
+		{
+			"name": "Head 2",
+			"from": [4.5, 5, 4.5],
+			"to": [11.5, 8, 11.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [5, 5, 4]},
+			"faces": {
+				"north": {"uv": [7, 9, 10, 16], "rotation": 90, "texture": "#0"},
+				"east": {"uv": [7, 9, 10, 16], "rotation": 90, "texture": "#0"},
+				"south": {"uv": [7, 9, 10, 16], "rotation": 90, "texture": "#0"},
+				"west": {"uv": [7, 9, 10, 16], "rotation": 90, "texture": "#0"},
+				"up": {"uv": [0, 9, 7, 16], "texture": "#0"},
+				"down": {"uv": [0, 2, 7, 9], "texture": "#0"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "Hose",
+			"origin": [5, 5, 4],
+			"color": 0,
+			"children": [0, 1, 2]
+		}
+	]
+}
