@@ -1,0 +1,6 @@
+{
+	"parent": "minecraft:block/cube_all",
+	"textures": {
+		"all": "create_ore_deposits:block/deposits/emerald_ore_deposit"
+	}
+}

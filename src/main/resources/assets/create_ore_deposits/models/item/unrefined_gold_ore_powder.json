@@ -1,6 +1,6 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "create_ore_deposits:item/unrefined_gold_ore_powder"
+		"layer0": "create_ore_deposits:item/powders/unrefined_gold_ore_powder"
 	}
 }

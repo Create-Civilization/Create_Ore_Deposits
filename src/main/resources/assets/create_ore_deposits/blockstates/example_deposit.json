@@ -1,7 +1,7 @@
 {
 	"variants": {
 		"": {
-			"model": "create_ore_deposits:block/example_deposit"
+			"model": "create_ore_deposits:block/deposits/example_deposit"
 		}
 	}
 }

@@ -1,7 +1,7 @@
 {
 	"variants": {
 		"": {
-			"model": "create_ore_deposits:block/lapis_ore_deposit"
+			"model": "create_ore_deposits:block/deposits/lapis_ore_deposit"
 		}
 	}
 }

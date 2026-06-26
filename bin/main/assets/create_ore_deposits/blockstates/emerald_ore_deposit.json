@@ -1,7 +1,7 @@
 {
 	"variants": {
 		"": {
-			"model": "create_ore_deposits:block/emerald_ore_deposit"
+			"model": "create_ore_deposits:block/deposits/emerald_ore_deposit"
 		}
 	}
 }

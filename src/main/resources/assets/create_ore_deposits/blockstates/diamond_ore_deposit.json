@@ -1,7 +1,7 @@
 {
 	"variants": {
 		"": {
-			"model": "create_ore_deposits:block/diamond_ore_deposit"
+			"model": "create_ore_deposits:block/deposits/diamond_ore_deposit"
 		}
 	}
 }

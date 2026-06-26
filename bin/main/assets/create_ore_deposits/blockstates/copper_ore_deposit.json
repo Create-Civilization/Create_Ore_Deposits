@@ -1,7 +1,7 @@
 {
 	"variants": {
 		"": {
-			"model": "create_ore_deposits:block/copper_ore_deposit"
+			"model": "create_ore_deposits:block/deposits/copper_ore_deposit"
 		}
 	}
 }

@@ -13,6 +13,11 @@
 	"block.create_ore_deposits.lapis_ore_deposit": "Lapis Lazuli Ore Deposit",
 	"block.create_ore_deposits.netherite_ore_deposit": "Netherite Ore Deposit",
 	"block.create_ore_deposits.quartz_ore_deposit": "Nether Quartz Ore Deposit",
+	"block.create_ore_deposits.cast": "Empty Cast",
+	"block.create_ore_deposits.lubricated_cast": "Lubricated Cast",
+	"block.create_ore_deposits.casted_iron": "Casted Iron",
+	"block.create_ore_deposits.casted_gold": "Casted Gold",
+	"block.create_ore_deposits.casted_copper": "Casted Copper",
 
 	"item.create_ore_deposits.test": "Test Item",
 	"item.create_ore_deposits.example_deposit": "Example Ore Deposit",

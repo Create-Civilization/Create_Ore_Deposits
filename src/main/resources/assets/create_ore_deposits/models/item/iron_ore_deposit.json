@@ -1,3 +1,3 @@
 {
-	"parent": "create_ore_deposits:block/iron_ore_deposit"
+	"parent": "create_ore_deposits:block/deposits/iron_ore_deposit"
 }

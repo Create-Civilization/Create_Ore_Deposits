@@ -1,6 +1,7 @@
 package com.createcivilization.create_ore_deposits.registry.block
 
 import com.createcivilization.create_ore_deposits.CreateOreDeposits.REGISTRATE
+import com.createcivilization.create_ore_deposits.registry.block.entries.cast.CastBlock
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlock
 import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDepositsTags
 import com.simibubi.create.api.behaviour.movement.MovementBehaviour.movementBehaviour
@@ -38,6 +39,41 @@ data object CreateOreDepositsBlocks {
 		.onRegister { block -> BlockStressValues.IMPACTS.register(block) { 100.0 } }
 		.item()
 		.transform(customItemModel())
+		.register()
+
+	@JvmField
+	val CAST: BlockEntry<CastBlock> = REGISTRATE.block("cast", ::CastBlock)
+		.initialProperties(SharedProperties::stone)
+		.properties { it.noOcclusion() }
+		.simpleItem()
+		.register()
+
+	@JvmField
+	val LUBRICATED_CAST: BlockEntry<CastBlock> = REGISTRATE.block("lubricated_cast", ::CastBlock)
+		.initialProperties(SharedProperties::stone)
+		.properties { it.noOcclusion() }
+		.simpleItem()
+		.register()
+
+	@JvmField
+	val CASTED_IRON: BlockEntry<CastBlock> = REGISTRATE.block("casted_iron", ::CastBlock)
+		.initialProperties(SharedProperties::stone)
+		.properties { it.noOcclusion() }
+		.simpleItem()
+		.register()
+
+	@JvmField
+	val CASTED_GOLD: BlockEntry<CastBlock> = REGISTRATE.block("casted_gold", ::CastBlock)
+		.initialProperties(SharedProperties::stone)
+		.properties { it.noOcclusion() }
+		.simpleItem()
+		.register()
+
+	@JvmField
+	val CASTED_COPPER: BlockEntry<CastBlock> = REGISTRATE.block("casted_copper", ::CastBlock)
+		.initialProperties(SharedProperties::stone)
+		.properties { it.noOcclusion() }
+		.simpleItem()
 		.register()
 
 	// TEMP LOOT VALUES, CHANGE LATER.

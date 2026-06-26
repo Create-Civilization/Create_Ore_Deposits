@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "create_ore_deposits:block/lubricant"
+      "model": "create_ore_deposits:block/misc/lubricant"
     }
   }
 }

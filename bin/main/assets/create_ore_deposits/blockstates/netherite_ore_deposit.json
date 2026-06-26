@@ -1,15 +1,15 @@
 {
 	"variants": {
 		"axis=x": {
-			"model": "create_ore_deposits:block/netherite_ore_deposit",
+			"model": "create_ore_deposits:block/deposits/netherite_ore_deposit",
 			"x": 90,
 			"y": 90
 		},
 		"axis=y": {
-			"model": "create_ore_deposits:block/netherite_ore_deposit"
+			"model": "create_ore_deposits:block/deposits/netherite_ore_deposit"
 		},
 		"axis=z": {
-			"model": "create_ore_deposits:block/netherite_ore_deposit",
+			"model": "create_ore_deposits:block/deposits/netherite_ore_deposit",
 			"x": 90
 		}
 	}
