@@ -1,0 +1,23 @@
+{
+	"type": "create:mixing",
+	"heat_requirement": "heated",
+	"ingredients": [
+		{
+			"item": "minecraft:coal"
+		},
+		{
+			"type": "fluid_stack",
+			"amount": 50,
+			"fluid": "create_ore_deposits:molten_iron"
+		},
+		{
+			"item": "create:limestone"
+		}
+	],
+	"results": [
+		{
+			"amount": 50,
+			"id": "create_ore_deposits:molten_steel"
+		}
+	]
+}

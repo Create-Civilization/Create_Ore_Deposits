@@ -1,0 +1,13 @@
+{
+	"type": "create:pressing",
+	"ingredients": [
+		{
+			"item": "create_ore_deposits:neth_intermediate_2"
+		}
+	],
+	"results": [
+		{
+			"id": "create_ore_deposits:neth_intermediate_3"
+		}
+	]
+}

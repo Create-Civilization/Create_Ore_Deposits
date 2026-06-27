@@ -1,0 +1,16 @@
+{
+	"type": "create:cutting",
+	"ingredients": [
+		{
+			"item": "create_ore_deposits:casted_brass"
+		}
+	],
+	"results": [
+		{
+			"id": "create:brass_ingot"
+		},
+		{
+			"id": "create_ore_deposits:cast"
+		}
+	]
+}

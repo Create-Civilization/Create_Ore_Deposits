@@ -1,0 +1,33 @@
+{
+	"type": "create:mixing",
+	"ingredients": [
+		{
+			"item": "create_ore_deposits:quartz_ore_powder"
+		}
+	],
+	"results": [
+		{
+			"item": "minecraft:gravel",
+			"count": 1
+		},
+		{
+			"item": "minecraft:gravel",
+			"count": 1,
+			"chance": 0.5
+		},
+		{
+			"item": "create:limestone",
+			"count": 1,
+			"chance": 0.5
+		},
+		{
+			"item": "create:limestone",
+			"count": 1,
+			"chance": 0.5
+		},
+		{
+			"item": "create_ore_deposits:quartz_shards",
+			"count": 1
+		}
+	]
+}

@@ -1,0 +1,18 @@
+{
+	"type": "create:filling",
+	"ingredients": [
+		{
+			"item": "create_ore_deposits:lubricated_cast"
+		},
+		{
+			"type": "fluid_stack",
+			"amount": 50,
+			"fluid": "create_ore_deposits:molten_brass"
+		}
+	],
+	"results": [
+		{
+			"id": "create_ore_deposits:casted_brass"
+		}
+	]
+}

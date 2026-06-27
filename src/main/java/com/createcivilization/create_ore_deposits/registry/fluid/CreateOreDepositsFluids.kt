@@ -51,4 +51,39 @@ data object CreateOreDepositsFluids {
 		.properties { it.viscosity(1500).density(500) }
 		.fluidProperties { it.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(25).explosionResistance(0f) }
 		.register()
+
+	@JvmField
+	val MOLTEN_ZINC: FluidEntry<BaseFlowingFluid.Flowing> = CreateOreDeposits.REGISTRATE
+		.fluid("molten_zinc", "block/fluid/molten_zinc_still".asResource(), "block/fluid/molten_zinc_flow".asResource())
+		.properties { it.viscosity(1500).density(500) }
+		.fluidProperties { it.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(25).explosionResistance(0f) }
+		.register()
+
+	@JvmField
+	val MOLTEN_BRASS: FluidEntry<BaseFlowingFluid.Flowing> = CreateOreDeposits.REGISTRATE
+		.fluid("molten_brass", "block/fluid/molten_brass_still".asResource(), "block/fluid/molten_brass_flow".asResource())
+		.properties { it.viscosity(1500).density(500) }
+		.fluidProperties { it.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(25).explosionResistance(0f) }
+		.register()
+
+	@JvmField
+	val MOLTEN_STEEL: FluidEntry<BaseFlowingFluid.Flowing> = CreateOreDeposits.REGISTRATE
+		.fluid("molten_steel", "block/fluid/molten_steel_still".asResource(), "block/fluid/molten_steel_flow".asResource())
+		.properties { it.viscosity(1500).density(500) }
+		.fluidProperties { it.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(25).explosionResistance(0f) }
+		.register()
+
+	@JvmField
+	val MOLTEN_DEBRIS: FluidEntry<BaseFlowingFluid.Flowing> = CreateOreDeposits.REGISTRATE
+		.fluid("molten_debris", "block/fluid/molten_debris_still".asResource(), "block/fluid/molten_debris_flow".asResource())
+		.properties { it.viscosity(1500).density(500) }
+		.fluidProperties { it.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(25).explosionResistance(0f) }
+		.register()
+
+	@JvmField
+	val MOLTEN_NETHERITE: FluidEntry<BaseFlowingFluid.Flowing> = CreateOreDeposits.REGISTRATE
+		.fluid("molten_netherite", "block/fluid/molten_netherite_still".asResource(), "block/fluid/molten_netherite_flow".asResource())
+		.properties { it.viscosity(1500).density(500) }
+		.fluidProperties { it.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(25).explosionResistance(0f) }
+		.register()
 }

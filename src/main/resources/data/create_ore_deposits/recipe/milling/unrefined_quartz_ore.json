@@ -1,0 +1,15 @@
+{
+	"type": "create:milling",
+	"ingredients": [
+		{
+			"item": "create_ore_deposits:unrefined_quartz_ore"
+		}
+	],
+	"processing_time": 250,
+	"results": [
+		{
+			"count": 1,
+			"id": "create_ore_deposits:unrefined_quartz_ore_powder"
+		}
+	]
+}

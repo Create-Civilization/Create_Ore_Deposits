@@ -1,0 +1,20 @@
+{
+	"type": "create:crushing",
+	"ingredients": [
+		{
+			"item": "create_ore_deposits:unrefined_coal_ore"
+		}
+	],
+	"processing_time": 250,
+	"results": [
+		{
+			"count": 3,
+			"id": "create_ore_deposits:coal_rocks"
+		},
+		{
+			"count": 1,
+			"chance": 0.25,
+			"id": "create_ore_deposits:coal_rocks"
+		}
+	]
+}
