@@ -1,19 +1,25 @@
 {
 	"type": "create:mixing",
-	"heat_requirement": "superheated",
+	"heat_requirement": "heated",
 	"ingredients": [
 		{
-			"item": "create_ore_deposits:gold_dust"
+			"item": "create_ore_deposits:gold_ore_powder"
+		},
+		{
+			"item": "minecraft:redstone"
+		},
+		{
+			"item": "minecraft:bone_meal"
 		}
 	],
 	"results": [
 		{
-			"amount": 50,
-			"id": "create_ore_deposits:molten_gold"
+			"count": 1,
+			"id": "create_ore_deposits:gold_dust"
 		},
 		{
-			"amount": 10,
-			"id": "create_ore_deposits:slag"
+			"amount": 25,
+			"id": "create_ore_deposits:waste_slurry"
 		}
 	]
 }

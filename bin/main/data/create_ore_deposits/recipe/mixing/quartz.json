@@ -3,7 +3,7 @@
 	"heat_requirement": "heated",
 	"ingredients": [
 		{
-			"item": "create_ore_deposits:gold_ore_powder"
+			"item": "create_ore_deposits:quartz_shards"
 		},
 		{
 			"item": "minecraft:redstone"
@@ -14,11 +14,11 @@
 	],
 	"results": [
 		{
-			"count": 1,
-			"id": "create_ore_deposits:gold_dust"
+			"item": "minecraft:quartz",
+			"count": 1
 		},
 		{
-			"amount": 25,
+			"amount": 50,
 			"id": "create_ore_deposits:waste_slurry"
 		}
 	]

@@ -1,19 +1,18 @@
 {
-	"type": "create:compacting",
-	"heat_requirement": "superheated",
+	"type": "create:filling",
 	"ingredients": [
 		{
-			"item": "create_ore_deposits:casted_netherite"
+			"item": "create_ore_deposits:neth_intermediate_1"
 		},
 		{
 			"type": "fluid_stack",
-			"amount": 250,
+			"amount": 100,
 			"fluid": "minecraft:lava"
 		}
 	],
 	"results": [
 		{
-			"id": "create_ore_deposits:neth_intermediate_1"
+			"id": "create_ore_deposits:neth_intermediate_2"
 		}
 	]
 }

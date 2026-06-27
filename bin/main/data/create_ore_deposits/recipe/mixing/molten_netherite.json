@@ -3,18 +3,15 @@
 	"heat_requirement": "superheated",
 	"ingredients": [
 		{
-			"item": "create_ore_deposits:netherite_debris"
-		},
-		{
 			"type": "fluid_stack",
 			"amount": 50,
-			"fluid": "create_ore_deposits:molten_gold"
+			"fluid": "create_ore_deposits:molten_debris"
 		}
 	],
 	"results": [
 		{
 			"amount": 50,
-			"id": "create_ore_deposits:molten_debris"
+			"id": "create_ore_deposits:molten_netherite"
 		}
 	]
 }

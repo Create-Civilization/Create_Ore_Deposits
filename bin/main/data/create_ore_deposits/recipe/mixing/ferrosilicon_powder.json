@@ -1,27 +1,17 @@
 {
 	"type": "create:mixing",
-	"heat_requirement": "heated",
 	"ingredients": [
 		{
-			"item": "create_ore_deposits:ferrosilicon_powder"
+			"item": "create_ore_deposits:iron_ore_powder"
 		},
 		{
-			"type": "fluid_stack",
-			"amount": 250,
-			"fluid": "minecraft:water"
-		},
-		{
-			"item": "create_ore_deposits:quartz_shards"
+			"item": "minecraft:redstone"
 		}
 	],
 	"results": [
 		{
-			"item": "minecraft:diamond",
-			"count": 1
-		},
-		{
-			"amount": 50,
-			"id": "create_ore_deposits:waste_slurry"
+			"item": "create_ore_deposits:ferrosilicon_powder",
+			"count": 2
 		}
 	]
 }
