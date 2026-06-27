@@ -1,19 +1,19 @@
 {
-	"type": "create:mixing",
-	"heat_requirement": "superheated",
-	"ingredients": [
-		{
-			"item": "create_ore_deposits:copper_dust"
-		}
-	],
-	"results": [
-		{
-			"amount": 50,
-			"id": "create_ore_deposits:molten_copper"
-		},
-		{
-			"amount": 10,
-			"id": "create_ore_deposits:slag"
-		}
-	]
+  "type": "create:mixing",
+  "heat_requirement": "superheated",
+  "ingredients": [
+    {
+      "item": "create_ore_deposits:copper_dust"
+    }
+  ],
+  "results": [
+    {
+      "amount": 25,
+      "id": "create_ore_deposits:molten_copper"
+    },
+    {
+      "amount": 5,
+      "id": "create_ore_deposits:slag"
+    }
+  ]
 }

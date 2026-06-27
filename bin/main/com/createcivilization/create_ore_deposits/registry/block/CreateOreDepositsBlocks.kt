@@ -98,6 +98,12 @@ data object CreateOreDepositsBlocks {
 		.simpleItem()
 		.register()
 
+	@JvmField
+	val STEEL_BLOCK: BlockEntry<Block> = REGISTRATE.block("steel_block", ::Block)
+		.initialProperties { Blocks.IRON_BLOCK }
+		.simpleItem()
+		.register()
+
 	// TEMP LOOT VALUES, CHANGE LATER.
 	// Deposits
 	val EXAMPLE_DEPOSIT: BlockEntry<Block> = registerDepositGuaranteed("example_deposit", Blocks.STONE, { Items.NETHERITE_BLOCK })

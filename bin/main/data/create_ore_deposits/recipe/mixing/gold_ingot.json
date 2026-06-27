@@ -3,17 +3,13 @@
   "heat_requirement": "superheated",
   "ingredients": [
     {
-      "item": "create_ore_deposits:gold_dust"
+      "item": "minecraft:gold_ingot"
     }
   ],
   "results": [
     {
-      "amount": 25,
+      "amount": 100,
       "id": "create_ore_deposits:molten_gold"
-    },
-    {
-      "amount": 5,
-      "id": "create_ore_deposits:slag"
     }
   ]
 }

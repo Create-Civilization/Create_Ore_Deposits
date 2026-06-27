@@ -1,0 +1,15 @@
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "minecraft:gold_ingot"
+    }
+  ],
+  "processing_time": 250,
+  "results": [
+    {
+      "count": 4,
+      "id": "create_ore_deposits:gold_dust"
+    }
+  ]
+}

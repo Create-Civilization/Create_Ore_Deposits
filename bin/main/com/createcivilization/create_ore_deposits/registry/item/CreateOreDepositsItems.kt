@@ -5,6 +5,7 @@ import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDeposits
 
 import com.tterrag.registrate.util.entry.ItemEntry
 
+import net.minecraft.world.item.ArmorItem
 import net.minecraft.world.item.Item
 
 object CreateOreDepositsItems {
@@ -84,6 +85,46 @@ object CreateOreDepositsItems {
 	@JvmField
 	val STEEL_INGOT: ItemEntry<Item> = REGISTRATE.item("steel_ingot", ::Item)
 		.defaultModel()
+		.register()
+
+	@JvmField
+	val STEEL_HELMET: ItemEntry<ArmorItem> = REGISTRATE.item("steel_helmet") { properties ->
+		ArmorItem(
+			CreateOreDepositsArmorMaterials.STEEL,
+			ArmorItem.Type.HELMET,
+			properties.durability(ArmorItem.Type.HELMET.getDurability(CreateOreDepositsArmorMaterials.STEEL_DURABILITY))
+		)
+	}
+		.register()
+
+	@JvmField
+	val STEEL_CHESTPLATE: ItemEntry<ArmorItem> = REGISTRATE.item("steel_chestplate") { properties ->
+		ArmorItem(
+			CreateOreDepositsArmorMaterials.STEEL,
+			ArmorItem.Type.CHESTPLATE,
+			properties.durability(ArmorItem.Type.CHESTPLATE.getDurability(CreateOreDepositsArmorMaterials.STEEL_DURABILITY))
+		)
+	}
+		.register()
+
+	@JvmField
+	val STEEL_LEGGINGS: ItemEntry<ArmorItem> = REGISTRATE.item("steel_leggings") { properties ->
+		ArmorItem(
+			CreateOreDepositsArmorMaterials.STEEL,
+			ArmorItem.Type.LEGGINGS,
+			properties.durability(ArmorItem.Type.LEGGINGS.getDurability(CreateOreDepositsArmorMaterials.STEEL_DURABILITY))
+		)
+	}
+		.register()
+
+	@JvmField
+	val STEEL_BOOTS: ItemEntry<ArmorItem> = REGISTRATE.item("steel_boots") { properties ->
+		ArmorItem(
+			CreateOreDepositsArmorMaterials.STEEL,
+			ArmorItem.Type.BOOTS,
+			properties.durability(ArmorItem.Type.BOOTS.getDurability(CreateOreDepositsArmorMaterials.STEEL_DURABILITY))
+		)
+	}
 		.register()
 
 	@JvmField
