@@ -1,6 +1,0 @@
-{
-	"parent": "minecraft:block/cube_all",
-	"textures": {
-		"all": "create_ore_deposits:block/deposits/copper_ore_deposit"
-	}
-}

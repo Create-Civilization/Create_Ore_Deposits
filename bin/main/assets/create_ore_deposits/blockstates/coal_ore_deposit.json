@@ -1,7 +1,0 @@
-{
-	"variants": {
-		"": {
-			"model": "create_ore_deposits:block/deposits/coal_ore_deposit"
-		}
-	}
-}

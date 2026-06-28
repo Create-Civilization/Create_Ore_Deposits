@@ -1,7 +1,0 @@
-{
-	"parent": "create_ore_deposits:block/casts/cast_all",
-	"textures": {
-		"all": "create_ore_deposits:block/casts/casted_iron",
-		"particle": "create_ore_deposits:block/casts/casted_iron"
-	}
-}
