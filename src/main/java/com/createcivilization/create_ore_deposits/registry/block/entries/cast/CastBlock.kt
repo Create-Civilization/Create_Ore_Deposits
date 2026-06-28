@@ -18,6 +18,8 @@ class CastBlock(properties: Properties) : Block(properties) {
 	): VoxelShape = SHAPE
 
 	companion object {
-		private val SHAPE: VoxelShape = Shapes.box(3 / 16.0, 0 / 16.0, 5 / 16.0, 13 / 16.0, 3 / 16.0, 11 / 16.0)
+		private fun voxel(value: Int): Double = value / 16.0
+
+		private val SHAPE: VoxelShape = Shapes.box(voxel(3), voxel(0), voxel(5), voxel(13), voxel(3), voxel(11))
 	}
 }
