@@ -1,0 +1,13 @@
+{
+	"replace": false,
+	"values": [
+		"create_ore_deposits:cast",
+		"create_ore_deposits:lubricated_cast",
+		"create_ore_deposits:casted_iron",
+		"create_ore_deposits:casted_gold",
+		"create_ore_deposits:casted_copper",
+		"create_ore_deposits:casted_brass",
+		"create_ore_deposits:casted_steel",
+		"create_ore_deposits:casted_netherite"
+	]
+}

@@ -3,7 +3,7 @@
 	"credit": "Made with Blockbench",
 	"textures": {
 		"2": "create_ore_deposits:block/drill/tips/drill_head_texture",
-		"particle": "create_ore_deposits:block/drill/tips/drill_head_texture"
+		"particle": "create_ore_deposits:block/drill/tips/drill_head_texture"	
 	},
 	"elements": [
 		{

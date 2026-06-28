@@ -1,0 +1,17 @@
+{
+	"type": "create:mixing",
+	"ingredients": [
+		{
+			"item": "create_ore_deposits:iron_ore_powder"
+		},
+		{
+			"item": "minecraft:redstone"
+		}
+	],
+	"results": [
+		{
+			"item": "create_ore_deposits:ferrosilicon_powder",
+			"count": 2
+		}
+	]
+}

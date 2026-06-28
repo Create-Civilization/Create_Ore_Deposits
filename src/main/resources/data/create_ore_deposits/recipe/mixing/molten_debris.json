@@ -1,0 +1,17 @@
+{
+	"type": "create:mixing",
+	"heat_requirement": "superheated",
+	"ingredients": [
+		{
+			"type": "fluid_stack",
+			"amount": 50,
+			"fluid": "create_ore_deposits:molten_debris"
+		}
+	],
+	"results": [
+		{
+			"amount": 50,
+			"id": "create_ore_deposits:molten_netherite"
+		}
+	]
+}

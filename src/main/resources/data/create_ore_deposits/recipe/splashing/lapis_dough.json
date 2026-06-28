@@ -1,0 +1,24 @@
+{
+	"type": "create:mixing",
+	"heat_requirement": "none",
+	"ingredients": [
+		{
+			"item": "create_ore_deposits:lapis_dough"
+		},
+		{
+			"type": "fluid_stack",
+			"amount": 250,
+			"fluid": "minecraft:water"
+		}
+	],
+	"results": [
+		{
+			"count": 1,
+			"id": "minecraft:lapis_lazuli"
+		},
+		{
+			"amount": 50,
+			"id": "create_ore_deposits:waste_slurry"
+		}
+	]
+}

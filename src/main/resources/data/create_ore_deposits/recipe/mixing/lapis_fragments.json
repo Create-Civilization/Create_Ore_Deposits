@@ -1,0 +1,26 @@
+{
+	"type": "create:mixing",
+	"heat_requirement": "none",
+	"ingredients": [
+		{
+			"item": "create_ore_deposits:lapis_fragments"
+		},
+		{
+			"item": "create_ore_deposits:honeywax"
+		},
+		{
+			"item": "minecraft:bone_meal"
+		}
+	],
+	"results": [
+		{
+			"item": "create_ore_deposits:lapis_dough",
+			"count": 3
+		},
+		{
+			"item": "create_ore_deposits:lapis_dough",
+			"count": 1,
+			"chance": 0.1
+		}
+	]
+}

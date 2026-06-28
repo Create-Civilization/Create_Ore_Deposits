@@ -1,0 +1,7 @@
+{
+	"variants": {
+		"": {
+			"model": "create_ore_deposits:block/deposits/iron_ore_deposit"
+		}
+	}
+}

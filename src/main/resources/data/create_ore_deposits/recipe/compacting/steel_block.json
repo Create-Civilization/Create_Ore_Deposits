@@ -1,0 +1,37 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "item": "create_ore_deposits:steel_ingot"
+    },
+    {
+      "item": "create_ore_deposits:steel_ingot"
+    },
+    {
+      "item": "create_ore_deposits:steel_ingot"
+    },
+    {
+      "item": "create_ore_deposits:steel_ingot"
+    },
+    {
+      "item": "create_ore_deposits:steel_ingot"
+    },
+    {
+      "item": "create_ore_deposits:steel_ingot"
+    },
+    {
+      "item": "create_ore_deposits:steel_ingot"
+    },
+    {
+      "item": "create_ore_deposits:steel_ingot"
+    },
+    {
+      "item": "create_ore_deposits:steel_ingot"
+    }
+  ],
+  "results": [
+    {
+      "id": "create_ore_deposits:steel_block"
+    }
+  ]
+}

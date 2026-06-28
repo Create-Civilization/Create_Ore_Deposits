@@ -1,15 +1,19 @@
 {
-	"type": "create:mixing",
-	"heat_requirement": "superheated",
-	"ingredients": [
-		{
-			"item": "create_ore_deposits:iron_ore_powder"
-		}
-	],
-	"results": [
-		{
-			"amount": 50,
-			"id": "minecraft:lava"
-		}
-	]
+  "type": "create:mixing",
+  "heat_requirement": "superheated",
+  "ingredients": [
+    {
+      "item": "create_ore_deposits:iron_ore_powder"
+    }
+  ],
+  "results": [
+    {
+      "amount": 25,
+      "id": "create_ore_deposits:molten_iron"
+    },
+    {
+      "amount": 5,
+      "id": "create_ore_deposits:slag"
+    }
+  ]
 }

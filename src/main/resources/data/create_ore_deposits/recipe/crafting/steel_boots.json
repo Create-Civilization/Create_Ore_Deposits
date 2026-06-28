@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "equipment",
+	"pattern": [
+		"   ",
+		"S S",
+		"S S"
+	],
+	"key": {
+		"S": { "item": "create_ore_deposits:steel_ingot" }
+	},
+	"result": {
+		"id": "create_ore_deposits:steel_boots",
+		"count": 1
+	}
+}

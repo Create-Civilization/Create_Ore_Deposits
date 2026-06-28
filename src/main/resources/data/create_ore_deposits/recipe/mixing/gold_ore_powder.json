@@ -1,0 +1,25 @@
+{
+	"type": "create:mixing",
+	"heat_requirement": "heated",
+	"ingredients": [
+		{
+			"item": "create_ore_deposits:gold_ore_powder"
+		},
+		{
+			"item": "minecraft:redstone"
+		},
+		{
+			"item": "minecraft:bone_meal"
+		}
+	],
+	"results": [
+		{
+			"count": 1,
+			"id": "create_ore_deposits:gold_dust"
+		},
+		{
+			"amount": 25,
+			"id": "create_ore_deposits:waste_slurry"
+		}
+	]
+}

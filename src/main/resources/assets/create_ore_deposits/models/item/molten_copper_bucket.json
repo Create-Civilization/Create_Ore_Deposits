@@ -1,0 +1,6 @@
+{
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "create_ore_deposits:item/buckets/molten_copper_bucket"
+	}
+}
