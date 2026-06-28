@@ -17,10 +17,10 @@ import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables
 import com.tterrag.registrate.util.entry.BlockEntry
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
-
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.RotatedPillarBlock
+import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.storage.loot.LootPool
@@ -43,60 +43,28 @@ data object CreateOreDepositsBlocks {
 		.register()
 
 	@JvmField
-	val CAST: BlockEntry<CastBlock> = REGISTRATE.block("cast", ::CastBlock)
-		.initialProperties(SharedProperties::stone)
-		.properties { it.noOcclusion() }
-		.simpleItem()
-		.register()
+	val CAST: BlockEntry<CastBlock> = registerCast("cast")
 
 	@JvmField
-	val LUBRICATED_CAST: BlockEntry<CastBlock> = REGISTRATE.block("lubricated_cast", ::CastBlock)
-		.initialProperties(SharedProperties::stone)
-		.properties { it.noOcclusion() }
-		.simpleItem()
-		.register()
+	val LUBRICATED_CAST: BlockEntry<CastBlock> = registerCast("lubricated_cast")
 
 	@JvmField
-	val CASTED_IRON: BlockEntry<CastBlock> = REGISTRATE.block("casted_iron", ::CastBlock)
-		.initialProperties(SharedProperties::stone)
-		.properties { it.noOcclusion() }
-		.simpleItem()
-		.register()
+	val CASTED_IRON: BlockEntry<CastBlock> = registerCast("casted_iron")
 
 	@JvmField
-	val CASTED_GOLD: BlockEntry<CastBlock> = REGISTRATE.block("casted_gold", ::CastBlock)
-		.initialProperties(SharedProperties::stone)
-		.properties { it.noOcclusion() }
-		.simpleItem()
-		.register()
+	val CASTED_GOLD: BlockEntry<CastBlock> = registerCast("casted_gold")
 
 	@JvmField
-	val CASTED_COPPER: BlockEntry<CastBlock> = REGISTRATE.block("casted_copper", ::CastBlock)
-		.initialProperties(SharedProperties::stone)
-		.properties { it.noOcclusion() }
-		.simpleItem()
-		.register()
+	val CASTED_COPPER: BlockEntry<CastBlock> = registerCast("casted_copper")
 
 	@JvmField
-	val CASTED_BRASS: BlockEntry<CastBlock> = REGISTRATE.block("casted_brass", ::CastBlock)
-		.initialProperties(SharedProperties::stone)
-		.properties { it.noOcclusion() }
-		.simpleItem()
-		.register()
+	val CASTED_BRASS: BlockEntry<CastBlock> = registerCast("casted_brass")
 
 	@JvmField
-	val CASTED_STEEL: BlockEntry<CastBlock> = REGISTRATE.block("casted_steel", ::CastBlock)
-		.initialProperties(SharedProperties::stone)
-		.properties { it.noOcclusion() }
-		.simpleItem()
-		.register()
+	val CASTED_STEEL: BlockEntry<CastBlock> = registerCast("casted_steel")
 
 	@JvmField
-	val CASTED_NETHERITE: BlockEntry<CastBlock> = REGISTRATE.block("casted_netherite", ::CastBlock)
-		.initialProperties(SharedProperties::stone)
-		.properties { it.noOcclusion() }
-		.simpleItem()
-		.register()
+	val CASTED_NETHERITE: BlockEntry<CastBlock> = registerCast("casted_netherite")
 
 	@JvmField
 	val STEEL_BLOCK: BlockEntry<Block> = REGISTRATE.block("steel_block", ::Block)
@@ -118,52 +86,61 @@ data object CreateOreDepositsBlocks {
 	val QUARTZ_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("quartz_ore_deposit", Blocks.NETHER_QUARTZ_ORE, { CreateOreDepositsItems.UNREFINED_QUARTZ_ORE.get() }, 2f, 0.9f)
 	val NETHERITE_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("netherite_ore_deposit", Blocks.ANCIENT_DEBRIS, { CreateOreDepositsItems.UNREFINED_NETHERITE_ORE.get() }, 1f, true)
 //	val ZINC_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("zinc_ore_deposit", AllBlocks.ZINC_ORE.get(), { CreateOreDepositsItems.UNREFINED_ZINC.get() })
-	
-fun registerDepositGuaranteed(
-    blockName: String,
-    block: Block,
-    ore: () -> Item,
-    isRotatedPillar: Boolean = false,
-): BlockEntry<Block> = registerDepositSingleRoll(blockName, block, ore, 1f, isRotatedPillar)
 
-fun registerDepositSingleRoll(
-    blockName: String,
-    block: Block,
-    ore: () -> Item,
-    chance: Float,
-    isRotatedPillar: Boolean = false,
-): BlockEntry<Block> = registerDeposit(blockName, block, ore, 1f, chance, isRotatedPillar)
+	private fun registerCast(blockName: String): BlockEntry<CastBlock> = REGISTRATE.block(blockName, ::CastBlock)
+		.initialProperties { Blocks.WHITE_WOOL }
+		.properties { it.noOcclusion().strength(0.5f).sound(SoundType.STONE) }
+		.loot { lootTables: RegistrateBlockLootTables, castBlock: CastBlock ->
+			lootTables.dropSelf(castBlock)
+		}
+		.simpleItem()
+		.register()
 
-fun registerDeposit(
-    blockName: String,
-    block: Block,
-    ore: () -> Item,
-    rolls: Float,
-    chance: Float,
-    isRotatedPillar: Boolean = false,
-): BlockEntry<Block> = REGISTRATE
-    .block(blockName) {
-        if (isRotatedPillar) {
-            RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(block))
-        } else {
-            Block(BlockBehaviour.Properties.ofFullCopy(block))
-        }
-    }
-    .simpleItem()
-    .tag(CreateOreDepositsTags.DEPOSIT)
-    .loot { lootTables: RegistrateBlockLootTables, depositBlock: Block ->
-        lootTables.add(
-            depositBlock,
-            LootTable.lootTable()
-                .withPool(
-                    LootPool.lootPool()
-                        .setRolls(ConstantValue.exactly(rolls))
-                        .add(
-                            LootItem.lootTableItem(ore())   // resolved lazily, here
-                                .`when`(LootItemRandomChanceCondition.randomChance(chance))
-                        )
-                )
-        )
-    }
-    .register()
+	fun registerDepositGuaranteed(
+		blockName: String,
+		block: Block,
+		ore: () -> Item,
+		isRotatedPillar: Boolean = false,
+	): BlockEntry<Block> = registerDepositSingleRoll(blockName, block, ore, 1f, isRotatedPillar)
+
+	fun registerDepositSingleRoll(
+		blockName: String,
+		block: Block,
+		ore: () -> Item,
+		chance: Float,
+		isRotatedPillar: Boolean = false,
+	): BlockEntry<Block> = registerDeposit(blockName, block, ore, 1f, chance, isRotatedPillar)
+
+	fun registerDeposit(
+		blockName: String,
+		block: Block,
+		ore: () -> Item,
+		rolls: Float,
+		chance: Float,
+		isRotatedPillar: Boolean = false,
+	): BlockEntry<Block> = REGISTRATE
+		.block(blockName) {
+			if (isRotatedPillar) {
+				RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(block))
+			} else {
+				Block(BlockBehaviour.Properties.ofFullCopy(block))
+			}
+		}
+		.simpleItem()
+		.tag(CreateOreDepositsTags.DEPOSIT)
+		.loot { lootTables: RegistrateBlockLootTables, depositBlock: Block ->
+			lootTables.add(
+				depositBlock,
+				LootTable.lootTable()
+					.withPool(
+						LootPool.lootPool()
+							.setRolls(ConstantValue.exactly(rolls))
+							.add(
+								LootItem.lootTableItem(ore())
+									.`when`(LootItemRandomChanceCondition.randomChance(chance))
+							)
+					)
+			)
+		}
+		.register()
 }
