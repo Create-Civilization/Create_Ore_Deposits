@@ -1,0 +1,8 @@
+﻿{
+  "variants": {
+    "": {
+      "model": "create_ore_deposits:block/misc/molten_gold"
+    }
+  }
+}
+
