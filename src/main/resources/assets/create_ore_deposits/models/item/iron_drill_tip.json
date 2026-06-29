@@ -2,8 +2,8 @@
 	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
 	"textures": {
-		"2": "create_ore_deposits:block/drill/tips/drill_head_texture",
-		"particle": "create_ore_deposits:block/drill/tips/drill_head_texture"	
+		"2": "create_ore_deposits:block/drill/tips/iron_drill_tip",
+		"particle": "create_ore_deposits:block/drill/tips/iron_drill_tip"	
 	},
 	"elements": [
 		{

@@ -1,0 +1,18 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "equipment",
+	"pattern": [
+		"D D",
+		" I ",
+		"D D"
+	],
+	"key": {
+		"D": { "item": "create_ore_deposits:steel_ingot" },
+		"I": { "item": "minecraft:iron_ingot" }
+	},
+	"result": {
+		"id": "create_ore_deposits:steel_drill_tip",
+		"count": 2
+	}
+}
+
