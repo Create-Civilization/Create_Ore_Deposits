@@ -17,7 +17,27 @@ object CreateOreDepositsItems {
 		.tag(CreateOreDepositsTags.DRILL_TIP)
 		.defaultModel()
 		.register()
+	@JvmField
+	val GOLD_DRILL_TIP: ItemEntry<Item> = REGISTRATE.item("gold_drill_tip", ::Item)
+	.properties { it.durability(20000).stacksTo(1).setNoRepair() }
+	.tag(CreateOreDepositsTags.DRILL_TIP)
+	.defaultModel()
+	.register()
+	
+	@JvmField
+	val STEEL_DRILL_TIP: ItemEntry<Item> = REGISTRATE.item("steel_drill_tip", ::Item)
+		.properties { it.durability(20000).stacksTo(1).setNoRepair() }
+		.tag(CreateOreDepositsTags.DRILL_TIP)
+		.defaultModel()
+		.register()
 
+	@JvmField
+	val IRON_DRILL_TIP: ItemEntry<Item> = REGISTRATE.item("iron_drill_tip", ::Item)
+		.properties { it.durability(20000).stacksTo(1).setNoRepair() }
+		.tag(CreateOreDepositsTags.DRILL_TIP)
+		.defaultModel()
+		.register()
+		
 	// Iron items
 	@JvmField
 	val UNREFINED_IRON_ORE: ItemEntry<Item> = REGISTRATE.item("unrefined_iron_ore", ::Item)
