@@ -14,11 +14,13 @@ import com.simibubi.create.foundation.data.SharedProperties
 import com.simibubi.create.foundation.data.TagGen.axeOrPickaxe
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables
 
+import net.minecraft.tags.TagKey
 import com.tterrag.registrate.util.entry.BlockEntry
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.ItemLike
 import net.minecraft.world.level.block.RotatedPillarBlock
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.BlockBehaviour
@@ -74,18 +76,18 @@ data object CreateOreDepositsBlocks {
 
 	// TEMP LOOT VALUES, CHANGE LATER.
 	// Deposits
-	val EXAMPLE_DEPOSIT: BlockEntry<Block> = registerDepositGuaranteed("example_deposit", Blocks.STONE, { Items.NETHERITE_BLOCK })
-	val COAL_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("coal_ore_deposit", Blocks.COAL_ORE, { CreateOreDepositsItems.UNREFINED_COAL_ORE.get() }, 3f, 0.8f)
-	val IRON_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("iron_ore_deposit", Blocks.IRON_ORE, { CreateOreDepositsItems.UNREFINED_IRON_ORE.get() }, 0.8f)
-	val GOLD_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("gold_ore_deposit", Blocks.GOLD_ORE, { CreateOreDepositsItems.UNREFINED_GOLD_ORE.get() }, 0.6f)
-	val COPPER_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("copper_ore_deposit", Blocks.COPPER_ORE, { CreateOreDepositsItems.UNREFINED_COPPER_ORE.get() }, 0.8f)
+	val EXAMPLE_DEPOSIT: BlockEntry<Block> = registerDepositGuaranteed("example_deposit", Blocks.STONE, Items.NETHERITE_BLOCK)
+	val COAL_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("coal_ore_deposit", Blocks.COAL_ORE, CreateOreDepositsItems.UNREFINED_COAL_ORE, 3f, 0.8f)
+	val IRON_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("iron_ore_deposit", Blocks.IRON_ORE, CreateOreDepositsItems.UNREFINED_IRON_ORE, 0.8f)
+	val GOLD_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("gold_ore_deposit", Blocks.GOLD_ORE, CreateOreDepositsItems.UNREFINED_GOLD_ORE, 0.6f, false, CreateOreDepositsTags.NEEDS_GOLD_TIP)
+	val COPPER_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("copper_ore_deposit", Blocks.COPPER_ORE, CreateOreDepositsItems.UNREFINED_COPPER_ORE, 0.8f)
 //	val REDSTONE_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("redstone_ore_deposit", Blocks.REDSTONE_ORE, Items.REDSTONE_ORE)
-	val LAPIS_ORE_DEPOSIT: BlockEntry<Block> = registerDepositGuaranteed("lapis_ore_deposit", Blocks.LAPIS_ORE, { CreateOreDepositsItems.UNREFINED_LAPIS_ORE.get() })
-	val DIAMOND_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("diamond_ore_deposit", Blocks.DIAMOND_ORE, { CreateOreDepositsItems.UNREFINED_DIAMOND_ORE.get() }, 0.2f)
-	val EMERALD_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("emerald_ore_deposit", Blocks.EMERALD_ORE, { CreateOreDepositsItems.UNREFINED_EMERALD_ORE.get() }, 0.1f)
-	val QUARTZ_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("quartz_ore_deposit", Blocks.NETHER_QUARTZ_ORE, { CreateOreDepositsItems.UNREFINED_QUARTZ_ORE.get() }, 2f, 0.9f)
-	val NETHERITE_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("netherite_ore_deposit", Blocks.ANCIENT_DEBRIS, { CreateOreDepositsItems.UNREFINED_NETHERITE_ORE.get() }, 1f, true)
-//	val ZINC_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("zinc_ore_deposit", AllBlocks.ZINC_ORE.get(), { CreateOreDepositsItems.UNREFINED_ZINC.get() })
+	val LAPIS_ORE_DEPOSIT: BlockEntry<Block> = registerDepositGuaranteed("lapis_ore_deposit", Blocks.LAPIS_ORE, CreateOreDepositsItems.UNREFINED_LAPIS_ORE)
+	val DIAMOND_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("diamond_ore_deposit", Blocks.DIAMOND_ORE, CreateOreDepositsItems.UNREFINED_DIAMOND_ORE, 0.2f, false, CreateOreDepositsTags.NEEDS_STEEL_TIP)
+	val EMERALD_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("emerald_ore_deposit", Blocks.EMERALD_ORE, CreateOreDepositsItems.UNREFINED_EMERALD_ORE, 0.1f, false, CreateOreDepositsTags.NEEDS_STEEL_TIP)
+	val QUARTZ_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("quartz_ore_deposit", Blocks.NETHER_QUARTZ_ORE, CreateOreDepositsItems.UNREFINED_QUARTZ_ORE, 2f, 0.9f)
+	val NETHERITE_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("netherite_ore_deposit", Blocks.ANCIENT_DEBRIS, CreateOreDepositsItems.UNREFINED_NETHERITE_ORE, 1f, true, CreateOreDepositsTags.NEEDS_DIAMOND_TIP)
+//	val ZINC_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("zinc_ore_deposit", AllBlocks.ZINC_ORE.get(), CreateOreDepositsItems.UNREFINED_ZINC)
 
 	private fun registerCast(blockName: String): BlockEntry<CastBlock> = REGISTRATE.block(blockName, ::CastBlock)
 		.initialProperties { Blocks.WHITE_WOOL }
@@ -99,48 +101,59 @@ data object CreateOreDepositsBlocks {
 	fun registerDepositGuaranteed(
 		blockName: String,
 		block: Block,
-		ore: () -> Item,
+		ore: ItemLike,
 		isRotatedPillar: Boolean = false,
-	): BlockEntry<Block> = registerDepositSingleRoll(blockName, block, ore, 1f, isRotatedPillar)
+		vararg requiredTipTags: TagKey<Block>
+	): BlockEntry<Block> = registerDepositSingleRoll(blockName, block, ore, 1f, isRotatedPillar, *requiredTipTags)
 
 	fun registerDepositSingleRoll(
 		blockName: String,
 		block: Block,
-		ore: () -> Item,
+		ore: ItemLike,
 		chance: Float,
 		isRotatedPillar: Boolean = false,
-	): BlockEntry<Block> = registerDeposit(blockName, block, ore, 1f, chance, isRotatedPillar)
+		vararg requiredTipTags: TagKey<Block>
+	): BlockEntry<Block> = registerDeposit(blockName, block, ore, 1f, chance, isRotatedPillar, *requiredTipTags)
 
 	fun registerDeposit(
 		blockName: String,
 		block: Block,
-		ore: () -> Item,
+		ore: ItemLike,
 		rolls: Float,
 		chance: Float,
 		isRotatedPillar: Boolean = false,
-	): BlockEntry<Block> = REGISTRATE
-		.block(blockName) {
-			if (isRotatedPillar) {
-				RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(block))
-			} else {
-				Block(BlockBehaviour.Properties.ofFullCopy(block))
+		vararg requiredTipTags: TagKey<Block>
+	): BlockEntry<Block> {
+		var builder = REGISTRATE
+			.block(blockName) {
+				if (isRotatedPillar) {
+					RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(block))
+				} else {
+					Block(BlockBehaviour.Properties.ofFullCopy(block))
+				}
 			}
+			.simpleItem()
+			.tag(CreateOreDepositsTags.DEPOSIT)
+
+		requiredTipTags.forEach { requiredTipTag ->
+			builder = builder.tag(requiredTipTag)
 		}
-		.simpleItem()
-		.tag(CreateOreDepositsTags.DEPOSIT)
-		.loot { lootTables: RegistrateBlockLootTables, depositBlock: Block ->
-			lootTables.add(
-				depositBlock,
-				LootTable.lootTable()
-					.withPool(
-						LootPool.lootPool()
-							.setRolls(ConstantValue.exactly(rolls))
-							.add(
-								LootItem.lootTableItem(ore())
-									.`when`(LootItemRandomChanceCondition.randomChance(chance))
-							)
-					)
-			)
-		}
-		.register()
+
+		return builder
+			.loot { lootTables: RegistrateBlockLootTables, depositBlock: Block ->
+				lootTables.add(
+					depositBlock,
+					LootTable.lootTable()
+						.withPool(
+							LootPool.lootPool()
+								.setRolls(ConstantValue.exactly(rolls))
+								.add(
+									LootItem.lootTableItem(ore)
+										.`when`(LootItemRandomChanceCondition.randomChance(chance))
+								)
+						)
+				)
+			}
+			.register()
+	}
 }
