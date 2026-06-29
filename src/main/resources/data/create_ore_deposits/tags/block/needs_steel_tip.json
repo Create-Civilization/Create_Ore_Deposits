@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "create_ore_deposits:diamond_ore_deposit",
+    "create_ore_deposits:emerald_ore_deposit"
+  ]
+}

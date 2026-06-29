@@ -21,9 +21,12 @@ import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.NbtUtils
+import net.minecraft.nbt.Tag
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -40,6 +43,10 @@ import net.neoforged.neoforge.items.ItemStackHandler
 import kotlin.math.roundToInt
 
 private const val MIN_LERP = 0.5
+private const val IRON_TIP_LEVEL = 0
+private const val GOLD_TIP_LEVEL = 1
+private const val STEEL_TIP_LEVEL = 2
+private const val DIAMOND_TIP_LEVEL = 3
 
 class DepositDrillBlockEntity(
 	type: BlockEntityType<*>,
@@ -55,6 +62,10 @@ class DepositDrillBlockEntity(
 	private var remainingAttempts: Int = 0
 	private var drillTickCounter: Int = 0
 	private var currentDepositPos: BlockPos? = null
+	private var blockedDepositPos: BlockPos? = null
+	private var queuedTipItem: Item? = null
+
+	private val depositQueue: ArrayDeque<BlockPos> = ArrayDeque()
 
 	private val itemHandler = ItemStackHandler()
 	private val drillTipHandler = ItemStackHandler()
@@ -118,23 +129,39 @@ class DepositDrillBlockEntity(
 	 */
 	fun onBreakTick() {
 		if (level?.isClientSide != false) return
-		if (!canMine()) return
+		val tip: ItemStack = drillTipHandler.getStackInSlot(0)
+		if (tip.isEmpty) return
 
-		val targetPos = getTargetPos()
-		val blockState = getTargetBlockState() ?: return
+		val tipPos = getDrillTipPos()
+		val contactState = level?.getBlockState(tipPos) ?: return
+		val veinSeedPos = when {
+			isDeposit(contactState) -> tipPos
+			currentDepositPos != null -> currentDepositPos
+			depositQueue.isNotEmpty() -> depositQueue.first()
+			blockedDepositPos != null -> blockedDepositPos
+			else -> null
+		}
 
-		if (!isDeposit(blockState)) {
-			currentDepositPos = null
+		if (veinSeedPos == null) {
+			resetDepositTracking()
 			return
 		}
 
-		if (currentDepositPos != targetPos) {
-			clearDestroyProgress()
-			currentDepositPos = targetPos
-			maxAttempts = blockState.blockHolder.getData(DEPOSIT_DATA)?.maxAttempts ?: 0
-			remainingAttempts = maxAttempts
-			drillTickCounter = 0
+		if (shouldRebuildVeinQueue(tip)) {
+			rebuildVeinQueue(veinSeedPos, tip)
 		}
+
+		if (!canMine()) return
+
+		val targetPos = currentDepositPos ?: return
+		val blockState = level?.getBlockState(targetPos) ?: return
+		if (!isDeposit(blockState) || !canTipMine(tip, blockState)) {
+			rebuildVeinQueue(veinSeedPos, tip)
+			if (!canMine()) return
+		}
+
+		val activeTargetPos = currentDepositPos ?: return
+		val activeBlockState = level?.getBlockState(activeTargetPos) ?: return
 
 		if (remainingAttempts <= 0) return
 
@@ -145,16 +172,16 @@ class DepositDrillBlockEntity(
 			remainingAttempts--
 
 			val serverLevel: ServerLevel = level as? ServerLevel ?: return
-			for (stack in getSimulatedDrops(blockState, serverLevel, targetPos)) {
+			for (stack in getSimulatedDrops(activeBlockState, serverLevel, activeTargetPos)) {
 				itemHandler.insertItem(0, stack, false)
 			}
 
-			updateDestroyProgress(targetPos)
+			updateDestroyProgress(activeTargetPos)
 
 			if (remainingAttempts <= 0) {
-				level?.destroyBlockProgress(blockPos.hashCode(), targetPos, -1)
-				level?.setBlock(targetPos, Blocks.AIR.defaultBlockState(), 3)
-				currentDepositPos = null
+				level?.destroyBlockProgress(blockPos.hashCode(), activeTargetPos, -1)
+				level?.setBlock(activeTargetPos, Blocks.AIR.defaultBlockState(), 3)
+				activateNextDeposit()
 			}
 		}
 	}
@@ -162,7 +189,11 @@ class DepositDrillBlockEntity(
 	fun canMine(): Boolean {
 		val tip: ItemStack = drillTipHandler.getStackInSlot(0)
 		if (tip.isEmpty) return false
+		if (!hasInventorySpace()) return false
+		return !isTierBlocked(tip)
+	}
 
+	private fun hasInventorySpace(): Boolean {
 		val inventory: ItemStack = itemHandler.getStackInSlot(0)
 		if (inventory.isEmpty) return true
 
@@ -170,6 +201,31 @@ class DepositDrillBlockEntity(
 		// I couldn't find a reason for it, and the drill seems to work fine without it (plus it fixes the drill being unable to mine dirt).
 		// If anything is broken in future, this may be the cause.
 		return inventory.count != itemHandler.getSlotLimit(0)
+	}
+
+	private fun isTierBlocked(tip: ItemStack): Boolean = blockedDepositPos != null
+		&& currentDepositPos == null
+		&& depositQueue.isEmpty()
+		&& queuedTipItem == tip.item
+
+	fun canTipMine(tipStack: ItemStack, depositState: BlockState): Boolean {
+		if (tipStack.isEmpty || !tipStack.tags.anyMatch(CreateOreDepositsTags.DRILL_TIP::equals)) return false
+		return getTipTier(tipStack) >= getRequiredTipTier(depositState)
+	}
+
+	private fun getTipTier(tipStack: ItemStack): Int = when {
+		tipStack.`is`(CreateOreDepositsTags.DIAMOND_TIP_TIER) -> DIAMOND_TIP_LEVEL
+		tipStack.`is`(CreateOreDepositsTags.STEEL_TIP_TIER) -> STEEL_TIP_LEVEL
+		tipStack.`is`(CreateOreDepositsTags.GOLD_TIP_TIER) -> GOLD_TIP_LEVEL
+		tipStack.`is`(CreateOreDepositsTags.IRON_TIP_TIER) -> IRON_TIP_LEVEL
+		else -> -1
+	}
+
+	private fun getRequiredTipTier(state: BlockState): Int = when {
+		state.`is`(CreateOreDepositsTags.NEEDS_DIAMOND_TIP) -> DIAMOND_TIP_LEVEL
+		state.`is`(CreateOreDepositsTags.NEEDS_STEEL_TIP) -> STEEL_TIP_LEVEL
+		state.`is`(CreateOreDepositsTags.NEEDS_GOLD_TIP) -> GOLD_TIP_LEVEL
+		else -> IRON_TIP_LEVEL
 	}
 
 	fun calculateExtractionInterval(): Int = 1025 - (speed * 4).roundToInt()
@@ -270,48 +326,112 @@ class DepositDrillBlockEntity(
 
 	fun getTargetBlockState(): BlockState? = level?.getBlockState(getTargetPos())
 
-	fun getTargetPos(): BlockPos {
-		val tip: BlockPos = getDrillTipPos()
-		val stateAtTip: BlockState? = level?.getBlockState(tip)
-
-		return if (stateAtTip?.let(::isDeposit) == true) {
-			getFurthestConnectedDeposit(level!!, tip)
-		} else {
-			tip
-		}
-	}
+	fun getTargetPos(): BlockPos = currentDepositPos ?: blockedDepositPos ?: getDrillTipPos()
 
 	fun getDrillTipPos(): BlockPos = blockPos.offset(0, -lerpedOffset.value.toInt() - 1, 0)
 
-	private fun getFurthestConnectedDeposit(level: Level, start: BlockPos): BlockPos {
-		val startState: BlockState = level.getBlockState(start)
-		return getFurthestConnectedBlock(level, start) { it == startState }
+	private fun shouldRebuildVeinQueue(tipStack: ItemStack): Boolean {
+		if (queuedTipItem != tipStack.item) return true
+		if (currentDepositPos?.let { pos -> !isDeposit(level?.getBlockState(pos)) } == true) return true
+		if (blockedDepositPos?.let { pos -> !isDeposit(level?.getBlockState(pos)) } == true) return true
+		return currentDepositPos == null && depositQueue.isEmpty() && blockedDepositPos == null
 	}
 
-	private fun getFurthestConnectedBlock(
+	private fun rebuildVeinQueue(seedPos: BlockPos, tipStack: ItemStack) {
+		clearDestroyProgress()
+		currentDepositPos = null
+		blockedDepositPos = null
+		queuedTipItem = tipStack.item
+		depositQueue.clear()
+		maxAttempts = 0
+		remainingAttempts = 0
+		drillTickCounter = 0
+
+		val connectedDeposits = collectConnectedDeposits(level ?: return, seedPos)
+			.sortedWith(compareBy<BlockPos> { it.y }.thenBy { it.x }.thenBy { it.z })
+
+		for (depositPos in connectedDeposits) {
+			val depositState = level?.getBlockState(depositPos) ?: continue
+			if (!isDeposit(depositState)) continue
+			if (!canTipMine(tipStack, depositState)) {
+				blockedDepositPos = depositPos
+				break
+			}
+			depositQueue.addLast(depositPos)
+		}
+
+		activateNextDeposit()
+	}
+
+	private fun activateNextDeposit() {
+		while (depositQueue.isNotEmpty()) {
+			val nextDepositPos = depositQueue.removeFirst()
+			val nextDepositState = level?.getBlockState(nextDepositPos) ?: continue
+			if (!isDeposit(nextDepositState)) continue
+
+			currentDepositPos = nextDepositPos
+			maxAttempts = nextDepositState.blockHolder.getData(DEPOSIT_DATA)?.maxAttempts ?: 0
+			remainingAttempts = maxAttempts
+			drillTickCounter = 0
+			return
+		}
+
+		currentDepositPos = null
+		maxAttempts = 0
+		remainingAttempts = 0
+		drillTickCounter = 0
+	}
+
+	private fun collectConnectedDeposits(
 		level: Level,
-		start: BlockPos,
-		filter: (BlockState) -> Boolean
-	): BlockPos {
+		start: BlockPos
+	): Set<BlockPos> {
 		val visited: MutableSet<BlockPos> = mutableSetOf(start)
 		val queue: ArrayDeque<BlockPos> = ArrayDeque()
 		queue += start
-		var last: BlockPos = start
 
 		while (queue.isNotEmpty()) {
 			val current: BlockPos = queue.removeFirst()
-			last = current
 
 			for (dir: Direction in Direction.entries) {
 				val neighbor: BlockPos = current.relative(dir)
-				if (neighbor !in visited && filter(level.getBlockState(neighbor))) {
+				if (neighbor !in visited && isDeposit(level.getBlockState(neighbor))) {
 					visited += neighbor
 					queue += neighbor
 				}
 			}
 		}
 
-		return last
+		return visited
+	}
+
+	private fun resetDepositTracking() {
+		clearDestroyProgress()
+		currentDepositPos = null
+		blockedDepositPos = null
+		queuedTipItem = null
+		depositQueue.clear()
+		maxAttempts = 0
+		remainingAttempts = 0
+		drillTickCounter = 0
+	}
+
+	private fun readBlockPosQueue(nbt: CompoundTag, key: String): ArrayDeque<BlockPos> {
+		val queue = ArrayDeque<BlockPos>()
+		val positions = nbt.getList(key, Tag.TAG_COMPOUND.toInt())
+		for (index in 0 until positions.size) {
+			val pos = positions.getCompound(index)
+			queue.addLast(BlockPos(pos.getInt("X"), pos.getInt("Y"), pos.getInt("Z")))
+		}
+		return queue
+	}
+
+	private fun writeBlockPosQueue(nbt: CompoundTag, key: String, positions: Iterable<BlockPos>) {
+		val list = ListTag()
+		positions.forEach { pos ->
+			list.add(NbtUtils.writeBlockPos(pos))
+		}
+		nbt.put(key, list)
 	}
 
 	fun getInterpolatedOffset(partialTicks: Float): Float =
@@ -342,6 +462,14 @@ class DepositDrillBlockEntity(
 		if (nbt.contains("CurrentDepositPos")) {
 			currentDepositPos = NBTHelper.readBlockPos(nbt, "CurrentDepositPos")
 		}
+		if (nbt.contains("BlockedDepositPos")) {
+			blockedDepositPos = NBTHelper.readBlockPos(nbt, "BlockedDepositPos")
+		}
+		if (nbt.contains("QueuedTipItem")) {
+			queuedTipItem = BuiltInRegistries.ITEM.get(NBTHelper.readResourceLocation(nbt, "QueuedTipItem"))
+		}
+		depositQueue.clear()
+		depositQueue.addAll(readBlockPosQueue(nbt, "DepositQueue"))
 
 		itemHandler.deserializeNBT(registries, nbt.getCompound("ItemHandler"))
 		drillTipHandler.deserializeNBT(registries, nbt.getCompound("DrillTipHandler"))
@@ -366,6 +494,13 @@ class DepositDrillBlockEntity(
 		currentDepositPos?.let {
 			nbt.put("CurrentDepositPos", NbtUtils.writeBlockPos(it))
 		}
+		blockedDepositPos?.let {
+			nbt.put("BlockedDepositPos", NbtUtils.writeBlockPos(it))
+		}
+		queuedTipItem?.let {
+			NBTHelper.writeResourceLocation(nbt, "QueuedTipItem", BuiltInRegistries.ITEM.getKey(it))
+		}
+		writeBlockPosQueue(nbt, "DepositQueue", depositQueue)
 
 		nbt.put("ItemHandler", itemHandler.serializeNBT(registries))
 		nbt.put("DrillTipHandler", drillTipHandler.serializeNBT(registries))
@@ -388,7 +523,7 @@ class DepositDrillBlockEntity(
 		}
 
 		// Breaking Progress
-		if (isDeposit(getTargetBlockState())) {
+		if (currentDepositPos != null && maxAttempts > 0) {
 			val attemptsUsed: Int = maxAttempts - remainingAttempts
 			val stage: Int = ((attemptsUsed.toFloat() / maxAttempts) * 10f).toInt().coerceIn(0, 10)
 			val bar: String = TooltipHelper.makeProgressBar(10, stage)
