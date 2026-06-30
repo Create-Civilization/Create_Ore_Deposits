@@ -38,6 +38,7 @@ import net.minecraft.core.BlockPos.MutableBlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.SectionPos
 import net.minecraft.util.Mth
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.LightLayer
@@ -58,8 +59,9 @@ class DepositDrillBlockVisual(
 
 	private val coil: ScrollInstance
 	private val magnet: TransformedInstance
-	private val tip: TransformedInstance
+	private var tip: TransformedInstance
 	private val rope: SmartRecycler<Boolean, TransformedInstance>
+	private var renderedTipItem: Item
 
 	val rotatingAbout: Direction = Direction.get(Direction.AxisDirection.POSITIVE, rotationAxis())
 	val rotationAxis: Axis = Axis.of(rotatingAbout.step())
@@ -82,6 +84,7 @@ class DepositDrillBlockVisual(
 
 		this.magnet = magnetInstancer().createInstance()
 
+		this.renderedTipItem = currentTipRenderStack().item
 		this.tip = this.tipModel.createInstance()
 
 		this.rope = SmartRecycler<Boolean, TransformedInstance> { b: Boolean -> if (b) this.halfRopeModel.createInstance() else this.ropeModel.createInstance() }
@@ -121,6 +124,20 @@ class DepositDrillBlockVisual(
 
 	fun getOffset(pt: Float): Float = blockEntity.getInterpolatedOffset(pt)
 
+	private fun currentTipRenderStack(): ItemStack {
+		var stack: ItemStack = this.blockEntity.getDrillTipItemHandler().getStackInSlot(0)
+		if (stack.isEmpty) stack = ItemStack(Items.NETHERITE_BLOCK) // Placeholder item that should never render
+		return stack
+	}
+
+	private fun refreshTipInstance() {
+		val stack = currentTipRenderStack()
+		if (stack.item == renderedTipItem) return
+		tip.delete()
+		renderedTipItem = stack.item
+		tip = tipModel.createInstance()
+	}
+
 	val isRunning: Boolean = true
 
 	val coilAnimation: SpriteShiftEntry get() = AllSpriteShifts.HOSE_PULLEY_COIL
@@ -134,6 +151,7 @@ class DepositDrillBlockVisual(
 
 	private fun animate() {
 		val stack: ItemStack = blockEntity.getDrillTipItemHandler().getStackInSlot(0)
+		refreshTipInstance()
 
 		coil.offsetV = -offset
 		coil.setChanged()
@@ -142,7 +160,6 @@ class DepositDrillBlockVisual(
 		tip.setVisible((this.isRunning || offset == 0f) && !stack.isEmpty)
 
 		magnetInstancer().stealInstance(magnet)
-		tipModel.stealInstance(tip)
 
 		magnet.setIdentityTransform()
 			.translate(visualPosition)

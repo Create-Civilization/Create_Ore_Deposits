@@ -1,6 +1,6 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "create_ore_deposits:item/lapis_dough"
+		"layer0": "minecraft:item/blue_dye"
 	}
 }
