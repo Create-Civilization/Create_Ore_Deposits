@@ -107,7 +107,7 @@ class DepositDrillBlockRenderer(
 
 	fun getOffset(be: DepositDrillBlockEntity, partialTicks: Float): Float = be.getInterpolatedOffset(partialTicks)
 
-	// TODO: Implement actual is running logic
+	// TODO: Derive from actual block entity state.
 	fun isRunning(be: DepositDrillBlockEntity): Boolean = true
 
 	override fun getRenderedBlockState(be: DepositDrillBlockEntity): BlockState = shaft(getShaftAxis(be))

@@ -10,39 +10,38 @@ import net.minecraft.world.item.Item
 
 object CreateOreDepositsItems {
 
-// Drill Tips	
 	@JvmField
+	@Suppress("unused")
 	val DIAMOND_DRILL_TIP: ItemEntry<Item> = REGISTRATE.item("diamond_drill_tip", ::Item)
 		.properties { it.durability(20000).stacksTo(1).setNoRepair() }
 		.tag(CreateOreDepositsTags.DRILL_TIP)
-		.tag(CreateOreDepositsTags.DIAMOND_TIP_TIER)
 		.defaultModel()
 		.register()
 
 	@JvmField
-	val STEEL_DRILL_TIP: ItemEntry<Item> = REGISTRATE.item("steel_drill_tip", ::Item)
-		.properties { it.durability(20000).stacksTo(1).setNoRepair() }
-		.tag(CreateOreDepositsTags.DRILL_TIP)
-		.tag(CreateOreDepositsTags.STEEL_TIP_TIER)
-		.defaultModel()
-		.register()
-
-	@JvmField
-	val IRON_DRILL_TIP: ItemEntry<Item> = REGISTRATE.item("iron_drill_tip", ::Item)
-		.properties { it.durability(20000).stacksTo(1).setNoRepair() }
-		.tag(CreateOreDepositsTags.DRILL_TIP)
-		.tag(CreateOreDepositsTags.IRON_TIP_TIER)
-		.defaultModel()
-		.register()
-
-		@JvmField
+	@Suppress("unused")
 	val GOLD_DRILL_TIP: ItemEntry<Item> = REGISTRATE.item("gold_drill_tip", ::Item)
-		.properties { it.durability(20000).stacksTo(1).setNoRepair() }
+		.properties { it.durability(8000).stacksTo(1).setNoRepair() }
 		.tag(CreateOreDepositsTags.DRILL_TIP)
-		.tag(CreateOreDepositsTags.GOLD_TIP_TIER)
 		.defaultModel()
 		.register()
-		
+
+	@JvmField
+	@Suppress("unused")
+	val STEEL_DRILL_TIP: ItemEntry<Item> = REGISTRATE.item("steel_drill_tip", ::Item)
+		.properties { it.durability(15000).stacksTo(1).setNoRepair() }
+		.tag(CreateOreDepositsTags.DRILL_TIP)
+		.defaultModel()
+		.register()
+
+	@JvmField
+	@Suppress("unused")
+	val IRON_DRILL_TIP: ItemEntry<Item> = REGISTRATE.item("iron_drill_tip", ::Item)
+		.properties { it.durability(5000).stacksTo(1).setNoRepair() }
+		.tag(CreateOreDepositsTags.DRILL_TIP)
+		.defaultModel()
+		.register()
+
 	// Iron items
 	@JvmField
 	val UNREFINED_IRON_ORE: ItemEntry<Item> = REGISTRATE.item("unrefined_iron_ore", ::Item)
