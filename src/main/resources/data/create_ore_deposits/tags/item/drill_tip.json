@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "create_ore_deposits:diamond_drill_tip",
+    "create_ore_deposits:gold_drill_tip",
+    "create_ore_deposits:steel_drill_tip",
+    "create_ore_deposits:iron_drill_tip"
+  ]
+}

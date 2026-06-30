@@ -39,6 +39,8 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction
 import net.neoforged.neoforge.items.IItemHandler
 import net.neoforged.neoforge.items.ItemStackHandler
 
+import java.util.ArrayList
+import java.util.HashSet
 import kotlin.math.roundToInt
 
 private const val MIN_LERP = 0.5
@@ -59,6 +61,10 @@ class DepositDrillBlockEntity(
 	private var currentDepositPos: BlockPos? = null
 
 	private var depositQueue: ArrayDeque<BlockPos> = ArrayDeque()
+	private val depositQueueSet: MutableSet<BlockPos> = HashSet(256)
+	private val bfsVisited: MutableSet<BlockPos> = HashSet(256)
+	private val bfsPositions: MutableList<BlockPos> = ArrayList(256)
+	private val bfsQueue: ArrayDeque<BlockPos> = ArrayDeque(256)
 
 	private val itemHandler = ItemStackHandler(9)
 	private val drillTipHandler = ItemStackHandler()
@@ -116,28 +122,29 @@ class DepositDrillBlockEntity(
 	override fun getBreakingPos(): BlockPos = if (canMine()) getTargetPos() else BlockPos.ZERO
 
 	fun onBreakTick() {
-		if (level?.isClientSide != false) return
+		val level = this.level ?: return
+		if (level.isClientSide) return
 		if (!canMine()) return
 
 		val tipPos = getDrillTipPos()
-		val tipState = level?.getBlockState(tipPos) ?: return
+		val tipState = level.getBlockState(tipPos)
 
 		if (!isDeposit(tipState)) {
 			clearDepositQueue()
 			return
 		}
 
-		if (currentDepositPos == null || (tipPos != currentDepositPos && tipPos !in depositQueue)) {
-			buildDepositQueue(tipPos)
+		if (currentDepositPos == null || (tipPos != currentDepositPos && !depositQueueSet.contains(tipPos))) {
+			buildDepositQueue(level, tipPos)
 			currentDepositPos = getCurrentQueueHead()
-			initializeCurrentDeposit()
+			initializeCurrentDeposit(level)
 		}
 
 		val targetPos = currentDepositPos ?: return
-		val blockState = level?.getBlockState(targetPos) ?: return
+		val blockState = level.getBlockState(targetPos)
 
 		if (!isDeposit(blockState)) {
-			advanceDepositQueue()
+			advanceDepositQueue(level)
 			return
 		}
 
@@ -149,7 +156,7 @@ class DepositDrillBlockEntity(
 			drillTickCounter = 0
 			remainingAttempts--
 
-			val serverLevel: ServerLevel = level as? ServerLevel ?: return
+			val serverLevel: ServerLevel = level as ServerLevel
 			for (stack in getSimulatedDrops(blockState, serverLevel, targetPos)) {
 				insertOutput(stack)
 			}
@@ -157,9 +164,9 @@ class DepositDrillBlockEntity(
 			updateDestroyProgress(targetPos)
 
 			if (remainingAttempts <= 0) {
-				level?.destroyBlockProgress(blockPos.hashCode(), targetPos, -1)
-				level?.setBlock(targetPos, Blocks.AIR.defaultBlockState(), 3)
-				advanceDepositQueue()
+				level.destroyBlockProgress(blockPos.hashCode(), targetPos, -1)
+				level.setBlock(targetPos, Blocks.AIR.defaultBlockState(), 3)
+				advanceDepositQueue(level)
 			}
 		}
 	}
@@ -289,41 +296,55 @@ class DepositDrillBlockEntity(
 
 	fun getDrillTipPos(): BlockPos = blockPos.offset(0, -lerpedOffset.value.toInt() - 1, 0)
 
-	private fun buildDepositQueue(startPos: BlockPos) {
-		val level = level ?: return
-		val visited: MutableSet<BlockPos> = mutableSetOf(startPos)
-		val positions: MutableList<BlockPos> = mutableListOf()
-		val queue: ArrayDeque<BlockPos> = ArrayDeque()
-		queue += startPos
+	private fun buildDepositQueue(level: Level, startPos: BlockPos) {
+		bfsVisited.clear()
+		bfsPositions.clear()
+		bfsQueue.clear()
 
-		while (queue.isNotEmpty()) {
-			val current = queue.removeFirst()
-			positions += current
+		bfsVisited.add(startPos)
+		bfsQueue.addLast(startPos)
+
+		while (bfsQueue.isNotEmpty()) {
+			val current = bfsQueue.removeFirst()
+			bfsPositions.add(current)
 
 			for (dir in Direction.entries) {
 				val neighbor = current.relative(dir)
-				if (neighbor !in visited && isDeposit(level.getBlockState(neighbor))) {
-					visited += neighbor
-					queue += neighbor
+				if (!bfsVisited.contains(neighbor) && isDeposit(level.getBlockState(neighbor))) {
+					bfsVisited.add(neighbor)
+					bfsQueue.addLast(neighbor)
 				}
 			}
 		}
 
 		depositQueue.clear()
-		positions
-			.sortedWith(compareBy<BlockPos> { it.y }.thenBy { it.x }.thenBy { it.z })
-			.forEach(depositQueue::addLast)
+		depositQueueSet.clear()
+		bfsPositions.sortWith(compareBy<BlockPos> { it.y }.thenBy { it.x }.thenBy { it.z })
+		for (pos in bfsPositions) {
+			depositQueue.addLast(pos)
+			depositQueueSet.add(pos)
+		}
 	}
 
-	private fun initializeCurrentDeposit() {
+	private fun resetExtractionState() {
+		maxAttempts = 0
+		remainingAttempts = 0
+		drillTickCounter = 0
+	}
+
+	private fun initializeCurrentDeposit(level: Level) {
 		clearDestroyProgress()
+
 		val currentDeposit = currentDepositPos ?: run {
-			maxAttempts = 0
-			remainingAttempts = 0
-			drillTickCounter = 0
+			resetExtractionState()
 			return
 		}
-		val blockState = level?.getBlockState(currentDeposit) ?: return
+
+		val blockState = level.getBlockState(currentDeposit)
+		if (!isDeposit(blockState)) {
+			resetExtractionState()
+			return
+		}
 		maxAttempts = blockState.blockHolder.getData(DEPOSIT_DATA)?.maxAttempts ?: 0
 		remainingAttempts = maxAttempts
 		drillTickCounter = 0
@@ -331,30 +352,32 @@ class DepositDrillBlockEntity(
 
 	private fun getCurrentQueueHead(): BlockPos? = if (depositQueue.isEmpty()) null else depositQueue.first()
 
-	private fun advanceDepositQueue() {
-		clearDestroyProgress()
+	private fun advanceDepositQueue(level: Level) {
 		if (depositQueue.isNotEmpty()) {
-			depositQueue.removeFirst()
+			val removed = depositQueue.removeFirst()
+			depositQueueSet.remove(removed)
 		}
 		currentDepositPos = getCurrentQueueHead()
-		initializeCurrentDeposit()
+		initializeCurrentDeposit(level)
 	}
 
 	private fun clearDepositQueue() {
 		clearDestroyProgress()
 		currentDepositPos = null
 		depositQueue.clear()
-		maxAttempts = 0
-		remainingAttempts = 0
-		drillTickCounter = 0
+		depositQueueSet.clear()
+		resetExtractionState()
 	}
 
 	private fun readDepositQueue(nbt: CompoundTag) {
 		depositQueue.clear()
+		depositQueueSet.clear()
 		val positions = nbt.getList("DepositQueue", Tag.TAG_COMPOUND.toInt())
 		for (index in 0 until positions.size) {
 			val pos = positions.getCompound(index)
-			depositQueue.addLast(BlockPos(pos.getInt("X"), pos.getInt("Y"), pos.getInt("Z")))
+			val blockPos = BlockPos(pos.getInt("X"), pos.getInt("Y"), pos.getInt("Z"))
+			depositQueue.addLast(blockPos)
+			depositQueueSet.add(blockPos)
 		}
 	}
 
@@ -371,7 +394,7 @@ class DepositDrillBlockEntity(
 
 	fun getMovementSpeed(): Float {
 		var movementSpeed = convertToLinear(getSpeed())
-		if (level!!.isClientSide) movementSpeed *= ServerSpeedProvider.get()
+		if (level?.isClientSide == true) movementSpeed *= ServerSpeedProvider.get()
 		return movementSpeed
 	}
 
