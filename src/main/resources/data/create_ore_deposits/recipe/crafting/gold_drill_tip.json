@@ -2,17 +2,17 @@
 	"type": "minecraft:crafting_shaped",
 	"category": "equipment",
 	"pattern": [
-		"D D",
+		"G G",
 		" I ",
-		"D D"
+		"G G"
 	],
 	"key": {
-		"D": { "item": "minecraft:gold_ingot" },
+		"G": { "item": "minecraft:gold_ingot" },
 		"I": { "item": "minecraft:iron_ingot" }
 	},
 	"result": {
 		"id": "create_ore_deposits:gold_drill_tip",
-		"count": 2
+		"count": 1
 	}
 }
 
