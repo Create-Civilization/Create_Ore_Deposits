@@ -1,26 +1,11 @@
 package com.createcivilization.create_ore_deposits.registry.worldgen
 
-import net.minecraft.world.level.levelgen.placement.*
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.levelgen.placement.PlacementModifier
 
 data object OrePlacement {
 
-	fun orePlacement(
-		countPlacement: PlacementModifier,
-		heightRange: PlacementModifier
-	): List<PlacementModifier> = listOf(
-		countPlacement,
-		InSquarePlacement.spread(),
-		heightRange,
-		BiomeFilter.biome()
+	fun clusterPlacement(block: Block, tier: OreVeinTier): List<PlacementModifier> = listOf(
+		OreVeinPlacementModifier(block, tier)
 	)
-
-	fun commonOrePlacement(
-		count: Int,
-		heightRange: PlacementModifier
-	): List<PlacementModifier> = orePlacement(CountPlacement.of(count), heightRange)
-
-	fun rareOrePlacement(
-		chance: Int,
-		heightRange: PlacementModifier
-	): List<PlacementModifier> = orePlacement(RarityFilter.onAverageOnceEvery(chance), heightRange)
 }
