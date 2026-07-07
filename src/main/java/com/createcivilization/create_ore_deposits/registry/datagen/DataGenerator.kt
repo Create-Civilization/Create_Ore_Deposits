@@ -1,7 +1,6 @@
 package com.createcivilization.create_ore_deposits.registry.datagen
 
 import com.createcivilization.create_ore_deposits.CreateOreDeposits
-import com.createcivilization.create_ore_deposits.util.logI
 
 import net.minecraft.core.HolderLookup
 import net.minecraft.data.PackOutput
@@ -17,7 +16,6 @@ data object DataGenerator {
 
 	@SubscribeEvent
 	fun gatherData(event: GatherDataEvent) {
-		logI("GENNING")
 		val generator: net.minecraft.data.DataGenerator = event.generator
 		val packOutput: PackOutput = generator.packOutput
 //		val existingFileHelper = event.existingFileHelper

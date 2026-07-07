@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory
 private val LOGGER: Logger = LoggerFactory.getLogger(CreateOreDeposits.MOD_ID)
 
 internal fun logI(message: Any?) = LOGGER.info(message.toString())
+internal fun logW(message: Any?) = LOGGER.warn(message.toString())
 
 internal fun logE(message: Any?, cause: Throwable? = null) {
 	cause?.let { return LOGGER.error(message.toString(), it) }

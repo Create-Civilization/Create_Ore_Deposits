@@ -9,6 +9,9 @@ import net.minecraft.tags.FluidTags
 import net.neoforged.neoforge.common.data.DataMapProvider
 import java.util.concurrent.CompletableFuture
 
+// All deposit vein tuning now lives in the server config so it can be edited from one place without regenerating data.
+//Only static per-block drill metadata remains in data maps.
+
 class DataMapProvider(
 	packOutput: PackOutput,
 	lookupProvider: CompletableFuture<HolderLookup.Provider>
