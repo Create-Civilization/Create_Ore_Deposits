@@ -1,0 +1,10 @@
+{
+  "feature": "create_ore_deposits:coal_ore_deposit_medium_vein",
+  "placement": [
+    {
+      "type": "create_ore_deposits:ore_vein",
+      "deposit": "create_ore_deposits:coal_ore_deposit",
+      "tier": "medium"
+    }
+  ]
+}

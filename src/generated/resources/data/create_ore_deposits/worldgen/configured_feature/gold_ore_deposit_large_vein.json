@@ -1,0 +1,29 @@
+{
+  "type": "create_ore_deposits:ore_vein",
+  "config": {
+    "state": {
+      "Name": "create_ore_deposits:gold_ore_deposit"
+    },
+    "targets": [
+      {
+        "state": {
+          "Name": "create_ore_deposits:gold_ore_deposit"
+        },
+        "target": {
+          "predicate_type": "minecraft:tag_match",
+          "tag": "minecraft:stone_ore_replaceables"
+        }
+      },
+      {
+        "state": {
+          "Name": "create_ore_deposits:gold_ore_deposit"
+        },
+        "target": {
+          "predicate_type": "minecraft:tag_match",
+          "tag": "minecraft:deepslate_ore_replaceables"
+        }
+      }
+    ],
+    "tier": "large"
+  }
+}

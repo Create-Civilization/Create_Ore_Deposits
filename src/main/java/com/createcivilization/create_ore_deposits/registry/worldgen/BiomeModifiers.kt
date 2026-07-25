@@ -24,13 +24,15 @@ data object BiomeModifiers {
 		OreVeinDeposits.DEPOSITS.forEach { deposit ->
 			OreVeinTier.entries.forEach { tier ->
 				val placedFeature = HolderSet.direct(placedFeatures.getOrThrow(PlacedFeatures.veinKey(deposit, tier)))
-				val tierConfig = Config.SERVER.ORE_VEINS.byBlock(deposit.block.get()).forTier(tier)
-				val matchingBiomes = resolveBiomeSelectors(biomes, tierConfig.biomeSelectors)
+
+				// Use the overworld tag directly — runtime filtering via config
+				// happens in OreVeinPlacementModifier, not here
+				val overworldBiomes = biomes.getOrThrow(BiomeTags.IS_OVERWORLD)
 
 				context.register(
 					veinKey(deposit, tier),
 					NeoBiomeModifiers.AddFeaturesBiomeModifier(
-						matchingBiomes,
+						overworldBiomes,
 						placedFeature,
 						GenerationStep.Decoration.UNDERGROUND_ORES
 					)
