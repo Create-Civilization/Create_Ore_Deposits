@@ -1,0 +1,7 @@
+{
+  "values": {
+    "create_ore_deposits:lubricant": {
+      "lube_factor": 1.0
+    }
+  }
+}

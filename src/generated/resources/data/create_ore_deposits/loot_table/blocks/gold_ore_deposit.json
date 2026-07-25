@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "chance": 0.6,
+              "condition": "minecraft:random_chance"
+            }
+          ],
+          "name": "create_ore_deposits:unrefined_gold_ore"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "create_ore_deposits:blocks/gold_ore_deposit"
+}

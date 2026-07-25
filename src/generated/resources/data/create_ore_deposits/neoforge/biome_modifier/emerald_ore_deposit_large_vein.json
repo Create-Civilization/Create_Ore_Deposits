@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "create_ore_deposits:emerald_ore_deposit_large_vein",
+  "step": "underground_ores"
+}
