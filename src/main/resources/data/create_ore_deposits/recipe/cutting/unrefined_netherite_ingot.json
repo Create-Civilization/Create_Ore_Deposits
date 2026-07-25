@@ -2,12 +2,12 @@
 	"type": "create:cutting",
 	"ingredients": [
 		{
-			"item": "create_ore_deposits:neth_intermediate_3"
+			"item": "create_ore_deposits:casted_netherite"
 		}
 	],
 	"results": [
 		{
-			"id": "minecraft:netherite_ingot"
+			"id": "create_ore_deposits:ur_netherite_ingot"
 		},
 		{
 			"id": "create_ore_deposits:cast"

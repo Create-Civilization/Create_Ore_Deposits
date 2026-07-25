@@ -2,14 +2,14 @@
 	"type": "create:crushing",
 	"ingredients": [
 		{
-			"item": "create_ore_deposits:unrefined_netherite_ore"
+			"item": "minecraft:ancient_debris"
 		}
 	],
 	"processing_time": 250,
 	"results": [
 		{
 			"count": 1,
-			"id": "create_ore_deposits:netherite_debris"
+			"id": "create_ore_deposits:crushed_debris"
 		}
 	]
 }

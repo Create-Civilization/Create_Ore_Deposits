@@ -5,7 +5,12 @@
 		{
 			"type": "fluid_stack",
 			"amount": 50,
-			"fluid": "create_ore_deposits:molten_debris"
+			"fluid": "create_ore_deposits:debris_slurry"
+		},
+		{
+			"type": "fluid_stack",
+			"amount": 50,
+			"fluid": "create_ore_deposits:molten_gold"
 		}
 	],
 	"results": [

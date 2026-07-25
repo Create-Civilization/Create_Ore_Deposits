@@ -1,0 +1,14 @@
+{
+	"type": "create:splashing",
+	"ingredients": [
+		{
+			"item": "create_ore_deposits:tempered_netherite"
+		}
+	],
+	"results": [
+		{
+			"id": "minecraft:netherite_ingot"
+		}
+		
+	]
+}
