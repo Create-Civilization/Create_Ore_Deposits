@@ -3,17 +3,17 @@
 	"heat_requirement": "superheated",
 	"ingredients": [
 		{
-			"item": "create_ore_deposits:casted_netherite"
+			"item": "create_ore_deposits:ur_netherite_ingot"
 		},
 		{
 			"type": "fluid_stack",
-			"amount": 250,
+			"amount": 100,
 			"fluid": "minecraft:lava"
 		}
 	],
 	"results": [
 		{
-			"id": "create_ore_deposits:neth_intermediate_1"
+			"id": "create_ore_deposits:softened_netherite"
 		}
 	]
 }

@@ -1,0 +1,13 @@
+{
+	"type": "create:pressing",
+	"ingredients": [
+		{
+			"item": "create_ore_deposits:softened_netherite"
+		}
+	],
+	"results": [
+		{
+			"id": "create_ore_deposits:tempered_netherite"
+		}
+	]
+}

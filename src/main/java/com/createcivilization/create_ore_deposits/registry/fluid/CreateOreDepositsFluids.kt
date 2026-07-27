@@ -82,8 +82,8 @@ data object CreateOreDepositsFluids {
 		.register()
 
 	@JvmField
-	val MOLTEN_DEBRIS: FluidEntry<BaseFlowingFluid.Flowing> = CreateOreDeposits.REGISTRATE
-		.fluid("molten_debris", "block/fluid/molten_debris_still".asResource(), "block/fluid/molten_debris_flow".asResource())
+	val DEBRIS_SLURRY: FluidEntry<BaseFlowingFluid.Flowing> = CreateOreDeposits.REGISTRATE
+		.fluid("debris_slurry", "block/fluid/molten_debris_still".asResource(), "block/fluid/molten_debris_flow".asResource())
 		.properties { it.viscosity(1500).density(500) }
 		.fluidProperties { it.levelDecreasePerBlock(2).tickRate(25).slopeFindDistance(3).explosionResistance(0f) }
 		.source(BaseFlowingFluid::Source)

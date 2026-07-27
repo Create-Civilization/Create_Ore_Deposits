@@ -1,0 +1,15 @@
+{
+	"type": "create:mixing",
+	"heat_requirement": "superheated",
+	"ingredients": [
+		{
+			"item": "create_ore_deposits:crushed_debris"
+		}
+	],
+	"results": [
+		{
+			"amount": 50,
+			"id": "create_ore_deposits:debris_slurry"
+		}
+	]
+}

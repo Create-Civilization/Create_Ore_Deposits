@@ -86,7 +86,7 @@ data object CreateOreDepositsBlocks {
 	val DIAMOND_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("diamond_ore_deposit", Blocks.DIAMOND_ORE, CreateOreDepositsItems.UNREFINED_DIAMOND_ORE, 0.2f, false, CreateOreDepositsTags.NEEDS_STEEL_TIP)
 	val EMERALD_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("emerald_ore_deposit", Blocks.EMERALD_ORE, CreateOreDepositsItems.UNREFINED_EMERALD_ORE, 0.1f, false, CreateOreDepositsTags.NEEDS_STEEL_TIP)
 	val QUARTZ_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("quartz_ore_deposit", Blocks.NETHER_QUARTZ_ORE, CreateOreDepositsItems.UNREFINED_QUARTZ_ORE, 2f, 0.9f)
-	val NETHERITE_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("netherite_ore_deposit", Blocks.ANCIENT_DEBRIS, CreateOreDepositsItems.UNREFINED_NETHERITE_ORE, 1f, true, CreateOreDepositsTags.NEEDS_DIAMOND_TIP)
+	val NETHERITE_ORE_DEPOSIT: BlockEntry<Block> = registerDepositSingleRoll("netherite_ore_deposit", Blocks.ANCIENT_DEBRIS, CreateOreDepositsItems.CRUSHED_DEBRIS, 1f, true, CreateOreDepositsTags.NEEDS_DIAMOND_TIP)
 //	val ZINC_ORE_DEPOSIT: BlockEntry<Block> = registerDeposit("zinc_ore_deposit", AllBlocks.ZINC_ORE.get(), CreateOreDepositsItems.UNREFINED_ZINC)
 
 	private fun registerCast(blockName: String): BlockEntry<CastBlock> = REGISTRATE.block(blockName, ::CastBlock)

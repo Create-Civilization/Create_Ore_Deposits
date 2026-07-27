@@ -227,27 +227,22 @@ object CreateOreDepositsItems {
 
 	// Netherite items
 	@JvmField
-	val UNREFINED_NETHERITE_ORE: ItemEntry<Item> = REGISTRATE.item("unrefined_netherite_ore", ::Item)
+	val CRUSHED_DEBRIS: ItemEntry<Item> = REGISTRATE.item("crushed_debris", ::Item)
 		.defaultModel()
 		.register()
 
 	@JvmField
-	val NETHERITE_DEBRIS: ItemEntry<Item> = REGISTRATE.item("netherite_debris", ::Item)
+	val UNREFINED_NETHERITE_INGOT: ItemEntry<Item> = REGISTRATE.item("ur_netherite_ingot", ::Item)
 		.defaultModel()
 		.register()
 
 	@JvmField
-	val NETH_INTERMEDIATE_1: ItemEntry<Item> = REGISTRATE.item("neth_intermediate_1", ::Item)
+	val SOFTENED_NETHERITE: ItemEntry<Item> = REGISTRATE.item("softened_netherite", ::Item)
 		.defaultModel()
 		.register()
 
 	@JvmField
-	val NETH_INTERMEDIATE_2: ItemEntry<Item> = REGISTRATE.item("neth_intermediate_2", ::Item)
-		.defaultModel()
-		.register()
-
-	@JvmField
-	val NETH_INTERMEDIATE_3: ItemEntry<Item> = REGISTRATE.item("neth_intermediate_3", ::Item)
+	val TEMPERED_NETHERITE: ItemEntry<Item> = REGISTRATE.item("tempered_netherite", ::Item)
 		.defaultModel()
 		.register()
 }
