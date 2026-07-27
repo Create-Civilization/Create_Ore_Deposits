@@ -31,6 +31,8 @@ atlassian-ide-plugin.xml
 *.zip
 *.tar.gz
 *.rar
+!libs/jei-1.21.1-neoforge-19.38.0.366.jar
+!libs/ponderer-1.21.1-neoforge-1.10.4.jar
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*

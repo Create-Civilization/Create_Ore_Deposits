@@ -121,5 +121,15 @@
 	"create_ore_deposits.ponder.drill.intro.text_3": "Apply power to the drill.",
 	"create_ore_deposits.ponder.drill.intro.text_4": "When a running drill hits a deposit it will break the furthest deposit in the vein.",
 	"create_ore_deposits.ponder.drill.intro.text_5": "It will keep doing this until the entire deposit vein is depleted",
-	"create_ore_deposits.ponder.drill.intro.text_6": "A max of 64 items are stored in the drill. Get them out."
+	"create_ore_deposits.ponder.drill.intro.text_6": "A max of 64 items are stored in the drill. Get them out.",
+	"create_ore_deposits.ponder.deposit_drill_scene_1.header": "Scene 1",
+	"create_ore_deposits.ponder.deposit_drill_scene_2.header": "Scene 2",
+	"create_ore_deposits.ponder.shared.drill_scene1_text_1": "This is the Deposit Drill, it drills.",
+	"create_ore_deposits.ponder.shared.drill_scene1_text_2": "It has 3 inputs and 1 output",
+	"create_ore_deposits.ponder.shared.drill_scene1_text_3": "1 Rotational Input and 2 Fluid Inputs",
+	"create_ore_deposits.ponder.shared.drill_scene1_text_4": "...and an Item Output.",
+	"create_ore_deposits.ponder.shared.drill_scene2_text_1": "Some fluids can be pumped into the drill to slow the process of the drill overheating",
+	"create_ore_deposits.ponder.shared.drill_scene2_text_2": "Coolant",
+	"create_ore_deposits.ponder.shared.drill_scene2_text_3": "Lubricant",
+	"create_ore_deposits.ponder.shared.drill_scene2_text_4": "This is a deposit. This is what the Drill drills"
 }

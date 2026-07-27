@@ -1,0 +1,237 @@
+{
+  "id": "ponderer:deposit_drill",
+  "items": [
+    "create_ore_deposits:deposit_drill"
+  ],
+  "title": {
+    "en_us": "deposit_drill_ponder",
+    "zh_cn": "新场景 - deposit_drill"
+  },
+  "structures": [
+    "ponderer:basic"
+  ],
+  "tags": [],
+  "editable": false,
+  "scenes": [
+    {
+      "id": "scene_1",
+      "title": {
+        "en_us": "Scene 1",
+        "zh_cn": "场景 1"
+      },
+      "steps": [
+        {
+          "type": "show_structure",
+          "structure": "create_ore_deposits:scene1",
+          "attachKeyFrame": true
+        },
+        {
+          "type": "idle",
+          "duration": 20
+        },
+        {
+          "type": "text",
+          "duration": 30,
+          "text": {
+            "en_us": "This is the Deposit Drill, it drills.",
+            "zh_cn": "编辑这个思索场景!"
+          },
+          "point": [
+            2.0,
+            2.5,
+            2.5
+          ],
+          "placeNearTarget": true,
+          "attachKeyFrame": true
+        },
+        {
+          "type": "idle",
+          "duration": 45
+        },
+        {
+          "type": "text",
+          "duration": 100,
+          "text": "It has 3 inputs and 1 output",
+          "attachKeyFrame": true
+        },
+        {
+          "type": "idle",
+          "duration": 10
+        },
+        {
+          "type": "text",
+          "duration": 45,
+          "text": "1 Rotational Input and 2 Fluid Inputs",
+          "point": [
+            2.0,
+            2.5,
+            2.5
+          ],
+          "placeNearTarget": true
+        },
+        {
+          "type": "idle",
+          "duration": 50
+        },
+        {
+          "type": "rotate_camera_y",
+          "duration": 20,
+          "degrees": 180.0
+        },
+        {
+          "type": "text",
+          "duration": 60,
+          "text": "...and an Item Output.",
+          "point": [
+            3.0,
+            2.5,
+            2.5
+          ],
+          "placeNearTarget": true
+        },
+        {
+          "type": "idle",
+          "duration": 60
+        },
+        {
+          "type": "rotate_camera_y",
+          "duration": 20,
+          "degrees": 180.0
+        }
+      ]
+    },
+    {
+      "id": "scene_2",
+      "title": "Scene 2",
+      "steps": [
+        {
+          "type": "show_structure",
+          "structure": "create_ore_deposits:scene2_1",
+          "scale": 0.72
+        },
+        {
+          "type": "idle",
+          "duration": 30
+        },
+        {
+          "type": "show_extra_structure",
+          "structure": "create_ore_deposits:scene2_2",
+          "rotation": 0.0,
+          "direction": "down",
+          "blockPos": [
+            0,
+            0,
+            0
+          ],
+          "spawnParticles": false,
+          "immediateDisplay": false,
+          "smartDisplay": false,
+          "entranceAnimation": "up",
+          "entranceDuration": 20,
+          "entranceInterval": 1
+        },
+        {
+          "type": "rotate_camera_y",
+          "duration": 20,
+          "degrees": 180.0
+        },
+        {
+          "type": "text",
+          "duration": 70,
+          "text": "Some fluids can be pumped into the drill to slow the process of the drill overheating"
+        },
+        {
+          "type": "idle",
+          "duration": 75
+        },
+        {
+          "type": "text",
+          "duration": 60,
+          "text": "Coolant",
+          "point": [
+            2.0,
+            3.2,
+            -1.2
+          ],
+          "placeNearTarget": true
+        },
+        {
+          "type": "text",
+          "duration": 60,
+          "text": "Lubricant",
+          "point": [
+            2.0,
+            5.15,
+            0.7
+          ],
+          "placeNearTarget": true
+        },
+        {
+          "type": "idle",
+          "duration": 60
+        },
+        {
+          "type": "show_extra_structure",
+          "structure": "create_ore_deposits:scene2_3",
+          "rotation": 0.0,
+          "direction": "west",
+          "blockPos": [
+            0,
+            1,
+            0
+          ],
+          "spawnParticles": false,
+          "immediateDisplay": false,
+          "smartDisplay": false,
+          "entranceAnimation": "east",
+          "entranceDuration": 20,
+          "entranceInterval": 1
+        },
+        {
+          "type": "text",
+          "duration": 60,
+          "text": "This is a deposit. This is what the Drill drills",
+          "point": [
+            4.0,
+            2.5,
+            4.5
+          ],
+          "placeNearTarget": true
+        },
+        {
+          "type": "show_extra_structure",
+          "structure": "create_ore_deposits:scene2_4",
+          "rotation": 0.0,
+          "direction": "west",
+          "blockPos": [
+            2,
+            4,
+            1
+          ],
+          "spawnParticles": false,
+          "immediateDisplay": false,
+          "smartDisplay": false,
+          "entranceAnimation": "east",
+          "entranceDuration": 20,
+          "entranceInterval": 1
+        },
+        {
+          "type": "show_controls",
+          "duration": 45,
+          "point": [
+            3.3,
+            4.5,
+            2.9
+          ],
+          "direction": "left",
+          "action": "right",
+          "item": "create_ore_deposits:diamond_drill_tip"
+        },
+        {
+          "type": "idle",
+          "duration": 10
+        }
+      ]
+    }
+  ]
+}

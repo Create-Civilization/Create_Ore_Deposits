@@ -24,6 +24,9 @@ repositories {
 	maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven" } // ForgeConfigAPIPort
 	maven { url = "https://maven.theillusivec4.top" }
 	maven { url = "https://thedarkcolour.github.io/KotlinForForge" }
+    flatDir {
+        dir 'libs'
+    }
 }
 
 neoForge {
@@ -110,6 +113,8 @@ dependencies {
 	runtimeOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}+${curios_minecraft_version}")
 	implementation("thedarkcolour:kotlinforforge-neoforge:5.11.0")
 	annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
+	runtimeOnly("blank:ponderer-1.21.1-neoforge-1.10.4")
+	runtimeOnly("blank:jei-1.21.1-neoforge-19.38.0.366")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

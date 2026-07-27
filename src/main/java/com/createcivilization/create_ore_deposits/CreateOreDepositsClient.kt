@@ -1,10 +1,12 @@
 package com.createcivilization.create_ore_deposits
 
+import com.createcivilization.create_ore_deposits.ponder.CODPonderPlugin
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModels
 import com.createcivilization.create_ore_deposits.registry.block.entries.deposit_drill.DepositDrillBlockModel
 import com.createcivilization.create_ore_deposits.util.logI
 import com.createcivilization.create_ore_deposits.util.asResource
 
+import net.createmod.ponder.foundation.PonderIndex
 import net.minecraft.client.model.geom.ModelLayerLocation
 
 import net.neoforged.api.distmarker.Dist
@@ -26,7 +28,7 @@ data object CreateOreDepositsClient {
 	fun clientInit(event: FMLClientSetupEvent) {
 		logI("In client init!")
 		DepositDrillBlockModels
-//		PonderIndex.addPlugin(CODPonderPlugin())
+		PonderIndex.addPlugin(CODPonderPlugin)
 	}
 
 	fun onRegisterLayerDefinitions(event: RegisterLayerDefinitions) {
