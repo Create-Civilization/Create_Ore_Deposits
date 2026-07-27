@@ -9,6 +9,8 @@ import com.createcivilization.create_ore_deposits.registry.fluid.CreateOreDeposi
 import com.createcivilization.create_ore_deposits.registry.item.CreateOreDepositsItems
 import com.createcivilization.create_ore_deposits.registry.tab.CreateOreDepositsTabs
 import com.createcivilization.create_ore_deposits.registry.tag.CreateOreDepositsTags
+import com.createcivilization.create_ore_deposits.registry.worldgen.CreateOreDepositsFeatures
+import com.createcivilization.create_ore_deposits.registry.worldgen.CreateOreDepositsPlacementModifiers
 import com.createcivilization.create_ore_deposits.util.logI
 
 import com.simibubi.create.foundation.data.CreateRegistrate
@@ -50,6 +52,8 @@ data object CreateOreDeposits {
 		container.registerConfig(ModConfig.Type.SERVER, Config.serverSpec)
 
 		REGISTRATE.registerEventListeners(MOD_BUS)
+		CreateOreDepositsFeatures.register(MOD_BUS)
+		CreateOreDepositsPlacementModifiers.register(MOD_BUS)
 
 		FORGE_BUS.register(this)
 		CreateOreDepositsItems

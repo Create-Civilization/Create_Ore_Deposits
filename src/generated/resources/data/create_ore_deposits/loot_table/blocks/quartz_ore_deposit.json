@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "chance": 0.9,
+              "condition": "minecraft:random_chance"
+            }
+          ],
+          "name": "create_ore_deposits:unrefined_quartz_ore"
+        }
+      ],
+      "rolls": 2.0
+    }
+  ],
+  "random_sequence": "create_ore_deposits:blocks/quartz_ore_deposit"
+}

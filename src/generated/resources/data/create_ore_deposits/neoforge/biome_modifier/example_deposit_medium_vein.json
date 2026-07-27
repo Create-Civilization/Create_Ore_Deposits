@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "create_ore_deposits:example_deposit_medium_vein",
+  "step": "underground_ores"
+}

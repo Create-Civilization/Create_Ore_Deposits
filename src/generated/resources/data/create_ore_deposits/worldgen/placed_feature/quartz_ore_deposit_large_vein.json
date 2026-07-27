@@ -1,0 +1,10 @@
+{
+  "feature": "create_ore_deposits:quartz_ore_deposit_large_vein",
+  "placement": [
+    {
+      "type": "create_ore_deposits:ore_vein",
+      "deposit": "create_ore_deposits:quartz_ore_deposit",
+      "tier": "large"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "chance": 0.8,
+              "condition": "minecraft:random_chance"
+            }
+          ],
+          "name": "create_ore_deposits:unrefined_coal_ore"
+        }
+      ],
+      "rolls": 3.0
+    }
+  ],
+  "random_sequence": "create_ore_deposits:blocks/coal_ore_deposit"
+}

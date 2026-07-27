@@ -1,0 +1,7 @@
+{
+  "values": {
+    "#minecraft:water": {
+      "cooling_factor": 1.0
+    }
+  }
+}
